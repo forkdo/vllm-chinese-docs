@@ -100,7 +100,7 @@ jobs:
       - run: echo "" >> ~/.ssh/access  # fix
       - name: Deploy the website
         env:
-          WEBROOT: /data/wwwroot/docker
+          WEBROOT: /data/wwwroot/vllm
         run: |
           ssh webserver "rm -rf $WEBROOT && mkdir -p $WEBROOT"
           scp docs-site.tar.xz webserver:${WEBROOT}/
