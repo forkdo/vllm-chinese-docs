@@ -1,0 +1,14 @@
+# Python
+.venv/
+
+build/
+docsite/
+translated/
+tmp/
+
+**.log
+**.txt
+!commit.txt
+
+aitr.toml
+config.toml

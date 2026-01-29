@@ -28,6 +28,8 @@ git push origin docs
 3. 拉取上游源码
 ```bash
 mkdir -p docsite
+pushd docsite
+git init
 git remote add upstream https://github.com/vllm-project/vllm.git
 git reset --hard
 git fetch upstream main
@@ -52,13 +54,16 @@ aitr
 6. 本地测试与构建
 ```bash
 git clone https://github.com/vllm-project/vllm.git docsite
-cp -r docs_zh/* ./docsite/content
+cp -r docs_zh/* ./docsite/docs
+# cp -r docs_zh/* ./docsite/content
 cd docsite
 ```
 
 8. 启动或构建
 ```bash
-uv tool install --with mkdocs-material mkdocs
+uv venv
+uv pip install -r requirements/docs.txt
+uv run mkdocs serve
 ```
 
 ### 2. AI 翻译
