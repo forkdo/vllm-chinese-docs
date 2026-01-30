@@ -1,3 +1,8 @@
+---
+title: "OpenAI 翻译客户端"
+description: "OpenAI 翻译客户端示例代码"
+---
+
 # OpenAI 翻译客户端
 
 源代码 <https://github.com/vllm-project/vllm/blob/main/examples/online_serving/openai_translation_client.py>。

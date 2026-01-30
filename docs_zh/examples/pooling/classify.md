@@ -1,4 +1,10 @@
-# 分类
+---
+title: 分类
+linkTitle: 分类
+description: 分类
+weight: 20
+type: book
+---
 
 来源 <https://github.com/vllm-project/vllm/tree/main/examples/pooling/classify>。
 

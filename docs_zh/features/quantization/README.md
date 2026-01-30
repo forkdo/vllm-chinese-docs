@@ -1,8 +1,24 @@
-# 量化
+---
+title: 量化
+description: 量化通过牺牲模型精度来换取更小的内存占用，使大型模型能够在更广泛的设备上运行。
+linkTitle: 量化
+url: "/docs/quantization"
+type: docs
+date: "2023-03-01"
+lastmod: "2023-03-01"
+draft: false
+weight: 100
+toc: true
+---
 
-量化通过降低模型精度来换取更小的内存占用，使大型模型能够在更广泛的设备上运行。
+# Quantization
 
-内容：
+Quantization trades off model precision for smaller memory footprint, allowing large models to be run on a wider range of devices.
+
+!!! tip
+    To get started with quantization, see [LLM Compressor](llm_compressor.md), a library for optimizing models for deployment with vLLM that supports FP8, INT8, INT4, and other quantization formats.
+
+The following are the supported quantization formats for vLLM:
 
 - [AutoAWQ](auto_awq.md)
 - [BitsAndBytes](bnb.md)
@@ -14,12 +30,12 @@
 - [FP8 W8A8](fp8.md)
 - [NVIDIA Model Optimizer](modelopt.md)
 - [AMD Quark](quark.md)
-- [量化 KV Cache](quantized_kvcache.md)
+- [Quantized KV Cache](quantized_kvcache.md)
 - [TorchAO](torchao.md)
 
-## 支持的硬件
+## Supported Hardware
 
-下表显示了在 vLLM 中各种量化实现与不同硬件平台的兼容性：
+The table below shows the compatibility of various quantization implementations with different hardware platforms in vLLM:
 
 <style>
 td:not(:first-child) {
@@ -41,7 +57,7 @@ th:not(:first-child) {
 }
 </style>
 
-| 实现方式              | Volta   | Turing   | Ampere   | Ada   | Hopper   | AMD GPU   | Intel GPU   | x86 CPU   |
+| Implementation        | Volta   | Turing   | Ampere   | Ada   | Hopper   | AMD GPU   | Intel GPU   | x86 CPU   |
 |-----------------------|---------|----------|----------|-------|----------|-----------|-------------|-----------|
 | AWQ                   | ❌      | ✅︎       | ✅︎       | ✅︎    | ✅︎       | ❌         | ✅︎          | ✅︎        |
 | GPTQ                  | ✅︎      | ✅︎       | ✅︎       | ✅︎    | ✅︎       | ❌         | ✅︎          | ✅︎        |
@@ -52,26 +68,26 @@ th:not(:first-child) {
 | DeepSpeedFP           | ✅︎      | ✅︎       | ✅︎       | ✅︎    | ✅︎       | ❌         | ❌          | ❌        |
 | GGUF                  | ✅︎      | ✅︎       | ✅︎       | ✅︎    | ✅︎       | ✅︎         | ❌          | ❌        |
 
-- Volta 指 SM 7.0，Turing 指 SM 7.5，Ampere 指 SM 8.0/8.6，Ada 指 SM 8.9，Hopper 指 SM 9.0。
-- ✅︎ 表示量化方法在此指定硬件上受支持。
-- ❌ 表示量化方法在此指定硬件上不受支持。
-- 所有 Intel Gaudi 量化支持已迁移到 [vLLM-Gaudi](https://github.com/vllm-project/vllm-gaudi)。
+- Volta refers to SM 7.0, Turing to SM 7.5, Ampere to SM 8.0/8.6, Ada to SM 8.9, and Hopper to SM 9.0.
+- ✅︎ indicates that the quantization method is supported on the specified hardware.
+- ❌ indicates that the quantization method is not supported on the specified hardware.
+- All Intel Gaudi quantization support has been migrated to [vLLM-Gaudi](https://github.com/vllm-project/vllm-gaudi).
 
 !!! note
-    如需了解 Google TPU 上量化支持的信息，请参阅 [TPU-Inference Recommended Models and Features](https://docs.vllm.ai/projects/tpu/en/latest/recommended_models_features/) 文档。
+    For information on quantization support on Google TPU, please refer to the [TPU-Inference Recommended Models and Features](https://docs.vllm.ai/projects/tpu/en/latest/recommended_models_features/) documentation.
 
 !!! note
-    随着 vLLM 不断发展并扩展对不同硬件平台和量化方法的支持，此兼容性图表可能会发生变化。
+    This compatibility chart is subject to change as vLLM continues to evolve and expand its support for different hardware platforms and quantization methods.
 
-    如需获取最新的硬件支持和量化方法信息，请参阅 [vllm/model_executor/layers/quantization](../../../vllm/model_executor/layers/quantization) 或咨询 vLLM 开发团队。
+    For the most up-to-date information on hardware support and quantization methods, please refer to [vllm/model_executor/layers/quantization](../../../vllm/model_executor/layers/quantization) or consult with the vLLM development team.
 
-## 树外量化插件
+## Out-of-Tree Quantization Plugins
 
-vLLM 支持使用 `@register_quantization_config` 装饰器注册自定义的树外量化方法。这允许您在不修改 vLLM 代码库的情况下实现和使用自己的量化方案。
+vLLM supports registering custom, out-of-tree quantization methods using the `@register_quantization_config` decorator. This allows you to implement and use your own quantization schemes without modifying the vLLM codebase.
 
-### 注册自定义量化方法
+### Registering a Custom Quantization Method
 
-要注册自定义量化方法，请创建一个继承自 `QuantizationConfig` 的类，并使用 `@register_quantization_config` 装饰它。`get_quant_method` 根据层类型分派到相应的量化方法：
+To register a custom quantization method, create a class that inherits from `QuantizationConfig` and decorate it with `@register_quantization_config`. The `get_quant_method` dispatches to the appropriate quantize method based on the layer type:
 
 ```python
 import torch
@@ -87,7 +103,7 @@ from vllm.model_executor.layers.fused_moe import FusedMoE
 
 @register_quantization_config("my_quant")
 class MyQuantConfig(QuantizationConfig):
-    """自定义量化配置。"""
+    """Custom quantization config."""
 
     def get_name(self) -> str:
         return "my_quant"
@@ -97,24 +113,24 @@ class MyQuantConfig(QuantizationConfig):
 
     @classmethod
     def get_min_capability(cls) -> int:
-        # 最小 GPU 计算能力，-1 表示无限制
+        # Minimum GPU compute capability, -1 for no restriction
         return -1
 
     @staticmethod
     def get_config_filenames() -> list[str]:
-        # 在模型目录中搜索的配置文件
+        # Config files to search for in model directory
         return []
 
     @classmethod
     def from_config(cls, config: dict) -> "MyQuantConfig":
-        # 从模型的量化配置创建配置
+        # Create config from model's quantization config
         return cls()
 
     def get_quant_method(
         self, layer: torch.nn.Module, prefix: str
     ) -> QuantizeMethodBase | None:
-        # 根据层类型进行分派
-        # 注意：您只需要实现关心的方法
+        # Dispatch based on layer type
+        # NOTE: you only need to implement methods you care about
         if isinstance(layer, LinearBase):
             return MyQuantLinearMethod()
         elif isinstance(layer, FusedMoE):
@@ -122,33 +138,33 @@ class MyQuantConfig(QuantizationConfig):
         return None
 ```
 
-### 必需的 QuantizationConfig 方法
+### Required QuantizationConfig Methods
 
-您的自定义 `QuantizationConfig` 子类必须实现这些抽象方法：
+Your custom `QuantizationConfig` subclass must implement these abstract methods:
 
-| 方法 | 描述 |
+| Method | Description |
 |--------|-------------|
-| `get_name()` | 返回量化方法的名称 |
-| `get_supported_act_dtypes()` | 返回支持的激活数据类型列表（例如 `torch.float16`） |
-| `get_min_capability()` | 返回最小 GPU 计算能力（例如 80 用于 Ampere，-1 表示无限制） |
-| `get_config_filenames()` | 返回在模型目录中搜索的配置文件名列表 |
-| `from_config(config)` | 类方法，从模型的量化配置字典创建配置 |
-| `get_quant_method(layer, prefix)` | 返回给定层的量化方法，或返回 `None` 以跳过 |
+| `get_name()` | Returns the name of the quantization method |
+| `get_supported_act_dtypes()` | Returns list of supported activation dtypes (e.g., `torch.float16`) |
+| `get_min_capability()` | Returns minimum GPU compute capability (e.g., 80 for Ampere, -1 for no restriction) |
+| `get_config_filenames()` | Returns list of config filenames to search for in model directory |
+| `from_config(config)` | Class method to create config from model's quantization config dict |
+| `get_quant_method(layer, prefix)` | Returns the quantization method for a given layer, or `None` to skip |
 
-### 实现量化线性方法
+### Implementing a Quantized Linear Method
 
-对于线性层，从 `get_quant_method` 返回一个 `QuantizeMethodBase` 子类。您可以从 `UnquantizedLinearMethod` 扩展作为起点：
+For linear layers, return a `QuantizeMethodBase` subclass from `get_quant_method`. You can extend `UnquantizedLinearMethod` as a starting point:
 
 ```python
 from vllm.model_executor.layers.linear import UnquantizedLinearMethod
 
 class MyQuantLinearMethod(UnquantizedLinearMethod):
-    """线性层的自定义量化方法。"""
+    """Custom quantization method for linear layers."""
 
     def create_weights(
         self, layer: torch.nn.Module, *weight_args, **extra_weight_attrs
     ):
-        # 为层创建量化权重
+        # Create quantized weights for the layer
         ...
 
     def apply(
@@ -157,13 +173,13 @@ class MyQuantLinearMethod(UnquantizedLinearMethod):
         x: torch.Tensor,
         bias: torch.Tensor | None = None,
     ) -> torch.Tensor:
-        # 在此处应用自定义量化逻辑
+        # Apply custom quantization logic here
         ...
 ```
 
-### 实现量化 MoE 方法
+### Implementing a Quantized MoE Method
 
-对于混合专家（MoE）模型，从 `get_quant_method` 返回一个 `FusedMoEMethodBase` 子类。您可以使用 `UnquantizedFusedMoEMethod` 来跳过 MoE 量化：
+For Mixture of Experts (MoE) models, return a `FusedMoEMethodBase` subclass from `get_quant_method`. You can use `UnquantizedFusedMoEMethod` to skip MoE quantization:
 
 ```python
 from vllm.model_executor.layers.fused_moe.layer import UnquantizedFusedMoEMethod
@@ -173,7 +189,7 @@ from vllm.model_executor.layers.fused_moe.fused_moe_method_base import (
 from vllm.model_executor.layers.fused_moe.config import FusedMoEQuantConfig
 
 class MyQuantMoEMethod(FusedMoEMethodBase):
-    """MoE 层的自定义量化方法。"""
+    """Custom quantization method for MoE layers."""
 
     def create_weights(
         self,
@@ -184,9 +200,47 @@ class MyQuantMoEMethod(FusedMoEMethodBase):
         params_dtype: torch.dtype,
         **extra_weight_attrs,
     ):
-        # 为 MoE 层创建量化权重
+        # Create quantized weights for the MoE layer
         ...
 
+```markdown
+---  
+title: "使用 vLLM 插件系统开发自定义量化方法"  
+description: "了解如何使用 vLLM 插件系统创建自定义量化方法。"  
+linkTitle: "自定义量化方法"  
+weight: 30  
+---
+
+这个指南展示了如何通过 vLLM 的插件系统开发自定义量化方法。  
+vLLM 目前支持 FP8、AWQ 和 GPTQ 等多种量化方法，您可以创建自己的量化插件来支持新的量化格式。
+
+## 插件结构
+
+自定义量化插件必须实现以下接口：
+
+```python
+from vllm.model_executor.layers.quantization import (
+    QuantizationConfig,
+    QuantizedModule,
+    FusedMoEMethod,
+    FusedMoEQuantConfig,
+)
+from vllm.model_executor.layers.quantization.base_config import (
+    QuantizationConfig as BaseQuantizationConfig,
+)
+
+
+class MyQuantConfig(QuantizationConfig):
+    # 实现量化配置的具体细节
+    ...
+
+
+class MyQuantizedModule(QuantizedModule):
+    # 实现量化模块的具体细节
+    ...
+
+
+class MyFusedMoEMethod(FusedMoEMethod):
     def apply(
         self,
         layer: torch.nn.Module,
@@ -194,7 +248,7 @@ class MyQuantMoEMethod(FusedMoEMethodBase):
         x: torch.Tensor,
         router_logits: torch.Tensor,
     ) -> torch.Tensor:
-        # 应用带量化权重的 MoE 计算
+        # 应用量化权重的 MoE 计算
         ...
 
     def get_fused_moe_quant_config(
@@ -204,14 +258,14 @@ class MyQuantMoEMethod(FusedMoEMethodBase):
         ...
 ```
 
-请参考 `vllm/model_executor/layers/quantization/fp8.py` 中现有的实现（如 `Fp8MoEMethod`）。
+请参考 `vllm/model_executor/layers/quantization/fp8.py` 中的 `Fp8MoEMethod` 实现作为参考。
 
 ### 使用插件
 
-注册后，您可以在 vLLM 中使用您的自定义量化方法：
+注册后，您可以在 vLLM 中使用自定义量化方法：
 
 ```python
-# 注册您的量化方法（导入包含您配置的模块）
+# 注册您的量化方法（导入包含配置的模块）
 import my_quant_plugin
 
 from vllm import LLM
@@ -220,4 +274,5 @@ from vllm import LLM
 llm = LLM(model="your-model", quantization="my_quant")
 ```
 
-有关插件系统的更多信息，请参见[插件系统文档](../../design/plugin_system.md)。
+有关插件系统的更多信息，请参阅[插件系统文档](../../design/plugin_system.md)。
+```

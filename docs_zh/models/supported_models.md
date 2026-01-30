@@ -1,9 +1,13 @@
+---
+title: "支持的模型"
+---
+
 # 支持的模型
 
 vLLM 支持各种任务中的[生成式](./generative_models.md)和[池化](./pooling_models.md)模型。
 
-对于每个任务，我们列出了已在 vLLM 中实现的模型架构。
-在每个架构旁边，我们包含了一些使用该架构的流行模型。
+对于每个任务，我们列出了在 vLLM 中已实现的模型架构。
+在每个架构旁边，我们包含了一些使用它的流行模型。
 
 ## 模型实现
 
@@ -11,11 +15,11 @@ vLLM 支持各种任务中的[生成式](./generative_models.md)和[池化](./po
 
 如果 vLLM 原生支持某个模型，其实现可以在 [vllm/model_executor/models](../../vllm/model_executor/models) 中找到。
 
-这些模型就是我们在[支持的文本模型列表](#list-of-text-only-language-models)和[支持的多模态模型列表](#list-of-multimodal-language-models)中列出的模型。
+这些模型就是我们在[支持的文本模型](#list-of-text-only-language-models)和[支持的多模态模型](#list-of-multimodal-language-models)中列出的模型。
 
 ### Transformers
 
-vLLM 还支持 Transformers 中可用的模型实现。你应该期望在 vLLM 中使用的 Transformers 模型实现的性能在 <5% 范围内与专用 vLLM 模型实现的性能相当。我们称此功能为"Transformers 建模后端"。
+vLLM 还支持 Transformers 中可用的模型实现。您应该期望在 vLLM 中使用的 Transformers 模型实现的性能在专用 vLLM 模型实现性能的 <5% 范围内。我们称此功能为"Transformers 建模后端"。
 
 目前，Transformers 建模后端适用于以下内容：
 
@@ -23,7 +27,7 @@ vLLM 还支持 Transformers 中可用的模型实现。你应该期望在 vLLM �
 - 架构：仅编码器、仅解码器、专家混合
 - 注意力类型：全注意力和/或滑动注意力
 
-_*视觉语言模型目前仅接受图像输入。对视频输入的支持将在未来版本中添加。_
+_*视觉语言模型目前仅接受图像输入。视频输入支持将在未来版本中添加。_
 
 如果 Transformers 模型实现遵循了[编写自定义模型](#writing-custom-models)中的所有步骤，那么当与 Transformers 建模后端一起使用时，它将与以下 vLLM 功能兼容：
 
@@ -38,20 +42,20 @@ _*视觉语言模型目前仅接受图像输入。对视频输入的支持将在
 
 ```python
 from vllm import LLM
-llm = LLM(model=...)  # 您模型的名称或路径
+llm = LLM(model=...)  # Name or path of your model
 llm.apply_model(lambda model: print(type(model)))
 ```
 
 如果打印的类型以 `Transformers...` 开头，那么它正在使用 Transformers 模型实现！
 
-如果一个模型有 vLLM 实现，但您更愿意通过 Transformers 建模后端使用 Transformers 实现，请为[离线推理](../serving/offline_inference.md)设置 `model_impl="transformers"` 或为[在线服务](../serving/openai_compatible_server.md)设置 `--model-impl transformers`。
+如果某个模型有 vLLM 实现，但您更愿意通过 Transformers 建模后端使用 Transformers 实现，请为[离线推理](../serving/offline_inference.md)设置 `model_impl="transformers"` 或为[在线服务](../serving/openai_compatible_server.md)设置 `--model-impl transformers`。
 
 !!! note
     对于视觉语言模型，如果您使用 `dtype="auto"` 加载，vLLM 会使用配置中的 `dtype`（如果存在）加载整个模型。相比之下，原生 Transformers 会尊重模型中每个主干的 `dtype` 属性。这可能会导致性能上的轻微差异。
 
 #### 自定义模型
 
-如果一个模型既不被 vLLM 也不被 Transformers 原生支持，它仍然可以在 vLLM 中使用！
+如果某个模型既不被 vLLM 也不被 Transformers 原生支持，它仍然可以在 vLLM 中使用！
 
 要使模型与 vLLM 的 Transformers 建模后端兼容，它必须：
 
@@ -70,7 +74,7 @@ llm.apply_model(lambda model: print(type(model)))
 
 #### 编写自定义模型
 
-本节详细说明了对 Transformers 兼容的自定义模型进行必要的修改，以使其与 vLLM 的 Transformers 建模后端兼容。（我们假设已经创建了 Transformers 兼容的自定义模型，参见 [Transformers - Customizing models](https://huggingface.co/docs/transformers/en/custom_models)）。
+本节详细说明了对 Transformers 兼容的自定义模型进行必要的修改，使其与 vLLM 的 Transformers 建模后端兼容。（我们假设已经创建了一个 Transformers 兼容的自定义模型，参见 [Transformers - Customizing models](https://huggingface.co/docs/transformers/en/custom_models)）。
 
 要使您的模型与 Transformers 建模后端兼容，它需要：
 
@@ -79,9 +83,9 @@ llm.apply_model(lambda model: print(type(model)))
         1. 在 `MyAttention` 中添加 `is_causal = False`。
     - 如果您的模型是专家混合（MoE）：
         1. 您的稀疏 MoE 块必须有一个名为 `experts` 的属性。
-        2. `experts` 的类（`MyExperts`）必须要么：
-            - 继承自 `nn.ModuleList`（简单）。
-            - 或包含所有 3D `nn.Parameters`（打包）。
+        2. `experts`（`MyExperts`）的类必须要么：
+            - 继承自 `nn.ModuleList`（简单方式）。
+            - 或者包含所有 3D `nn.Parameters`（打包方式）。
         3. `MyExperts.forward` 必须接受 `hidden_states`、`top_k_index`、`top_k_weights`。
 2. `MyAttention` 必须使用 `ALL_ATTENTION_FUNCTIONS` 来调用注意力。
 3. `MyModel` 必须包含 `_supports_attention_backend = True`。
@@ -95,7 +99,7 @@ from transformers import PreTrainedModel
 from torch import nn
 
 class MyAttention(nn.Module):
-    is_causal = False  # 仅对仅编码器模型执行此操作
+    is_causal = False  # Only do this for encoder-only models
 
     def forward(self, hidden_states, **kwargs):
         ...
@@ -109,12 +113,12 @@ class MyAttention(nn.Module):
         )
         ...
 
-# 仅对专家混合模型执行此操作
+# Only do this for mixture-of-experts models
 class MyExperts(nn.ModuleList):
     def forward(self, hidden_states, top_k_index, top_k_weights):
         ...
 
-# 仅对专家混合模型执行此操作
+# Only do this for mixture-of-experts models
 class MySparseMoEBlock(nn.Module):
     def __init__(self, config):
         ...
@@ -132,11 +136,11 @@ class MyModel(PreTrainedModel):
 
 </details>
 
-以下是加载此模型时在后台发生的情况：
+以下是加载此模型时后台发生的情况：
 
 1. 加载配置。
-2. 从配置中的 `auto_map` 加载 `MyModel` Python 类，我们检查模型是否 `is_backend_compatible()`。
-3. `MyModel` 被加载到 [vllm/model_executor/models/transformers](../../vllm/model_executor/models/transformers) 中的 Transformers 建模后端类之一，该类设置 `self.config._attn_implementation = "vllm"` 以便使用 vLLM 的注意力层。
+2. 从配置中的 `auto_map` 加载 `MyModel` Python 类，并检查模型是否 `is_backend_compatible()`。
+3. 将 `MyModel` 加载到 [vllm/model_executor/models/transformers](../../vllm/model_executor/models/transformers) 中的 Transformers 建模后端类之一，该类设置 `self.config._attn_implementation = "vllm"` 以便使用 vLLM 的注意力层。
 
 就是这样！
 
@@ -169,48 +173,48 @@ class MyConfig(PretrainedConfig):
 
 - `base_model_tp_plan` 是一个 `dict`，它将完全限定的层名称模式映射到张量并行样式（目前仅支持 `"colwise"` 和 `"rowwise"`）。
 - `base_model_pp_plan` 是一个 `dict`，它将直接子层名称映射到 `str` 的 `list` 的 `tuple`：
-    - 您只需要为不是在所有流水线阶段都存在的层执行此操作
+    - 你只需要为那些不在所有流水线阶段上都存在的层执行此操作
     - vLLM 假设只会有一个 `nn.ModuleList`，它在流水线阶段之间分布
-    - `tuple` 第一个元素中的 `list` 包含输入参数的名称
-    - `tuple` 最后一个元素中的 `list` 包含在您的建模代码中层输出到的变量名称
+    - `tuple` 中第一个元素的 `list` 包含输入参数的名称
+    - `tuple` 中最后一个元素的 `list` 包含在你的建模代码中层输出到的变量名称
 
 ## 加载模型
 
 ### Hugging Face Hub
 
-默认情况下，vLLM 从 [Hugging Face (HF) Hub](https://huggingface.co/models) 加载模型。要更改模型的下载路径，您可以设置 `HF_HOME` 环境变量；更多详细信息，请参阅 [他们的官方文档](https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfhome)。
+默认情况下，vLLM 从 [Hugging Face (HF) Hub](https://huggingface.co/models) 加载模型。要更改模型的下载路径，可以设置 `HF_HOME` 环境变量；更多详细信息，请参阅 [他们的官方文档](https://huggingface.co/docs/huggingface_hub/package_reference/environment_variables#hfhome)。
 
-要确定给定模型是否原生支持，您可以检查 HF 仓库内的 `config.json` 文件。
+要确定给定模型是否原生支持，可以检查 HF 仓库内的 `config.json` 文件。
 如果 `"architectures"` 字段包含以下列出的模型架构，则应该原生支持。
 
 模型在 vLLM 中使用时并不 _需要_ 原生支持。
-[Transformers 建模后端](#transformers) 使您能够直接使用其 Transformers 实现运行模型（甚至可以使用 Hugging Face Model Hub 上的远程代码！）。
+[Transformers 建模后端](#transformers) 使你能够直接使用其 Transformers 实现运行模型（甚至使用 Hugging Face Model Hub 上的远程代码！）。
 
 !!! tip
-    检查您的模型在运行时是否真正受支持的最简单方法是运行以下程序：
+    检查你的模型在运行时是否真正受支持的最简单方法是运行以下程序：
 
     ```python
     from vllm import LLM
 
     # 仅适用于生成模型 (runner=generate)
-    llm = LLM(model=..., runner="generate")  # 您模型的名称或路径
+    llm = LLM(model=..., runner="generate")  # 你的模型名称或路径
     output = llm.generate("Hello, my name is")
     print(output)
 
     # 仅适用于池化模型 (runner=pooling)
-    llm = LLM(model=..., runner="pooling")  # 您模型的名称或路径
+    llm = LLM(model=..., runner="pooling")  # 你的模型名称或路径
     output = llm.encode("Hello, my name is")
     print(output)
     ```
 
-    如果 vLLM 成功返回文本（对于生成模型）或隐藏状态（对于池化模型），则表明您的模型受支持。
+    如果 vLLM 成功返回文本（对于生成模型）或隐藏状态（对于池化模型），则表明你的模型受支持。
 
-否则，请参阅 [添加新模型](../contributing/model/README.md) 了解如何在 vLLM 中实现您的模型的说明。
-或者，您可以 [在 GitHub 上提交问题](https://github.com/vllm-project/vllm/issues/new/choose) 请求 vLLM 支持。
+否则，请参阅 [添加新模型](../contributing/model/README.md) 了解如何在 vLLM 中实现你的模型的说明。
+或者，你可以 [在 GitHub 上开一个 issue](https://github.com/vllm-project/vllm/issues/new/choose) 来请求 vLLM 支持。
 
 #### 下载模型
 
-如果愿意，您可以使用 Hugging Face CLI [下载模型](https://huggingface.co/docs/huggingface_hub/guides/cli#huggingface-cli-download) 或从模型仓库下载特定文件：
+如果愿意，你可以使用 Hugging Face CLI 来 [下载模型](https://huggingface.co/docs/huggingface_hub/guides/cli#huggingface-cli-download) 或从模型仓库下载特定文件：
 
 ```bash
 # 下载模型
@@ -225,7 +229,7 @@ huggingface-cli download HuggingFaceH4/zephyr-7b-beta eval_results.json
 
 #### 列出已下载的模型
 
-使用 Hugging Face CLI [管理](https://huggingface.co/docs/huggingface_hub/guides/manage-cache#scan-your-cache) 存储在本地缓存中的模型：
+使用 Hugging Face CLI 来 [管理存储在本地缓存中的模型](https://huggingface.co/docs/huggingface_hub/guides/manage-cache#scan-your-cache)：
 
 ```bash
 # 列出缓存的模型
@@ -240,35 +244,35 @@ huggingface-cli scan-cache --dir ~/.cache/huggingface/hub
 
 #### 删除缓存的模型
 
-使用 Hugging Face CLI 交互式地从缓存中 [删除下载的模型](https://huggingface.co/docs/huggingface_hub/guides/manage-cache#clean-your-cache)：
+使用 Hugging Face CLI 交互式地 [从缓存中删除下载的模型](https://huggingface.co/docs/huggingface_hub/guides/manage-cache#clean-your-cache)：
 
 <details>
 <summary>命令</summary>
 
 ```console
-# `delete-cache` 命令需要额外的依赖项才能与 TUI 一起工作。
+# `delete-cache` 命令需要额外的依赖项才能与 TUI 配合使用。
 # 请运行 `pip install huggingface_hub[cli]` 来安装它们。
 
-# 启动交互式 TUI 以选择要删除的模型
+# 启动交互式 TUI 来选择要删除的模型
 $ huggingface-cli delete-cache
-? Select revisions to delete: 1 revisions selected counting for 438.9M.
-  ○ None of the following (if selected, nothing will be deleted).
-Model BAAI/bge-base-en-v1.5 (438.9M, used 1 week ago)
-❯ ◉ a5beb1e3: main # modified 1 week ago
+? 选择要删除的版本：选择了 1 个版本，总计 438.9M。
+  ○ 以下都不是（如果选择此项，不会删除任何内容）。
+模型 BAAI/bge-base-en-v1.5 (438.9M, 1 周前使用过)
+❯ ◉ a5beb1e3: main # 1 周前修改过
 
-Model BAAI/bge-large-en-v1.5 (1.3G, used 1 week ago)
-  ○ d4aa6901: main # modified 1 week ago
+模型 BAAI/bge-large-en-v1.5 (1.3G, 1 周前使用过)
+  ○ d4aa6901: main # 1 周前修改过
 
-Model BAAI/bge-reranker-base (1.1G, used 4 weeks ago)
-  ○ 2cfc18c9: main # modified 4 weeks ago
+模型 BAAI/bge-reranker-base (1.1G, 4 周前使用过)
+  ○ 2cfc18c9: main # 4 周前修改过
 
-Press <space> to select, <enter> to validate and <ctrl+c> to quit without modification.
+按 <space> 选择，<enter> 验证，<ctrl+c> 退出而不修改。
 
 # 选择后需要确认
-? Select revisions to delete: 1 revision(s) selected.
-? 1 revisions selected counting for 438.9M. Confirm deletion ? Yes
-Start deletion.
-Done. Deleted 1 repo(s) and 0 revision(s) for a total of 438.9M.
+? 选择要删除的版本：选择了 1 个版本。
+? 选择了 1 个版本，总计 438.9M。确认删除？是
+开始删除。
+完成。删除了 1 个仓库和 0 个版本，总计 438.9M。
 ```
 
 </details>
@@ -277,7 +281,7 @@ Done. Deleted 1 repo(s) and 0 revision(s) for a total of 438.9M.
 
 以下是一些使用代理从 Hugging Face 加载/下载模型的提示：
 
-- 为您的会话全局设置代理（或在配置文件中设置）：
+- 为你的会话全局设置代理（或在配置文件中设置）：
 
 ```shell
 export http_proxy=http://your.proxy.server:port
@@ -304,7 +308,7 @@ os.environ["https_proxy"] = "http://your.proxy.server:port"
 
 ### ModelScope
 
-要使用 [ModelScope](https://www.modelscope.cn) 的模型而不是 Hugging Face Hub，请设置环境变量：
+要使用 [ModelScope](https://www.modelscope.cn) 中的模型而不是 Hugging Face Hub，请设置环境变量：
 
 ```shell
 export VLLM_USE_MODELSCOPE=True
@@ -419,6 +423,7 @@ th {
 | `MambaForCausalLM` | Mamba | `state-spaces/mamba-130m-hf`, `state-spaces/mamba-790m-hf`, `state-spaces/mamba-2.8b-hf`, 等 | | ✅︎ |
 | `Mamba2ForCausalLM` | Mamba2 | `mistralai/Mamba-Codestral-7B-v0.1`, 等 | | ✅︎ |
 | `MiMoForCausalLM` | MiMo | `XiaomiMiMo/MiMo-7B-RL`, 等 | ✅︎ | ✅︎ |
+
 | `MiMoV2FlashForCausalLM` | MiMoV2Flash | `XiaomiMiMo/MiMo-V2-Flash`, 等 | ︎| ✅︎ |
 | `MiniCPMForCausalLM` | MiniCPM | `openbmb/MiniCPM-2B-sft-bf16`, `openbmb/MiniCPM-2B-dpo-bf16`, `openbmb/MiniCPM-S-1B-sft`, 等 | ✅︎ | ✅︎ |
 | `MiniCPM3ForCausalLM` | MiniCPM3 | `openbmb/MiniCPM3-4B`, 等 | ✅︎ | ✅︎ |
@@ -478,7 +483,7 @@ th {
 
 ### 池化模型
 
-有关如何使用池化模型的更多信息，请参见 [此页面](./pooling_models.md)。
+请参阅 [此页面](./pooling_models.md) 了解如何使用池化模型的更多信息。
 
 !!! important
     由于某些模型架构同时支持生成和池化任务，
@@ -518,13 +523,13 @@ th {
     参见 [HF Transformers 上的相关问题](https://github.com/huggingface/transformers/issues/34882)。
 
 !!! note
-    `jinaai/jina-embeddings-v3` 通过 LoRA 支持多个任务，而 vllm 暂时只支持通过合并 LoRA 权重进行文本匹配任务。
+    `jinaai/jina-embeddings-v3` 通过 LoRA 支持多个任务，而 vllm 暂时只支持通过合并 LoRA 权重的文本匹配任务。
 
 !!! note
-    第二代 GTE 模型 (mGTE-TRM) 命名为 `NewModel`。`NewModel` 这个名称过于通用，您应该设置 `--hf-overrides '{"architectures": ["GteNewModel"]}'` 来指定使用 `GteNewModel` 架构。
+    第二代 GTE 模型 (mGTE-TRM) 被命名为 `NewModel`。名称 `NewModel` 过于通用，您应该设置 `--hf-overrides '{"architectures": ["GteNewModel"]}'` 来指定使用 `GteNewModel` 架构。
 
 如果您的模型不在上述列表中，我们将尝试使用
-[as_embedding_model][vllm.model_executor.models.adapters.as_embedding_model] 自动转换模型。默认情况下，从对应于最后一个 token 的归一化隐藏状态中提取整个提示的嵌入。
+[as_embedding_model][vllm.model_executor.models.adapters.as_embedding_model] 自动转换模型。默认情况下，整个提示的嵌入从对应于最后一个标记的归一化隐藏状态中提取。
 
 #### 分类
 
@@ -540,11 +545,11 @@ th {
 \* 功能支持与原始模型相同。
 
 如果您的模型不在上述列表中，我们将尝试使用
-[as_seq_cls_model][vllm.model_executor.models.adapters.as_seq_cls_model] 自动转换模型。默认情况下，从对应于最后一个 token 的 softmax 隐藏状态中提取类别概率。
+[as_seq_cls_model][vllm.model_executor.models.adapters.as_seq_cls_model] 自动转换模型。默认情况下，类概率从对应于最后一个标记的 softmax 隐藏状态中提取。
 
 #### 交叉编码器 / 重排序器
 
-交叉编码器和重排序器模型是分类模型的一个子集，接受两个提示作为输入。
+交叉编码器和重排序器模型是接受两个提示作为输入的分类模型的子集。
 这些模型主要支持 [`LLM.score`](./pooling_models.md#llmscore) API。
 
 | 架构 | 模型 | 示例 HF 模型 | 评分模板 (见注释) | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
@@ -577,7 +582,7 @@ th {
     ```
 
 !!! note
-    第二代 GTE 模型 (mGTE-TRM) 命名为 `NewForSequenceClassification`。`NewForSequenceClassification` 这个名称过于通用，您应该设置 `--hf-overrides '{"architectures": ["GteNewForSequenceClassification"]}'` 来指定使用 `GteNewForSequenceClassification` 架构。
+    第二代 GTE 模型 (mGTE-TRM) 被命名为 `NewForSequenceClassification`。名称 `NewForSequenceClassification` 过于通用，您应该设置 `--hf-overrides '{"architectures": ["GteNewForSequenceClassification"]}'` 来指定使用 `GteNewForSequenceClassification` 架构。
 
 !!! note
     使用以下命令加载官方原始 `mxbai-rerank-v2`。
@@ -614,7 +619,7 @@ th {
 
 | 架构 | 模型 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|-------------------|-----------------------------|-----------------------------------------|
-| `BertForTokenClassification` | 基于 bert | `boltuix/NeuroBERT-NER` (参见注释) 等 |  |  |
+| `BertForTokenClassification` | 基于 bert | `boltuix/NeuroBERT-NER` (参见注释), 等 |  |  |
 | `ModernBertForTokenClassification` | 基于 ModernBERT | `disham993/electrical-ner-ModernBERT-base` |  |  |
 
 !!! note
@@ -629,96 +634,104 @@ th {
 - **V**ideo (视频)
 - **A**udio (音频)
 
-支持由 `+` 连接的任意模态组合。
+支持通过 `+` 连接的任何模态组合。
 
-- 例如：`T + I` 表示模型支持纯文本、纯图像和图文混合输入。
+- 例如：`T + I` 表示模型支持纯文本、纯图像和图文结合的输入。
 
-另一方面，由 `/` 分隔的模态是互斥的。
+另一方面，通过 `/` 分隔的模态是互斥的。
 
-- 例如：`T / I` 表示模型支持纯文本和纯图像输入，但不支持图文混合输入。
+- 例如：`T / I` 表示模型支持纯文本和纯图像输入，但不支持图文结合输入。
 
 请参阅[此页面](../features/multimodal_inputs.md)了解如何向模型传递多模态输入。
 
 !!! tip
-    对于仅混合模式的模型，如 Llama-4、Step3 和 Mistral-3，可以通过将所有支持的多模态模态设置为 0（例如，`--limit-mm-per-prompt '{"image":0}`）来启用纯文本模式，这样它们的多模态模块将不会被加载，从而为 KV 缓存释放更多 GPU 内存。
+    对于仅支持混合模式的模型，如 Llama-4、Step3 和 Mistral-3，可以通过将所有支持的多模态模态设置为 0 (例如, `--limit-mm-per-prompt '{"image":0}`) 来启用纯文本模式，这样它们的多模态模块将不会被加载，从而为 KV 缓存释放更多 GPU 内存。
 
 !!! note
     vLLM 目前支持为大多数多模态模型的语言骨干添加 LoRA 适配器。此外，vLLM 现在实验性地支持为某些多模态模型的 tower 和 connector 模块添加 LoRA。请参阅[此页面](../features/lora.md)。
 
 ### 生成模型
 
-请参阅[此页面](generative_models.md)了解如何使用生成模型的更多信息。
+有关如何使用生成模型的更多信息，请参阅[此页面](generative_models.md)。
 
 #### 文本生成
 
 这些模型主要接受 [`LLM.generate`](./generative_models.md#llmgenerate) API。Chat/Instruct 模型还支持 [`LLM.chat`](./generative_models.md#llmchat) API。
 
+---
+title: "支持的模型"
+description: "vLLM 支持的模型列表"
+---
+
+# 支持的模型
+
 | 架构 | 模型 | 输入 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|--------|-------------------|----------------------|---------------------------|
 | `AriaForConditionalGeneration` | Aria | T + I<sup>+</sup> | `rhymes-ai/Aria` | | |
-| `AudioFlamingo3ForConditionalGeneration` | AudioFlamingo3 | T + A<sup>+</sup> | `nvidia/audio-flamingo-3-hf`, `nvidia/music-flamingo-hf` | ✅︎ | ✅︎ |
-| `AyaVisionForConditionalGeneration` | Aya Vision | T + I<sup>+</sup> | `CohereLabs/aya-vision-8b`, `CohereLabs/aya-vision-32b`, 等 | ✅︎ | ✅︎ |
+| `AudioFlamingo3ForConditionalGeneration` | AudioFlamingo3 | T + A<sup>+</sup> | `nvidia/audio-flamingo-3-hf`, `nvidia/music-flamingo-2601-hf` | ✅︎ | ✅︎ |
+| `AyaVisionForConditionalGeneration` | Aya Vision | T + I<sup>+</sup> | `CohereLabs/aya-vision-8b`, `CohereLabs/aya-vision-32b`, etc. | | ✅︎ |
 | `BagelForConditionalGeneration` | BAGEL | T + I<sup>+</sup> | `ByteDance-Seed/BAGEL-7B-MoT` | ✅︎ | ✅︎ |
 | `BeeForConditionalGeneration` | Bee-8B | T + I<sup>E+</sup> | `Open-Bee/Bee-8B-RL`, `Open-Bee/Bee-8B-SFT` | | ✅︎ |
-| `Blip2ForConditionalGeneration` | BLIP-2 | T + I<sup>E</sup> | `Salesforce/blip2-opt-2.7b`, `Salesforce/blip2-opt-6.7b`, 等 | ✅︎ | ✅︎ |
-| `ChameleonForConditionalGeneration` | Chameleon | T + I | `facebook/chameleon-7b`, 等 | | ✅︎ |
-| `Cohere2VisionForConditionalGeneration` | Command A Vision | T + I<sup>+</sup> | `CohereLabs/command-a-vision-07-2025`, 等 | | ✅︎ |
-| `DeepseekVLV2ForCausalLM`<sup>^</sup> | DeepSeek-VL2 | T + I<sup>+</sup> | `deepseek-ai/deepseek-vl2-tiny`, `deepseek-ai/deepseek-vl2-small`, `deepseek-ai/deepseek-vl2`, 等 | | ✅︎ |
-| `DeepseekOCRForCausalLM` | DeepSeek-OCR | T + I<sup>+</sup> | `deepseek-ai/DeepSeek-OCR`, 等 | ✅︎ | ✅︎ |
-| `Eagle2_5_VLForConditionalGeneration` | Eagle2.5-VL | T + I<sup>E+</sup> | `nvidia/Eagle2.5-8B`, 等 | ✅︎ | ✅︎ |
+| `Blip2ForConditionalGeneration` | BLIP-2 | T + I<sup>E</sup> | `Salesforce/blip2-opt-2.7b`, `Salesforce/blip2-opt-6.7b`, etc. | ✅︎ | ✅︎ |
+| `ChameleonForConditionalGeneration` | Chameleon | T + I | `facebook/chameleon-7b`, etc. | | ✅︎ |
+| `Cohere2VisionForConditionalGeneration` | Command A Vision | T + I<sup>+</sup> | `CohereLabs/command-a-vision-07-2025`, etc. | | ✅︎ |
+| `DeepseekVLV2ForCausalLM`<sup>^</sup> | DeepSeek-VL2 | T + I<sup>+</sup> | `deepseek-ai/deepseek-vl2-tiny`, `deepseek-ai/deepseek-vl2-small`, `deepseek-ai/deepseek-vl2`, etc. | | ✅︎ |
+| `DeepseekOCRForCausalLM` | DeepSeek-OCR | T + I<sup>+</sup> | `deepseek-ai/DeepSeek-OCR`, etc. | ✅︎ | ✅︎ |
+| `Eagle2_5_VLForConditionalGeneration` | Eagle2.5-VL | T + I<sup>E+</sup> | `nvidia/Eagle2.5-8B`, etc. | ✅︎ | ✅︎ |
 | `Ernie4_5_VLMoeForConditionalGeneration` | Ernie4.5-VL | T + I<sup>+</sup>/ V<sup>+</sup> | `baidu/ERNIE-4.5-VL-28B-A3B-PT`, `baidu/ERNIE-4.5-VL-424B-A47B-PT` | | ✅︎ |
-| `FuyuForCausalLM` | Fuyu | T + I | `adept/fuyu-8b`, 等 | | ✅︎ |
-| `Gemma3ForConditionalGeneration` | Gemma 3 | T + I<sup>E+</sup> | `google/gemma-3-4b-it`, `google/gemma-3-27b-it`, 等 | ✅︎ | ✅︎ |
-| `Gemma3nForConditionalGeneration` | Gemma 3n | T + I + A | `google/gemma-3n-E2B-it`, `google/gemma-3n-E4B-it`, 等 | | |
-| `GLM4VForCausalLM`<sup>^</sup> | GLM-4V | T + I | `zai-org/glm-4v-9b`, `zai-org/cogagent-9b-20241220`, 等 | ✅︎ | ✅︎ |
-| `Glm4vForConditionalGeneration` | GLM-4.1V-Thinking | T + I<sup>E+</sup> + V<sup>E+</sup> | `zai-org/GLM-4.1V-9B-Thinking`, 等 | ✅︎ | ✅︎ |
-| `Glm4vMoeForConditionalGeneration` | GLM-4.5V | T + I<sup>E+</sup> + V<sup>E+</sup> | `zai-org/GLM-4.5V`, 等 | ✅︎ | ✅︎ |
-| `GlmOcrForConditionalGeneration` | GLM-OCR | T + I<sup>E+</sup>  | `zai-org/GLM-OCR`, 等 | ✅︎ | ✅︎ |
+| `FuyuForCausalLM` | Fuyu | T + I | `adept/fuyu-8b`, etc. | | ✅︎ |
+| `Gemma3ForConditionalGeneration` | Gemma 3 | T + I<sup>E+</sup> | `google/gemma-3-4b-it`, `google/gemma-3-27b-it`, etc. | ✅︎ | ✅︎ |
+| `Gemma3nForConditionalGeneration` | Gemma 3n | T + I + A | `google/gemma-3n-E2B-it`, `google/gemma-3n-E4B-it`, etc. | | |
+| `GLM4VForCausalLM`<sup>^</sup> | GLM-4V | T + I | `zai-org/glm-4v-9b`, `zai-org/cogagent-9b-20241220`, etc. | ✅︎ | ✅︎ |
+| `Glm4vForConditionalGeneration` | GLM-4.1V-Thinking | T + I<sup>E+</sup> + V<sup>E+</sup> | `zai-org/GLM-4.1V-9B-Thinking`, etc. | ✅︎ | ✅︎ |
+| `Glm4vMoeForConditionalGeneration` | GLM-4.5V | T + I<sup>E+</sup> + V<sup>E+</sup> | `zai-org/GLM-4.5V`, etc. | ✅︎ | ✅︎ |
+| `GlmOcrForConditionalGeneration` | GLM-OCR | T + I<sup>E+</sup>  | `zai-org/GLM-OCR`, etc. | ✅︎ | ✅︎ |
 | `GraniteSpeechForConditionalGeneration` | Granite Speech | T + A | `ibm-granite/granite-speech-3.3-8b` | ✅︎ | ✅︎ |
-| `H2OVLChatModel` | H2OVL | T + I<sup>E+</sup> | `h2oai/h2ovl-mississippi-800m`, `h2oai/h2ovl-mississippi-2b`, 等 | | ✅︎ |
-| `HunYuanVLForConditionalGeneration` | HunyuanOCR | T + I<sup>E+</sup> | `tencent/HunyuanOCR`, 等 | ✅︎ | ✅︎ |
-| `Idefics3ForConditionalGeneration` | Idefics3 | T + I | `HuggingFaceM4/Idefics3-8B-Llama3`, 等 | ✅︎ | |
+| `H2OVLChatModel` | H2OVL | T + I<sup>E+</sup> | `h2oai/h2ovl-mississippi-800m`, `h2oai/h2ovl-mississippi-2b`, etc. | | ✅︎ |
+| `HunYuanVLForConditionalGeneration` | HunyuanOCR | T + I<sup>E+</sup> | `tencent/HunyuanOCR`, etc. | ✅︎ | ✅︎ |
+| `Idefics3ForConditionalGeneration` | Idefics3 | T + I | `HuggingFaceM4/Idefics3-8B-Llama3`, etc. | ✅︎ | |
 | `IsaacForConditionalGeneration` | Isaac | T + I<sup>+</sup> | `PerceptronAI/Isaac-0.1` | ✅︎ | ✅︎ |
-| `InternS1ForConditionalGeneration` | Intern-S1 | T + I<sup>E+</sup> + V<sup>E+</sup> | `internlm/Intern-S1`, `internlm/Intern-S1-mini`, 等 | ✅︎ | ✅︎ |
-| `InternVLChatModel` | InternVL 3.5, InternVL 3.0, InternVideo 2.5, InternVL 2.5, Mono-InternVL, InternVL 2.0 | T + I<sup>E+</sup> + (V<sup>E+</sup>) | `OpenGVLab/InternVL3_5-14B`, `OpenGVLab/InternVL3-9B`, `OpenGVLab/InternVideo2_5_Chat_8B`, `OpenGVLab/InternVL2_5-4B`, `OpenGVLab/Mono-InternVL-2B`, `OpenGVLab/InternVL2-4B`, 等 | ✅︎ | ✅︎ |
-| `InternVLForConditionalGeneration` | InternVL 3.0 (HF 格式) | T + I<sup>E+</sup> + V<sup>E+</sup> | `OpenGVLab/InternVL3-1B-hf`, 等 | ✅︎ | ✅︎ |
-| `KananaVForConditionalGeneration` | Kanana-V | T + I<sup>+</sup> | `kakaocorp/kanana-1.5-v-3b-instruct`, 等 | | ✅︎ |
+| `InternS1ForConditionalGeneration` | Intern-S1 | T + I<sup>E+</sup> + V<sup>E+</sup> | `internlm/Intern-S1`, `internlm/Intern-S1-mini`, etc. | ✅︎ | ✅︎ |
+| `InternVLChatModel` | InternVL 3.5, InternVL 3.0, InternVideo 2.5, InternVL 2.5, Mono-InternVL, InternVL 2.0 | T + I<sup>E+</sup> + (V<sup>E+</sup>) | `OpenGVLab/InternVL3_5-14B`, `OpenGVLab/InternVL3-9B`, `OpenGVLab/InternVideo2_5_Chat_8B`, `OpenGVLab/InternVL2_5-4B`, `OpenGVLab/Mono-InternVL-2B`, `OpenGVLab/InternVL2-4B`, etc. | ✅︎ | ✅︎ |
+| `InternVLForConditionalGeneration` | InternVL 3.0 (HF format) | T + I<sup>E+</sup> + V<sup>E+</sup> | `OpenGVLab/InternVL3-1B-hf`, etc. | ✅︎ | ✅︎ |
+| `KananaVForConditionalGeneration` | Kanana-V | T + I<sup>+</sup> | `kakaocorp/kanana-1.5-v-3b-instruct`, etc. | | ✅︎ |
 | `KeyeForConditionalGeneration` | Keye-VL-8B-Preview | T + I<sup>E+</sup> + V<sup>E+</sup> | `Kwai-Keye/Keye-VL-8B-Preview` | ✅︎ | ✅︎ |
 | `KeyeVL1_5ForConditionalGeneration` | Keye-VL-1_5-8B | T + I<sup>E+</sup> + V<sup>E+</sup> | `Kwai-Keye/Keye-VL-1_5-8B` | ✅︎ | ✅︎ |
 | `KimiVLForConditionalGeneration` | Kimi-VL-A3B-Instruct, Kimi-VL-A3B-Thinking | T + I<sup>+</sup> | `moonshotai/Kimi-VL-A3B-Instruct`, `moonshotai/Kimi-VL-A3B-Thinking` | | ✅︎ |
 | `KimiK25ForConditionalGeneration` | Kimi-K2.5 | T + I<sup>+</sup> | `moonshotai/Kimi-K2.5` | | ✅︎ |
-| `LightOnOCRForConditionalGeneration`  | LightOnOCR-1B  | T + I<sup>+</sup> | `lightonai/LightOnOCR-1B`, 等 | ✅︎ | ✅︎ |
-| `Lfm2VlForConditionalGeneration` | LFM2-VL | T + I<sup>+</sup> | `LiquidAI/LFM2-VL-450M`, `LiquidAI/LFM2-VL-3B`, `LiquidAI/LFM2-VL-8B-A1B`, 等 | ✅︎ | ✅︎ |
-| `Llama4ForConditionalGeneration` | Llama 4 | T + I<sup>+</sup> | `meta-llama/Llama-4-Scout-17B-16E-Instruct`, `meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8`, `meta-llama/Llama-4-Maverick-17B-128E-Instruct`, 等 | ✅︎ | ✅︎ |
+| `LightOnOCRForConditionalGeneration`  | LightOnOCR-1B  | T + I<sup>+</sup> | `lightonai/LightOnOCR-1B`, etc | ✅︎ | ✅︎ |
+| `Lfm2VlForConditionalGeneration` | LFM2-VL | T + I<sup>+</sup> | `LiquidAI/LFM2-VL-450M`, `LiquidAI/LFM2-VL-3B`, `LiquidAI/LFM2-VL-8B-A1B`, etc. | ✅︎ | ✅︎ |
+| `Llama4ForConditionalGeneration` | Llama 4 | T + I<sup>+</sup> | `meta-llama/Llama-4-Scout-17B-16E-Instruct`, `meta-llama/Llama-4-Maverick-17B-128E-Instruct-FP8`, `meta-llama/Llama-4-Maverick-17B-128E-Instruct`, etc. | ✅︎ | ✅︎ |
 | `Llama_Nemotron_Nano_VL` | Llama Nemotron Nano VL | T + I<sup>E+</sup> | `nvidia/Llama-3.1-Nemotron-Nano-VL-8B-V1` | ✅︎ | ✅︎ |
-| `LlavaForConditionalGeneration` | LLaVA-1.5, Pixtral (HF Transformers) | T + I<sup>E+</sup> | `llava-hf/llava-1.5-7b-hf`, `TIGER-Lab/Mantis-8B-siglip-llama3` (参见注释), `mistral-community/pixtral-12b`, 等 | ✅︎ | ✅︎ |
-| `LlavaNextForConditionalGeneration` | LLaVA-NeXT | T + I<sup>E+</sup> | `llava-hf/llava-v1.6-mistral-7b-hf`, `llava-hf/llava-v1.6-vicuna-7b-hf`, 等 | | ✅︎ |
-| `LlavaNextVideoForConditionalGeneration` | LLaVA-NeXT-Video | T + V | `llava-hf/LLaVA-NeXT-Video-7B-hf`, 等 | | ✅︎ |
-| `LlavaOnevisionForConditionalGeneration` | LLaVA-Onevision | T + I<sup>+</sup> + V<sup>+</sup> | `llava-hf/llava-onevision-qwen2-7b-ov-hf`, `llava-hf/llava-onevision-qwen2-0.5b-ov-hf`, 等 | | ✅︎ |
+| `LlavaForConditionalGeneration` | LLaVA-1.5, Pixtral (HF Transformers) | T + I<sup>E+</sup> | `llava-hf/llava-1.5-7b-hf`, `TIGER-Lab/Mantis-8B-siglip-llama3` (see note), `mistral-community/pixtral-12b`, etc. | ✅︎ | ✅︎ |
+| `LlavaNextForConditionalGeneration` | LLaVA-NeXT | T + I<sup>E+</sup> | `llava-hf/llava-v1.6-mistral-7b-hf`, `llava-hf/llava-v1.6-vicuna-7b-hf`, etc. | | ✅︎ |
+| `LlavaNextVideoForConditionalGeneration` | LLaVA-NeXT-Video | T + V | `llava-hf/LLaVA-NeXT-Video-7B-hf`, etc. | | ✅︎ |
+| `LlavaOnevisionForConditionalGeneration` | LLaVA-Onevision | T + I<sup>+</sup> + V<sup>+</sup> | `llava-hf/llava-onevision-qwen2-7b-ov-hf`, `llava-hf/llava-onevision-qwen2-0.5b-ov-hf`, etc. | | ✅︎ |
 | `MiDashengLMModel` | MiDashengLM | T + A<sup>+</sup> | `mispeech/midashenglm-7b` | | ✅︎ |
-| `MiniCPMO` | MiniCPM-O | T + I<sup>E+</sup> + V<sup>E+</sup> + A<sup>E+</sup> | `openbmb/MiniCPM-o-2_6`, 等 | ✅︎ | ✅︎ |
-| `MiniCPMV` | MiniCPM-V | T + I<sup>E+</sup> + V<sup>E+</sup> | `openbmb/MiniCPM-V-2` (参见注释), `openbmb/MiniCPM-Llama3-V-2_5`, `openbmb/MiniCPM-V-2_6`, `openbmb/MiniCPM-V-4`, `openbmb/MiniCPM-V-4_5`, 等 | ✅︎ | |
-| `MiniMaxVL01ForConditionalGeneration` | MiniMax-VL | T + I<sup>E+</sup> | `MiniMaxAI/MiniMax-VL-01`, 等 | | ✅︎ |
-| `Mistral3ForConditionalGeneration` | Mistral3 (HF Transformers) | T + I<sup>+</sup> | `mistralai/Mistral-Small-3.1-24B-Instruct-2503`, 等 | ✅︎ | ✅︎ |
-| `MolmoForCausalLM` | Molmo | T + I<sup>+</sup> | `allenai/Molmo-7B-D-0924`, `allenai/Molmo-7B-O-0924`, 等 | ✅︎ | ✅︎ |
+| `MiniCPMO` | MiniCPM-O | T + I<sup>E+</sup> + V<sup>E+</sup> + A<sup>E+</sup> | `openbmb/MiniCPM-o-2_6`, etc. | ✅︎ | ✅︎ |
+| `MiniCPMV` | MiniCPM-V | T + I<sup>E+</sup> + V<sup>E+</sup> | `openbmb/MiniCPM-V-2` (see note), `openbmb/MiniCPM-Llama3-V-2_5`, `openbmb/MiniCPM-V-2_6`, `openbmb/MiniCPM-V-4`, `openbmb/MiniCPM-V-4_5`, etc. | ✅︎ | |
+| `MiniMaxVL01ForConditionalGeneration` | MiniMax-VL | T + I<sup>E+</sup> | `MiniMaxAI/MiniMax-VL-01`, etc. | | ✅︎ |
+| `Mistral3ForConditionalGeneration` | Mistral3 (HF Transformers) | T + I<sup>+</sup> | `mistralai/Mistral-Small-3.1-24B-Instruct-2503`, etc. | ✅︎ | ✅︎ |
+| `MolmoForCausalLM` | Molmo | T + I<sup>+</sup> | `allenai/Molmo-7B-D-0924`, `allenai/Molmo-7B-O-0924`, etc. | ✅︎ | ✅︎ |
 | `Molmo2ForConditionalGeneration` | Molmo2 | T + I<sup>+</sup> / V | `allenai/Molmo2-4B`, `allenai/Molmo2-8B`, `allenai/Molmo2-O-7B` | ✅︎ | ✅︎ |
-| `NVLM_D_Model` | NVLM-D 1.0 | T + I<sup>+</sup> | `nvidia/NVLM-D-72B`, 等 | | ✅︎ |
+| `NVLM_D_Model` | NVLM-D 1.0 | T + I<sup>+</sup> | `nvidia/NVLM-D-72B`, etc. | | ✅︎ |
 | `OpenCUAForConditionalGeneration` | OpenCUA-7B | T + I<sup>E+</sup> | `xlangai/OpenCUA-7B` | ✅︎ | ✅︎ |
-| `Ovis` | Ovis2, Ovis1.6 | T + I<sup>+</sup> | `AIDC-AI/Ovis2-1B`, `AIDC-AI/Ovis1.6-Llama3.2-3B`, 等 | | ✅︎ |
-| `Ovis2_5` | Ovis2.5 | T + I<sup>+</sup> + V | `AIDC-AI/Ovis2.5-9B`, 等 | | |
-| `PaddleOCRVLForConditionalGeneration` | Paddle-OCR | T + I<sup>+</sup> | `PaddlePaddle/PaddleOCR-VL`, 等 | | |
-| `PaliGemmaForConditionalGeneration` | PaliGemma, PaliGemma 2 | T + I<sup>E</sup> | `google/paligemma-3b-pt-224`, `google/paligemma-3b-mix-224`, `google/paligemma2-3b-ft-docci-448`, 等 | ✅︎ | ✅︎ |
-| `Phi3VForCausalLM` | Phi-3-Vision, Phi-3.5-Vision | T + I<sup>E+</sup> | `microsoft/Phi-3-vision-128k-instruct`, `microsoft/Phi-3.5-vision-instruct`, 等 | | ✅︎ |
-| `Phi4MMForCausalLM` | Phi-4-multimodal | T + I<sup>+</sup> / T + A<sup>+</sup> / I<sup>+</sup> + A<sup>+</sup> | `microsoft/Phi-4-multimodal-instruct`, 等 | ✅︎ | ✅︎ |
+| `OpenPanguVLForConditionalGeneration` | openpangu-VL | T + I<sup>E+</sup> + V<sup>E+</sup> |`FreedomIntelligence/openPangu-VL-7B` | ✅︎ | ✅︎ |
+| `Ovis` | Ovis2, Ovis1.6 | T + I<sup>+</sup> | `AIDC-AI/Ovis2-1B`, `AIDC-AI/Ovis1.6-Llama3.2-3B`, etc. | | ✅︎ |
+| `Ovis2_5` | Ovis2.5 | T + I<sup>+</sup> + V | `AIDC-AI/Ovis2.5-9B`, etc. | | |
+| `PaddleOCRVLForConditionalGeneration` | Paddle-OCR | T + I<sup>+</sup> | `PaddlePaddle/PaddleOCR-VL`, etc. | | |
+| `PaliGemmaForConditionalGeneration` | PaliGemma, PaliGemma 2 | T + I<sup>E</sup> | `google/paligemma-3b-pt-224`, `google/paligemma-3b-mix-224`, `google/paligemma2-3b-ft-docci-448`, etc. | ✅︎ | ✅︎ |
+| `Phi3VForCausalLM` | Phi-3-Vision, Phi-3.5-Vision | T + I<sup>E+</sup> | `microsoft/Phi-3-vision-128k-instruct`, `microsoft/Phi-3.5-vision-instruct`, etc. | | ✅︎ |
 
-| `PixtralForConditionalGeneration` | Ministral 3 (Mistral 格式), Mistral 3 (Mistral 格式), Mistral Large 3 (Mistral 格式), Pixtral (Mistral 格式) | T + I<sup>+</sup> | `mistralai/Ministral-3-3B-Instruct-2512`, `mistralai/Mistral-Small-3.1-24B-Instruct-2503`, `mistralai/Mistral-Large-3-675B-Instruct-2512` `mistralai/Pixtral-12B-2409` 等 | ✅︎ | ✅︎ |
-| `QwenVLForConditionalGeneration`<sup>^</sup> | Qwen-VL | T + I<sup>E+</sup> | `Qwen/Qwen-VL`, `Qwen/Qwen-VL-Chat`, 等 | ✅︎ | ✅︎ |
+| `Phi4MMForCausalLM` | Phi-4-multimodal | T + I<sup>+</sup> / T + A<sup>+</sup> / I<sup>+</sup> + A<sup>+</sup> | `microsoft/Phi-4-multimodal-instruct`, etc. | ✅︎ | ✅︎ |
+| `PixtralForConditionalGeneration` | Ministral 3 (Mistral format), Mistral 3 (Mistral format), Mistral Large 3 (Mistral format), Pixtral (Mistral format) | T + I<sup>+</sup> | `mistralai/Ministral-3-3B-Instruct-2512`, `mistralai/Mistral-Small-3.1-24B-Instruct-2503`, `mistralai/Mistral-Large-3-675B-Instruct-2512` `mistralai/Pixtral-12B-2409` etc. | ✅︎ | ✅︎ |
+| `QwenVLForConditionalGeneration`<sup>^</sup> | Qwen-VL | T + I<sup>E+</sup> | `Qwen/Qwen-VL`, `Qwen/Qwen-VL-Chat`, etc. | ✅︎ | ✅︎ |
 | `Qwen2AudioForConditionalGeneration` | Qwen2-Audio | T + A<sup>+</sup> | `Qwen/Qwen2-Audio-7B-Instruct` | | ✅︎ |
-| `Qwen2VLForConditionalGeneration` | QVQ, Qwen2-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/QVQ-72B-Preview`, `Qwen/Qwen2-VL-7B-Instruct`, `Qwen/Qwen2-VL-72B-Instruct`, 等 | ✅︎ | ✅︎ |
-| `Qwen2_5_VLForConditionalGeneration` | Qwen2.5-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen2.5-VL-3B-Instruct`, `Qwen/Qwen2.5-VL-72B-Instruct`, 等 | ✅︎ | ✅︎ |
+| `Qwen2VLForConditionalGeneration` | QVQ, Qwen2-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/QVQ-72B-Preview`, `Qwen/Qwen2-VL-7B-Instruct`, `Qwen/Qwen2-VL-72B-Instruct`, etc. | ✅︎ | ✅︎ |
+| `Qwen2_5_VLForConditionalGeneration` | Qwen2.5-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen2.5-VL-3B-Instruct`, `Qwen/Qwen2.5-VL-72B-Instruct`, etc. | ✅︎ | ✅︎ |
 | `Qwen2_5OmniThinkerForConditionalGeneration` | Qwen2.5-Omni | T + I<sup>E+</sup> + V<sup>E+</sup> + A<sup>+</sup> | `Qwen/Qwen2.5-Omni-3B`, `Qwen/Qwen2.5-Omni-7B` | ✅︎ | ✅︎ |
-| `Qwen3VLForConditionalGeneration` | Qwen3-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-4B-Instruct`, 等 | ✅︎ | ✅︎ |
-| `Qwen3VLMoeForConditionalGeneration` | Qwen3-VL-MOE | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-30B-A3B-Instruct`, 等 | ✅︎ | ✅︎ |
+| `Qwen3VLForConditionalGeneration` | Qwen3-VL | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-4B-Instruct`, etc. | ✅︎ | ✅︎ |
+| `Qwen3VLMoeForConditionalGeneration` | Qwen3-VL-MOE | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-30B-A3B-Instruct`, etc. | ✅︎ | ✅︎ |
 | `Qwen3OmniMoeThinkerForConditionalGeneration` | Qwen3-Omni | T + I<sup>E+</sup> + V<sup>E+</sup> + A<sup>+</sup> | `Qwen/Qwen3-Omni-30B-A3B-Instruct`, `Qwen/Qwen3-Omni-30B-A3B-Thinking` | ✅︎ | ✅︎ |
 | `Qwen3ASRForConditionalGeneration` | Qwen3-ASR | T + A<sup>+</sup> | `Qwen/Qwen3-ASR-1.7B` | ✅︎ | ✅︎ |
 | `RForConditionalGeneration` | R-VL-4B | T + I<sup>E+</sup> | `YannQi/R-4B` | | ✅︎ |
@@ -730,7 +743,7 @@ th {
 | `Tarsier2ForConditionalGeneration`<sup>^</sup> | Tarsier2 | T + I<sup>E+</sup> + V<sup>E+</sup> | `omni-research/Tarsier2-Recap-7b`, `omni-research/Tarsier2-7b-0115` | | ✅︎ |
 | `UltravoxModel` | Ultravox | T + A<sup>E+</sup> | `fixie-ai/ultravox-v0_5-llama-3_2-1b` | ✅︎ | ✅︎ |
 
-某些模型仅通过 [Transformers 建模后端](#transformers) 支持。下表的目的是确认我们以这种方式正式支持的模型。日志会显示正在使用 Transformers 建模后端，并且您不会看到任何关于这是回退行为的警告。这意味着，如果您对下面列出的任何模型遇到问题，请 [创建一个议题](https://github.com/vllm-project/vllm/issues/new/choose)，我们会尽力解决！
+某些模型仅通过 [Transformers 建模后端](#transformers) 支持。下表的目的是确认我们以这种方式正式支持的模型。日志会显示正在使用 Transformers 建模后端，并且您不会看到这是回退行为的警告。这意味着，如果您对下面列出的任何模型有问题，请[创建一个 issue](https://github.com/vllm-project/vllm/issues/new/choose)，我们会尽力修复！
 
 | 架构 | 模型 | 输入 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|--------|-------------------|-----------------------------|-----------------------------------------|
@@ -744,22 +757,22 @@ th {
 
 !!! note
     `Gemma3nForConditionalGeneration` 仅在 V1 上支持，因为它依赖于共享 KV 缓存，并且依赖于 `timm>=1.0.17` 来使用其
-    MobileNet-v5 视觉骨干。
-
+    MobileNet-v5 视觉主干。
+  
     性能尚未完全优化，主要原因是：
-
-    - 音频和视觉 MM 编码器都使用 `transformers.AutoModel` 实现。
+  
+    - 音频和视觉 MM 编码器都使用 `transformers.AutoModel` 实现。  
     - 没有 PLE 缓存或内存交换支持，如 [Google's blog](https://developers.googleblog.com/en/introducing-gemma-3n/) 中所述。这些功能可能对 vLLM 来说过于模型特定，特别是交换功能可能更适合受限环境。
 
 !!! note
-    对于 `InternVLChatModel`，目前只有 InternVL2.5 与 Qwen2.5 文本骨干（`OpenGVLab/InternVL2.5-1B` 等）、InternVL3 和 InternVL3.5 支持视频输入。
+    对于 `InternVLChatModel`，目前只有具有 Qwen2.5 文本主干的 InternVL2.5（`OpenGVLab/InternVL2.5-1B` 等）、InternVL3 和 InternVL3.5 支持视频输入。
 
 !!! note
     要使用 `TIGER-Lab/Mantis-8B-siglip-llama3`，您必须在运行 vLLM 时传递 `--hf_overrides '{"architectures": ["MantisForConditionalGeneration"]}'`。
 
 !!! note
-    官方的 `openbmb/MiniCPM-V-2` 还不能工作，所以我们目前需要使用一个分支（`HwwwH/MiniCPM-V-2`）。
-    更多详情，请参见：<https://github.com/vllm-project/vllm/pull/4087#issuecomment-2250397630>
+    官方的 `openbmb/MiniCPM-V-2` 还不能工作，所以我们目前需要使用一个 fork（`HwwwH/MiniCPM-V-2`）。
+    有关更多详细信息，请参见：<https://github.com/vllm-project/vllm/pull/4087#issuecomment-2250397630>
 
 #### 转录
 
@@ -767,54 +780,58 @@ th {
 
 | 架构 | 模型 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|-------------------|----------------------|---------------------------|
-| `Gemma3nForConditionalGeneration` | Gemma3n | `google/gemma-3n-E2B-it`, `google/gemma-3n-E4B-it`, 等 | | |
+| `Gemma3nForConditionalGeneration` | Gemma3n | `google/gemma-3n-E2B-it`, `google/gemma-3n-E4B-it`, etc. | | |
 | `GlmAsrForConditionalGeneration` | GLM-ASR | `zai-org/GLM-ASR-Nano-2512` | ✅︎ | ✅︎ |
-| `GraniteSpeechForConditionalGeneration` | Granite Speech | `ibm-granite/granite-speech-3.3-2b`, `ibm-granite/granite-speech-3.3-8b`, 等 | ✅︎ | ✅︎ |
-| `Qwen3ASRForConditionalGeneration` | Qwen3-ASR | `Qwen/Qwen3-ASR-1.7B`, 等 | | ✅︎ |
-| `VoxtralForConditionalGeneration` | Voxtral (Mistral 格式) | `mistralai/Voxtral-Mini-3B-2507`, `mistralai/Voxtral-Small-24B-2507`, 等 | ✅︎ | ✅︎ |
-| `WhisperForConditionalGeneration` | Whisper | `openai/whisper-small`, `openai/whisper-large-v3-turbo`, 等 | | |
+| `GraniteSpeechForConditionalGeneration` | Granite Speech | `ibm-granite/granite-speech-3.3-2b`, `ibm-granite/granite-speech-3.3-8b`, etc. | ✅︎ | ✅︎ |
+| `Qwen3ASRForConditionalGeneration` | Qwen3-ASR | `Qwen/Qwen3-ASR-1.7B`, etc. | | ✅︎ |
+| `VoxtralForConditionalGeneration` | Voxtral (Mistral format) | `mistralai/Voxtral-Mini-3B-2507`, `mistralai/Voxtral-Small-24B-2507`, etc. | ✅︎ | ✅︎ |
+| `WhisperForConditionalGeneration` | Whisper | `openai/whisper-small`, `openai/whisper-large-v3-turbo`, etc. | | |
 
 !!! note
     `VoxtralForConditionalGeneration` 需要安装 `mistral-common[audio]`。
 
 ### 池化模型
 
-有关如何使用池化模型的更多信息，请参见 [此页面](./pooling_models.md)。
+有关如何使用池化模型的更多信息，请参见[此页面](./pooling_models.md)。
 
 #### 嵌入
 
 这些模型主要支持 [`LLM.embed`](./pooling_models.md#llmembed) API。
 
 !!! note
-    为了获得最佳结果，您应该使用专门训练为池化模型的模型。
+    为了获得最佳结果，您应该使用专门训练为嵌入模型的池化模型。
 
 下表列出了在 vLLM 中测试过的模型。
 
 | 架构 | 模型 | 输入 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|--------|-------------------|----------------------|---------------------------|
-| `CLIPModel` | CLIP | T / I | `openai/clip-vit-base-patch32`, `openai/clip-vit-large-patch14`, 等 | | |
-| `LlavaNextForConditionalGeneration`<sup>C</sup> | 基于 LLaVA-NeXT | T / I | `royokong/e5-v` | | ✅︎ |
-| `Phi3VForCausalLM`<sup>C</sup> | 基于 Phi-3-Vision | T + I | `TIGER-Lab/VLM2Vec-Full` | | ✅︎ |
-| `Qwen3VLForConditionalGeneration`<sup>C</sup> | Qwen3-VL | T + I + V | `Qwen/Qwen3-VL-Embedding-2B`, 等 | ✅︎ | ✅︎ |
+| `CLIPModel` | CLIP | T / I | `openai/clip-vit-base-patch32`, `openai/clip-vit-large-patch14`, etc. | | |
+| `LlavaNextForConditionalGeneration`<sup>C</sup> | LLaVA-NeXT-based | T / I | `royokong/e5-v` | | ✅︎ |
+| `Phi3VForCausalLM`<sup>C</sup> | Phi-3-Vision-based | T + I | `TIGER-Lab/VLM2Vec-Full` | | ✅︎ |
+| `Qwen3VLForConditionalGeneration`<sup>C</sup> | Qwen3-VL | T + I + V | `Qwen/Qwen3-VL-Embedding-2B`, etc. | ✅︎ | ✅︎ |
 | `SiglipModel` | SigLIP, SigLIP2 | T / I | `google/siglip-base-patch16-224`, `google/siglip2-base-patch16-224` | | |
-| `*ForConditionalGeneration`<sup>C</sup>, `*ForCausalLM`<sup>C</sup>, 等 | 生成模型 | \* | N/A | \* | \* |
+| `*ForConditionalGeneration`<sup>C</sup>, `*ForCausalLM`<sup>C</sup>, etc. | 生成模型 | \* | N/A | \* | \* |
 
-<sup>C</sup> 通过 `--convert embed` 自动转换为嵌入模型。（[详情](./pooling_models.md#model-conversion)）
+<sup>C</sup> 通过 `--convert embed` 自动转换为嵌入模型。（[详情](./pooling_models.md#model-conversion)）  
 \* 功能支持与原始模型相同。
 
 ---
 
 #### 交叉编码器 / 重排序器
 
-交叉编码器和重排序器模型是一类接受两个提示作为输入的分类模型的子集。
+---
+title: "交叉编码器和重排序模型"
+---
+
+交叉编码器和重排序模型是分类模型的一个子集，它们接受两个提示作为输入。
 这些模型主要支持 [`LLM.score`](./pooling_models.md#llmscore) API。
 
 | 架构 | 模型 | 输入 | 示例 HF 模型 | [LoRA](../features/lora.md) | [PP](../serving/parallelism_scaling.md) |
 |--------------|--------|--------|-------------------|----------------------|---------------------------|
-| `JinaVLForSequenceClassification` | 基于 JinaVL | T + I<sup>E+</sup> | `jinaai/jina-reranker-m0` 等 | ✅︎ | ✅︎ |
-| `Qwen3VLForSequenceClassification` | Qwen3-VL-Reranker | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-Reranker-2B`（见注释）等 | ✅︎ | ✅︎ |
+| `JinaVLForSequenceClassification` | JinaVL-based | T + I<sup>E+</sup> | `jinaai/jina-reranker-m0`, etc. | ✅︎ | ✅︎ |
+| `Qwen3VLForSequenceClassification` | Qwen3-VL-Reranker | T + I<sup>E+</sup> + V<sup>E+</sup> | `Qwen/Qwen3-VL-Reranker-2B`(see note), etc. | ✅︎ | ✅︎ |
 
-<sup>C</sup> 通过 `--convert classify` 自动转换为分类模型。（[详情](./pooling_models.md#model-conversion)）  
+<sup>C</sup> 通过 `--convert classify` 自动转换为分类模型。([详情](./pooling_models.md#model-conversion))  
 \* 功能支持与原始模型相同。
 
 !!! note
@@ -826,28 +843,28 @@ th {
 
 ## 模型支持政策
 
-在 vLLM 中，我们致力于促进第三方模型在我们生态系统中的集成和支持。我们的方法旨在平衡对稳健性的需求和广泛支持各种模型的实际限制。以下是我们的第三方模型支持管理方式：
+在 vLLM 中，我们致力于促进第三方模型在我们生态系统中的集成和支持。我们的方法旨在平衡对稳健性的需求和广泛支持各种模型的实际限制。以下是管理第三方模型支持的方式：
 
-1. **社区驱动支持**：我们鼓励社区贡献来添加新模型。当用户请求支持新模型时，我们欢迎来自社区的拉取请求（PR）。这些贡献主要根据它们生成的输出的合理性进行评估，而不是与现有实现（如 transformers）的严格一致性。**征召贡献**：来自模型供应商的直接 PR 非常受欢迎！
+1. **社区驱动支持**：我们鼓励社区为添加新模型做出贡献。当用户请求支持新模型时，我们欢迎社区的拉取请求（PRs）。这些贡献主要根据它们生成的输出的合理性进行评估，而不是与现有实现（如 transformers 中的实现）的严格一致性。**征召贡献**：直接来自模型供应商的 PRs 非常受欢迎！
 
-2. **尽力而为的一致性**：虽然我们力求在 vLLM 中实现的模型与其他框架（如 transformers）之间保持一定程度的一致性，但完全对齐并不总是可行的。加速技术和低精度计算的使用可能会引入差异。我们的承诺是确保实现的模型功能正常并产生合理的结果。
+2. **尽力而为的一致性**：虽然我们旨在保持 vLLM 中实现的模型与其他框架（如 transformers）之间的一致性水平，但完全对齐并不总是可行的。加速技术和低精度计算的使用可能会引入差异。我们的承诺是确保实现的模型功能正常并产生合理的结果。
 
     !!! tip
-        在比较 Hugging Face Transformers 的 `model.generate` 输出和 vLLM 的 `llm.generate` 输出时，请注意前者读取模型的生成配置文件（即 [generation_config.json](https://github.com/huggingface/transformers/blob/19dabe96362803fb0a9ae7073d03533966598b17/src/transformers/generation/utils.py#L1945)）并应用生成的默认参数，而后者仅使用传递给函数的参数。在比较输出时确保所有采样参数相同。
+        比较 Hugging Face Transformers 的 `model.generate` 输出与 vLLM 的 `llm.generate` 输出时，请注意前者读取模型的生成配置文件（即 [generation_config.json](https://github.com/huggingface/transformers/blob/19dabe96362803fb0a9ae7073d03533966598b17/src/transformers/generation/utils.py#L1945)）并应用生成的默认参数，而后者仅使用传递给函数的参数。比较输出时请确保所有采样参数相同。
 
-3. **问题解决和模型更新**：我们鼓励用户报告他们在第三方模型中遇到的任何错误或问题。建议的修复应通过 PR 提交，并清楚说明问题和建议解决方案背后的理由。如果一个模型的修复影响了另一个模型，我们依靠社区来突出并解决这些跨模型依赖关系。注意：对于错误修复 PR，礼貌地通知原始作者以寻求他们的反馈是良好的做法。
+3. **问题解决和模型更新**：鼓励用户报告他们遇到的任何第三方模型的错误或问题。建议的修复应通过 PRs 提交，并清楚说明问题和建议解决方案背后的原理。如果一个模型的修复影响了另一个模型，我们依靠社区来突出并解决这些跨模型依赖关系。注意：对于错误修复 PRs，礼貌地通知原始作者以寻求他们的反馈是良好的做法。
 
-4. **监控和更新**：对特定模型感兴趣的用户应监控这些模型的提交历史（例如，通过跟踪 main/vllm/model_executor/models 目录中的更改）。这种主动方法帮助用户了解可能影响他们使用的模型的更新和更改。
+4. **监控和更新**：对特定模型感兴趣的用户应监控这些模型的提交历史（例如，通过跟踪 main/vllm/model_executor/models 目录中的更改）。这种主动的方法帮助用户了解可能影响他们使用的模型的更新和更改。
 
-5. **选择性关注**：我们的资源主要集中在具有重要用户兴趣和影响的模型上。使用较少的模型可能获得较少的关注，我们依靠社区在它们的维护和改进中发挥更积极的作用。
+5. **选择性关注**：我们的资源主要投向具有重要用户兴趣和影响的模型。使用频率较低的模型可能获得较少的关注，我们依靠社区在它们的维护和改进中发挥更积极的作用。
 
-通过这种方法，vLLM 培养了一个协作环境，核心开发团队和更广泛的社区都为在我们生态系统中支持的第三方模型的稳健性和多样性做出贡献。
+通过这种方法，vLLM 培育了一个协作环境，核心开发团队和更广泛的社区共同为我们在生态系统中支持的第三方模型的稳健性和多样性做出贡献。
 
-请注意，作为推理引擎，vLLM 不会引入新模型。因此，所有由 vLLM 支持的模型在这一方面都是第三方模型。
+请注意，作为推理引擎，vLLM 不会引入新模型。因此，所有由 vLLM 支持的模型在此方面都是第三方模型。
 
 我们有以下模型测试级别：
 
-1. **严格一致性**：我们在贪婪解码下比较模型的输出与 HuggingFace Transformers 库中模型的输出。这是最严格的测试。请参阅 [模型测试](https://github.com/vllm-project/vllm/blob/main/tests/models) 了解通过此测试的模型。
-2. **输出合理性**：我们检查模型的输出是否合理和连贯，通过测量输出的困惑度并检查任何明显错误。这是较不严格的测试。
-3. **运行时功能**：我们检查模型是否可以加载和运行而不出错。这是最不严格的测试。请参阅 [功能测试](../../tests) 和 [示例](../../examples) 了解通过此测试的模型。
+1. **严格一致性**：我们在贪婪解码下比较模型与 HuggingFace Transformers 库中模型的输出。这是最严格的测试。请参阅 [models tests](https://github.com/vllm-project/vllm/blob/main/tests/models) 了解通过此测试的模型。
+2. **输出合理性**：我们通过测量输出的困惑度并检查任何明显错误来检查模型输出是否合理和连贯。这是一个不太严格的测试。
+3. **运行时功能**：我们检查模型是否可以加载和运行而不出错。这是最不严格的测试。请参阅 [functionality tests](../../tests) 和 [examples](../../examples) 了解通过此测试的模型。
 4. **社区反馈**：我们依靠社区提供模型反馈。如果模型损坏或未按预期工作，我们鼓励用户提出问题报告或打开拉取请求进行修复。其余模型属于此类别。

@@ -1,12 +1,11 @@
 #### `--enable-log-requests`, `--no-enable-log-requests`
 
-:   Enable logging requests.
+:   启用请求日志记录。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--disable-log-requests`, `--no-disable-log-requests`
 
-:   [DEPRECATED] Disable logging requests.
+:   [已弃用] 禁用请求日志记录。
 
-:   Default: `True`
-
+:   默认值：`True`

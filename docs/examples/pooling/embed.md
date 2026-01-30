@@ -1,70 +1,69 @@
-# Embed
+# 嵌入
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/pooling/embed>.
+来源 <https://github.com/vllm-project/vllm/tree/main/examples/pooling/embed>。
 
-## Embed Jina Embeddings V3 Offline
+## 离线嵌入 Jina Embeddings V3
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/embed_jina_embeddings_v3_offline.py"
 ``````
 
-## Embed Matryoshka Fy Offline
+## 离线嵌入 Matryoshka Fy
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/embed_matryoshka_fy_offline.py"
 ``````
 
-## Embedding Requests Base64 Online
+## 在线 Base64 嵌入请求
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/embedding_requests_base64_online.py"
 ``````
 
-## Embedding Requests Bytes Online
+## 在线字节嵌入请求
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/embedding_requests_bytes_online.py"
 ``````
 
-## OpenAI Embedding Client
+## OpenAI 嵌入客户端
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/openai_embedding_client.py"
 ``````
 
-## OpenAI Embedding Long Text - Readme
+## OpenAI 长文本嵌入 - 说明文档
 
 ``````md
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/openai_embedding_long_text/README.md"
 ``````
 
-## OpenAI Embedding Long Text - Client
+## OpenAI 长文本嵌入 - 客户端
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/openai_embedding_long_text/client.py"
 ``````
 
-## OpenAI Embedding Long Text - Service
+## OpenAI 长文本嵌入 - 服务
 
 ``````sh
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/openai_embedding_long_text/service.sh"
 ``````
 
-## OpenAI Embedding Matryoshka Fy Client
+## OpenAI Matryoshka Fy 嵌入客户端
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/openai_embedding_matryoshka_fy_client.py"
 ``````
 
-## Vision Embedding Offline
+## 离线视觉嵌入
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/vision_embedding_offline.py"
 ``````
 
-## Vision Embedding Online
+## 在线视觉嵌入
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/embed/vision_embedding_online.py"
 ``````
-

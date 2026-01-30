@@ -1,4 +1,4 @@
-# Speculative Decoding
+# 推测性解码
 
 源代码 <https://github.com/vllm-project/vllm/blob/main/examples/offline_inference/spec_decode.py>。
 

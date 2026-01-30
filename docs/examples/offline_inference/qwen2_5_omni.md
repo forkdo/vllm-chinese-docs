@@ -1,47 +1,46 @@
-# Qwen2.5-Omni Offline Inference Examples
+# Qwen2.5-Omni 离线推理示例
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/offline_inference/qwen2_5_omni>.
+源代码 <https://github.com/vllm-project/vllm/tree/main/examples/offline_inference/qwen2_5_omni>。
 
+此文件夹提供了多个关于如何离线推理 Qwen2.5-Omni 的示例脚本。
 
-This folder provides several example scripts on how to inference Qwen2.5-Omni offline.
-
-## Thinker Only
+## 仅使用 Thinker
 
 ```bash
-# Audio + image + video
+# 音频 + 图像 + 视频
 python examples/offline_inference/qwen2_5_omni/only_thinker.py \
     -q mixed_modalities
 
-# Read vision and audio inputs from a single video file
+# 从单个视频文件中读取视觉和音频输入
 python examples/offline_inference/qwen2_5_omni/only_thinker.py \
     -q use_audio_in_video
 
-# Multiple audios
+# 多个音频
 python examples/offline_inference/qwen2_5_omni/only_thinker.py \
     -q multi_audios
 ```
 
-This script will run the thinker part of Qwen2.5-Omni, and generate text response.
+此脚本将运行 Qwen2.5-Omni 的 thinker 部分，并生成文本响应。
 
-You can also test Qwen2.5-Omni on a single modality:
+您也可以测试 Qwen2.5-Omni 在单个模态上的表现：
 
 ```bash
-# Process audio inputs
+# 处理音频输入
 python examples/offline_inference/audio_language.py \
     --model-type qwen2_5_omni
 
-# Process image inputs
+# 处理图像输入
 python examples/offline_inference/vision_language.py \
     --modality image \
     --model-type qwen2_5_omni
 
-# Process video inputs
+# 处理视频输入
 python examples/offline_inference/vision_language.py \
     --modality video \
     --model-type qwen2_5_omni
 ```
 
-## Example materials
+## 示例材料
 
 ??? abstract "only_thinker.py"
     ``````py

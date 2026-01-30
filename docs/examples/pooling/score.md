@@ -1,100 +1,99 @@
-# Score
+# 评分
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/pooling/score>.
+来源 <https://github.com/vllm-project/vllm/tree/main/examples/pooling/score>。
 
-## Cohere Rerank Client
+## Cohere Rerank 客户端
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/cohere_rerank_client.py"
 ``````
 
-## Convert Model To Seq Cls
+## 将模型转换为序列分类模型
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/convert_model_to_seq_cls.py"
 ``````
 
-## Qwen3 Reranker Offline
+## Qwen3 Reranker 离线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/qwen3_reranker_offline.py"
 ``````
 
-## Qwen3 Reranker Online
+## Qwen3 Reranker 在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/qwen3_reranker_online.py"
 ``````
 
-## Rerank API Online
+## Rerank API 在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/rerank_api_online.py"
 ``````
 
-## Score API Online
+## Score API 在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/score_api_online.py"
 ``````
 
-## Template - Bge-Reranker-V2-Gemma
+## 模板 - Bge-Reranker-V2-Gemma
 
 ``````jinja
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/template/bge-reranker-v2-gemma.jinja"
 ``````
 
-## Template - Mxbai Rerank V2
+## 模板 - Mxbai Rerank V2
 
 ``````jinja
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/template/mxbai_rerank_v2.jinja"
 ``````
 
-## Template - Nemotron-Rerank
+## 模板 - Nemotron-Rerank
 
 ``````jinja
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/template/nemotron-rerank.jinja"
 ``````
 
-## Template - Qwen3 Reranker
+## 模板 - Qwen3 Reranker
 
 ``````jinja
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/template/qwen3_reranker.jinja"
 ``````
 
-## Template - Qwen3 Vl Reranker
+## 模板 - Qwen3 Vl Reranker
 
 ``````jinja
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/template/qwen3_vl_reranker.jinja"
 ``````
 
-## Using Template Offline
+## 使用模板离线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/using_template_offline.py"
 ``````
 
-## Using Template Online
+## 使用模板在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/using_template_online.py"
 ``````
 
-## Vision Rerank API Online
+## Vision Rerank API 在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/vision_rerank_api_online.py"
 ``````
 
-## Vision Reranker Offline
+## Vision Reranker 离线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/vision_reranker_offline.py"
 ``````
 
-## Vision Score API Online
+## Vision Score API 在线推理
 
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/score/vision_score_api_online.py"
 ``````
-

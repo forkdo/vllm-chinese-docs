@@ -1,90 +1,89 @@
 #### `--fig-dir`
 
-:   The directory to save the figures, relative to `OUTPUT_DIR`. By default, the same directory is used.
+:   保存图表的目录，相对于 `OUTPUT_DIR`。默认使用相同目录。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--fig-by`
 
-:   A comma-separated list of variables, such that a separate figure is created for each combination of these variables.
+:   以逗号分隔的变量列表，为这些变量的每种组合创建单独的图表。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--row-by`
 
-:   A comma-separated list of variables, such that a separate row is created for each combination of these variables.
+:   以逗号分隔的变量列表，为这些变量的每种组合创建单独的行。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--col-by`
 
-:   A comma-separated list of variables, such that a separate column is created for each combination of these variables.
+:   以逗号分隔的变量列表，为这些变量的每种组合创建单独的列。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--curve-by`
 
-:   A comma-separated list of variables, such that a separate curve is created for each combination of these variables.
+:   以逗号分隔的变量列表，为这些变量的每种组合创建单独的曲线。
 
 #### `--var-x`
 
-:   The variable for the x-axis.
+:   X 轴变量。
 
-:   Default: `request_throughput`
+:   默认值：`request_throughput`
 
 #### `--var-y`
 
-:   The variable for the y-axis
+:   Y 轴变量
 
-:   Default: `p99_e2el_ms`
+:   默认值：`p99_e2el_ms`
 
 #### `--filter-by`
 
-:   A comma-separated list of statements indicating values to filter by. This is useful to remove outliers. Example: `max_concurrency<1000,max_num_batched_tokens<=4096` means plot only the points where `max_concurrency` is less than 1000 and `max_num_batched_tokens` is no greater than 4096.
+:   以逗号分隔的语句列表，用于指定过滤条件。可用于去除异常值。例如：`max_concurrency<1000,max_num_batched_tokens<=4096` 表示仅绘制 `max_concurrency` 小于 1000 且 `max_num_batched_tokens` 不大于 4096 的数据点。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--bin-by`
 
-:   A comma-separated list of statements indicating values to bin by. This is useful to avoid plotting points that are too close together. Example: `request_throughput%%1` means use a bin size of 1 for the `request_throughput` variable.
+:   以逗号分隔的语句列表，用于指定分箱条件。可用于避免绘制过于密集的数据点。例如：`request_throughput%%1` 表示对 `request_throughput` 变量使用大小为 1 的分箱。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--scale-x`
 
-:   The scale to use for the x-axis. Currently only accepts string values such as 'log' and 'sqrt'. See also: https://seaborn.pydata.org/generated/seaborn.objects.Plot.scale.html
+:   X 轴使用的比例尺。目前仅接受字符串值，如 'log' 和 'sqrt'。另请参阅：https://seaborn.pydata.org/generated/seaborn.objects.Plot.scale.html
 
 #### `--scale-y`
 
-:   The scale to use for the y-axis. Currently only accepts string values such as 'log' and 'sqrt'. See also: https://seaborn.pydata.org/generated/seaborn.objects.Plot.scale.html
+:   Y 轴使用的比例尺。目前仅接受字符串值，如 'log' 和 'sqrt'。另请参阅：https://seaborn.pydata.org/generated/seaborn.objects.Plot.scale.html
 
 #### `--fig-name`
 
-:   Name prefix for the output figure file. Group data is always appended when present. Default: 'FIGURE'. Example: --fig-name my_performance_plot
+:   输出图表文件名的前缀。当存在分组数据时，始终会附加分组信息。默认值：'FIGURE'。例如：--fig-name my_performance_plot
 
-:   Default: `FIGURE`
+:   默认值：`FIGURE`
 
 #### `--no-error-bars`
 
-:   If set, disables error bars on the plot. By default, error bars are shown.
+:   如果设置，则禁用图表上的误差条。默认情况下会显示误差条。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--fig-height`
 
-:   Height of each subplot in inches. Default: 6.4
+:   每个子图的高度（英寸）。默认值：6.4
 
-:   Default: `6.4`
+:   默认值：`6.4`
 
 #### `--fig-dpi`
 
-:   Resolution of the output figure in dots per inch. Default: 300
+:   输出图表的分辨率（每英寸点数）。默认值：300
 
-:   Default: `300`
+:   默认值：`300`
 
 #### `--dry-run`
 
-:   If set, prints the information about each figure to plot, then exits without drawing them.
+:   如果设置，则打印每个待绘制图表的信息，然后退出而不实际绘制。
 
-:   Default: `False`
-
+:   默认值：`False`

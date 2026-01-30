@@ -1,6 +1,6 @@
-| Metric Name | Type | Description |
+| 指标名称 | 类型 | 描述 |
 |-------------|------|-------------|
-| `vllm:spec_decode_num_accepted_tokens` | Counter | Number of accepted tokens. |
-| `vllm:spec_decode_num_accepted_tokens_per_pos` | Counter | Accepted tokens per draft position. |
-| `vllm:spec_decode_num_draft_tokens` | Counter | Number of draft tokens. |
-| `vllm:spec_decode_num_drafts` | Counter | Number of spec decoding drafts. |
+| `vllm:spec_decode_num_accepted_tokens` | Counter | 接受的 token 数量。 |
+| `vllm:spec_decode_num_accepted_tokens_per_pos` | Counter | 每个草稿位置接受的 token 数量。 |
+| `vllm:spec_decode_num_draft_tokens` | Counter | 草稿 token 数量。 |
+| `vllm:spec_decode_num_drafts` | Counter | 规范解码草稿数量。 |

@@ -1,16 +1,15 @@
-# Disaggregated Serving
+# 解耦式部署
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/online_serving/disaggregated_serving>.
+来源 <https://github.com/vllm-project/vllm/tree/main/examples/online_serving/disaggregated_serving>。
 
+本示例包含展示 vLLM 解耦式部署功能的脚本。
 
-This example contains scripts that demonstrate the disaggregated serving features of vLLM.
+## 文件
 
-## Files
+- `disagg_proxy_demo.py` - 演示 XpYd（X 个预填充实例，Y 个解码实例）。
+- `kv_events.sh` - 演示 KV 缓存事件发布。
 
-- `disagg_proxy_demo.py` - Demonstrates XpYd (X prefill instances, Y decode instances).
-- `kv_events.sh` - Demonstrates KV cache event publishing.
-
-## Example materials
+## 示例材料
 
 ??? abstract "disagg_proxy_demo.py"
     ``````py

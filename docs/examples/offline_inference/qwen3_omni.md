@@ -7,4 +7,3 @@ Source <https://github.com/vllm-project/vllm/tree/main/examples/offline_inferenc
 ``````py
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/offline_inference/qwen3_omni/only_thinker.py"
 ``````
-

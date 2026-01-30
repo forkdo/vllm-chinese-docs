@@ -1,19 +1,26 @@
-# Basic
+---
+title: 基础用法
+description: 通过 Python 代码直接与模型交互的离线推理接口
+linkTitle: 基础用法
+weight: 1
+type: docs
+---
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/offline_inference/basic>.
+# 基础
 
+源码 <https://github.com/vllm-project/vllm/tree/main/examples/offline_inference/basic>。
 
-The `LLM` class provides the primary Python interface for doing offline inference, which is interacting with a model without using a separate model inference server.
+`LLM` 类提供了进行离线推理的主要 Python 接口，即在不使用单独模型推理服务器的情况下与模型进行交互。
 
-## Usage
+## 使用方法
 
-The first script in this example shows the most basic usage of vLLM. If you are new to Python and vLLM, you should start here.
+此示例中的第一个脚本展示了 vLLM 最基础的用法。如果您是 Python 和 vLLM 的初学者，建议从这里开始。
 
 ```bash
 python examples/offline_inference/basic/basic.py
 ```
 
-The rest of the scripts include an [argument parser](https://docs.python.org/3/library/argparse.html), which you can use to pass any arguments that are compatible with [`LLM`](https://docs.vllm.ai/en/latest/api/offline_inference/llm.html). Try running the script with `--help` for a list of all available arguments.
+其余脚本包含一个 [argument parser](https://docs.python.org/3/library/argparse.html)，您可以使用它传递与 [`LLM`](https://docs.vllm.ai/en/latest/api/offline_inference/llm.html) 兼容的任何参数。尝试运行脚本并使用 `--help` 查看所有可用参数的列表。
 
 ```bash
 python examples/offline_inference/basic/classify.py
@@ -27,7 +34,7 @@ python examples/offline_inference/basic/embed.py
 python examples/offline_inference/basic/score.py
 ```
 
-The chat and generate scripts also accept the [sampling parameters](https://docs.vllm.ai/en/latest/api/inference_params.html#sampling-parameters): `max_tokens`, `temperature`, `top_p` and `top_k`.
+聊天和生成脚本还接受以下[采样参数](https://docs.vllm.ai/en/latest/api/inference_params.html#sampling-parameters)：`max_tokens`、`temperature`、`top_p` 和 `top_k`。
 
 ```bash
 python examples/offline_inference/basic/chat.py
@@ -37,29 +44,29 @@ python examples/offline_inference/basic/chat.py
 python examples/offline_inference/basic/generate.py
 ```
 
-## Features
+## 功能特性
 
-In the scripts that support passing arguments, you can experiment with the following features.
+在支持传递参数的脚本中，您可以尝试以下功能特性。
 
-### Default generation config
+### 默认生成配置
 
-The `--generation-config` argument specifies where the generation config will be loaded from when calling `LLM.get_default_sampling_params()`. If set to ‘auto’, the generation config will be loaded from model path. If set to a folder path, the generation config will be loaded from the specified folder path. If it is not provided, vLLM defaults will be used.
+`--generation-config` 参数指定在调用 `LLM.get_default_sampling_params()` 时从何处加载生成配置。如果设置为 'auto'，则从模型路径加载生成配置。如果设置为文件夹路径，则从指定的文件夹路径加载生成配置。如果不提供此参数，则使用 vLLM 的默认配置。
 
-> If max_new_tokens is specified in generation config, then it sets a server-wide limit on the number of output tokens for all requests.
+> 如果在生成配置中指定了 max_new_tokens，它会为所有请求设置服务器范围内的输出 token 数量限制。
 
-Try it yourself with the following argument:
+请尝试使用以下参数进行体验：
 
 ```bash
 --generation-config auto
 ```
 
-### Quantization
+### 量化
 
 #### GGUF
 
-vLLM supports models that are quantized using GGUF.
+vLLM 支持使用 GGUF 进行量化的模型。
 
-Try one yourself by downloading a quantized GGUF model and using the following arguments:
+请通过下载一个量化 GGUF 模型并使用以下参数进行尝试：
 
 ```python
 from huggingface_hub import hf_hub_download
@@ -72,17 +79,17 @@ print(hf_hub_download(repo_id, filename=filename))
 --model {local-path-printed-above} --tokenizer microsoft/Phi-3-medium-4k-instruct
 ```
 
-### CPU offload
+### CPU 卸载
 
-The `--cpu-offload-gb` argument can be seen as a virtual way to increase the GPU memory size. For example, if you have one 24 GB GPU and set this to 10, virtually you can think of it as a 34 GB GPU. Then you can load a 13B model with BF16 weight, which requires at least 26GB GPU memory. Note that this requires fast CPU-GPU interconnect, as part of the model is loaded from CPU memory to GPU memory on the fly in each model forward pass.
+`--cpu-offload-gb` 参数可以看作是虚拟地增加 GPU 内存大小的方式。例如，如果您有一块 24 GB 的 GPU，并将此参数设为 10，那么您可以将其看作一块 34 GB 的 GPU。然后您可以加载一个 13B 的模型，该模型使用 BF16 权重，至少需要 26GB 的 GPU 内存。请注意，这需要快速的 CPU-GPU 互连，因为在每次模型前向传播过程中，模型的一部分会从 CPU 内存动态加载到 GPU 内存中。
 
-Try it yourself with the following arguments:
+请尝试使用以下参数：
 
 ```bash
 --model meta-llama/Llama-2-13b-chat-hf --cpu-offload-gb 10
 ```
 
-## Example materials
+## 示例代码
 
 ??? abstract "basic.py"
     ``````py

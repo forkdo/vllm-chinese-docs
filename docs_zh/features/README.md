@@ -1,10 +1,10 @@
-# 功能
+# 功能特性
 
 ## 兼容性矩阵
 
-下表展示了互斥功能以及在部分硬件上的支持情况。
+下表展示了互斥功能特性以及在部分硬件上的支持情况。
 
-表中使用的符号含义如下：
+各符号含义如下：
 
 - ✅ = 完全兼容
 - 🟠 = 部分兼容
@@ -12,7 +12,7 @@
 - ❔ = 未知或待定
 
 !!! note
-    点击 ❌ 或 🟠 查看不支持的功能/硬件组合的跟踪问题链接。
+    请查看带有链接的 ❌ 或 🟠 标记，以了解不受支持的功能/硬件组合的跟踪问题。
 
 ### 功能 x 功能
 
@@ -36,12 +36,12 @@ th:not(:first-child) {
 }
 </style>
 
-| 功能 | [CP](../configuration/optimization.md#chunked-prefill) | [APC](automatic_prefix_caching.md) | [LoRA](lora.md) | [SD](spec_decode.md) | CUDA graph | [pooling](../models/pooling_models.md) | <abbr title="Encoder-Decoder Models">enc-dec</abbr> | <abbr title="Logprobs">logP</abbr> | <abbr title="Prompt Logprobs">prmpt logP</abbr> | <abbr title="Async Output Processing">async output</abbr> | multi-step | <abbr title="Multimodal Inputs">mm</abbr> | best-of | beam-search | [prompt-embeds](prompt_embeds.md) |
+| 功能 | [CP](../configuration/optimization.md#chunked-prefill) | [APC](automatic_prefix_caching.md) | [LoRA](lora.md) | [SD](spec_decode/README.md) | CUDA graph | [pooling](../models/pooling_models.md) | <abbr title="Encoder-Decoder Models">enc-dec</abbr> | <abbr title="Logprobs">logP</abbr> | <abbr title="Prompt Logprobs">prmpt logP</abbr> | <abbr title="Async Output Processing">async output</abbr> | multi-step | <abbr title="Multimodal Inputs">mm</abbr> | best-of | beam-search | [prompt-embeds](prompt_embeds.md) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | [CP](../configuration/optimization.md#chunked-prefill) | ✅ | | | | | | | | | | | | | | |
 | [APC](automatic_prefix_caching.md) | ✅ | ✅ | | | | | | | | | | | | | |
 | [LoRA](lora.md) | ✅ | ✅ | ✅ | | | | | | | | | | | | |
-| [SD](spec_decode.md) | ✅ | ✅ | ❌ | ✅ | | | | | | | | | | | |
+| [SD](spec_decode/README.md) | ✅ | ✅ | ❌ | ✅ | | | | | | | | | | | |
 | CUDA graph | ✅ | ✅ | ✅ | ✅ | ✅ | | | | | | | | | | |
 | [pooling](../models/pooling_models.md) | 🟠\* | 🟠\* | ✅ | ❌ | ✅ | ✅ | | | | | | | | | |
 | <abbr title="Encoder-Decoder Models">enc-dec</abbr> | ❌ | [❌](https://github.com/vllm-project/vllm/issues/7366) | ❌ | [❌](https://github.com/vllm-project/vllm/issues/7366) | ✅ | ✅ | ✅ | | | | | | | | |
@@ -54,8 +54,8 @@ th:not(:first-child) {
 | beam-search | ✅ | ✅ | ✅ | [❌](https://github.com/vllm-project/vllm/issues/6137) | ✅ | ❌ | ✅ | ✅ | ✅ | ❔ | [❌](https://github.com/vllm-project/vllm/issues/7968) | ❔ | ✅ | ✅ | |
 | [prompt-embeds](prompt_embeds.md) | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ | ❔ | ❔ | ❌ | ❔ | ❔ | ✅ |
 
-\* 分块预填充和前缀缓存仅适用于最后一个token或全token池化与因果注意机制。  
-<sup>^</sup> LoRA 仅适用于多模态模型的语言主干。
+\* 分块预填充和前缀缓存仅适用于因果注意力机制的最后一个 token 或全量 pooling。  
+<sup>^</sup> LoRA 仅适用于多模态模型的语言主干部分。
 
 ### 功能 x 硬件
 
@@ -64,7 +64,7 @@ th:not(:first-child) {
 | [CP](../configuration/optimization.md#chunked-prefill)                                     | [❌](https://github.com/vllm-project/vllm/issues/2729) | ✅        | ✅        | ✅     | ✅        | ✅                  | ✅     | ✅        |
 | [APC](automatic_prefix_caching.md)                        | [❌](https://github.com/vllm-project/vllm/issues/3687) | ✅        | ✅        | ✅     | ✅        | ✅                  | ✅     | ✅        |
 | [LoRA](lora.md)                                           | ✅                  | ✅        | ✅        | ✅     | ✅        | ✅                  | ✅     | ✅        |
-| [SD](spec_decode.md)                                      | ✅                  | ✅        | ✅        | ✅     | ✅        | ❌                  | ✅     | ✅        |
+| [SD](spec_decode/README.md)                        | ✅                  | ✅        | ✅        | ✅     | ✅        | ❌                  | ✅     | ✅        |
 | CUDA graph                                                | ✅                  | ✅        | ✅        | ✅     | ✅        | ❌                  | ✅     | [❌](https://github.com/vllm-project/vllm/issues/26970)        |
 | [pooling](../models/pooling_models.md)                    | ✅                  | ✅        | ✅        | ✅     | ✅        | ✅                  | ✅     | ✅        |
 | <abbr title="Encoder-Decoder Models">enc-dec</abbr>       | ✅                  | ✅        | ✅        | ✅     | ✅        | ✅                  | ❌     | ✅        |
@@ -78,4 +78,4 @@ th:not(:first-child) {
 | beam-search                                               | ✅                  | ✅        | ✅        | ✅     | ✅        | ✅                  | ✅     | ✅        |
 
 !!! note
-    如需了解 Google TPU 上的功能支持信息，请参阅 [TPU-Inference 推荐模型和功能](https://docs.vllm.ai/projects/tpu/en/latest/recommended_models_features/) 文档。
+    有关 Google TPU 上的功能支持信息，请参阅 [TPU 推理推荐模型与功能特性](https://docs.vllm.ai/projects/tpu/en/latest/recommended_models_features/) 文档。

@@ -1,4 +1,4 @@
-# Ray Serve Deepseek
+# Ray Serve DeepSeek
 
 源代码 <https://github.com/vllm-project/vllm/blob/main/examples/online_serving/ray_serve_deepseek.py>。
 

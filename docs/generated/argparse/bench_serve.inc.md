@@ -1,459 +1,457 @@
 #### `--seed`
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--num-prompts`
 
-:   Number of prompts to process.
+:   要处理的提示数量。
 
-:   Default: `1000`
+:   默认值：`1000`
 
 #### `--dataset-name`
 
-:   Possible choices: `sharegpt`, `burstgpt`, `sonnet`, `random`, `random-mm`, `random-rerank`, `hf`, `custom`, `prefix_repetition`, `spec_bench`
+:   可选值：`sharegpt`、`burstgpt`、`sonnet`、`random`、`random-mm`、`random-rerank`、`hf`、`custom`、`prefix_repetition`、`spec_bench`
 
-:   Name of the dataset to benchmark on.
+:   用于基准测试的数据集名称。
 
-:   Default: `random`
+:   默认值：`random`
 
 #### `--no-stream`
 
-:   Do not load the dataset in streaming mode.
+:   不以流式模式加载数据集。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--dataset-path`
 
-:   Path to the sharegpt/sonnet dataset. Or the huggingface dataset ID if using HF dataset.
+:   sharegpt/sonnet 数据集的路径。如果使用 HF 数据集，则为 huggingface 数据集 ID。
 
 #### `--no-oversample`
 
-:   Do not oversample if the dataset has fewer samples than num-prompts.
+:   如果数据集的样本数量少于 num-prompts，则不进行过采样。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--skip-chat-template`
 
-:   Skip applying chat template to prompt for datasets that support it.
+:   跳过对支持聊天模板的数据集应用聊天模板。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--disable-shuffle`
 
-:   Disable shuffling of dataset samples for deterministic ordering.
+:   禁用数据集样本的随机打乱，以实现确定性排序。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--label`
 
-:   The label (prefix) of the benchmark results. If not specified, the value of '--backend' will be used as the label.
+:   基准测试结果的前缀标签。如果未指定，则使用 `--backend` 的值作为标签。
 
 #### `--backend`
 
-:   Possible choices: `vllm`, `openai`, `openai-chat`, `openai-audio`, `openai-embeddings`, `openai-embeddings-chat`, `openai-embeddings-clip`, `openai-embeddings-vlm2vec`, `infinity-embeddings`, `infinity-embeddings-clip`, `vllm-rerank`
+:   可选值：`vllm`、`openai`、`openai-chat`、`openai-audio`、`openai-embeddings`、`openai-embeddings-chat`、`openai-embeddings-clip`、`openai-embeddings-vlm2vec`、`infinity-embeddings`、`infinity-embeddings-clip`、`vllm-rerank`
 
-:   The type of backend or endpoint to use for the benchmark.
+:   用于基准测试的后端或端点类型。
 
-:   Default: `openai`
+:   默认值：`openai`
 
 #### `--base-url`
 
-:   Server or API base url if not using http host and port.
+:   如果不使用 http 主机和端口，则为服务器或 API 的基础 URL。
 
 #### `--host`
 
-:   Default: `127.0.0.1`
+:   默认值：`127.0.0.1`
 
 #### `--port`
 
-:   Default: `8000`
+:   默认值：`8000`
 
 #### `--endpoint`
 
-:   API endpoint.
+:   API 端点。
 
-:   Default: `/v1/completions`
+:   默认值：`/v1/completions`
 
 #### `--header`
 
-:   Key-value pairs (e.g, --header x-additional-info=0.3.3) for headers to be passed with each request. These headers override per backend constants and values set via environment variable, and will be overridden by other arguments (such as request ids).
+:   每次请求时要传递的键值对（例如：--header x-additional-info=0.3.3）。这些头部信息会覆盖每个后端的常量和通过环境变量设置的值，并会被其他参数（如请求 ID）覆盖。
 
 #### `--max-concurrency`
 
-:   Maximum number of concurrent requests. This can be used to help simulate an environment where a higher level component is enforcing a maximum number of concurrent requests. While the --request-rate argument controls the rate at which requests are initiated, this argument will control how many are actually allowed to execute at a time. This means that when used in combination, the actual request rate may be lower than specified with --request-rate, if the server is not processing requests fast enough to keep up.
+:   最大并发请求数。这可用于模拟更高级别组件强制执行最大并发请求数的环境。虽然 --request-rate 参数控制请求发起的速率，但此参数将控制实际允许同时执行的请求数量。这意味着当两者结合使用时，如果服务器处理请求的速度不足以跟上，实际请求速率可能低于 --request-rate 指定的值。
 
 #### `--model`
 
-:   Name of the model. If not specified, will fetch the first model from the server's /v1/models endpoint.
+:   模型名称。如果未指定，将从服务器的 /v1/models 端点获取第一个模型。
 
 #### `--input-len`
 
-:   General input length for datasets. Maps to dataset-specific input length arguments (e.g., --random-input-len, --sonnet-input-len). If not specified, uses dataset defaults.
+:   数据集的通用输入长度。映射到特定数据集的输入长度参数（例如：--random-input-len、--sonnet-input-len）。如果未指定，则使用数据集默认值。
 
 #### `--output-len`
 
-:   General output length for datasets. Maps to dataset-specific output length arguments (e.g., --random-output-len, --sonnet-output-len). If not specified, uses dataset defaults.
+:   数据集的通用输出长度。映射到特定数据集的输出长度参数（例如：--random-output-len、--sonnet-output-len）。如果未指定，则使用数据集默认值。
 
 #### `--tokenizer`
 
-:   Name or path of the tokenizer, if not using the default tokenizer.
+:   分词器的名称或路径，如果不使用默认分词器。
 
 #### `--tokenizer-mode`
 
-:   Tokenizer mode:
+:   分词器模式：
 
-            - "auto" will use the tokenizer from `mistral_common` for Mistral models
-            if available, otherwise it will use the "hf" tokenizer.
+            - "auto" 将优先为 Mistral 模型使用 `mistral_common` 中的分词器（如果可用），否则使用 "hf" 分词器。
 
-            - "hf" will use the fast tokenizer if available.
+            - "hf" 将使用快速分词器（如果可用）。
 
-            - "slow" will always use the slow tokenizer.
+            - "slow" 将始终使用慢速分词器。
 
-            - "mistral" will always use the tokenizer from `mistral_common`.
+            - "mistral" 将始终使用 `mistral_common` 中的分词器。
 
-            - "deepseek_v32" will always use the tokenizer from `deepseek_v32`.
+            - "deepseek_v32" 将始终使用 `deepseek_v32` 中的分词器。
 
-            - Other custom values can be supported via plugins.
+            - 其他自定义值可通过插件支持。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--use-beam-search`
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--logprobs`
 
-:   Number of logprobs-per-token to compute & return as part of the request. If unspecified, then either (1) if beam search is disabled, no logprobs are computed & a single dummy logprob is returned for each token; or (2) if beam search is enabled 1 logprob per token is computed
+:   每个 token 要计算并返回的 logprob 数量。如果未指定，则：(1) 如果禁用束搜索，则不计算 logprob，每个 token 返回一个虚拟 logprob；或 (2) 如果启用束搜索，则每个 token 计算 1 个 logprob。
 
 #### `--request-rate`
 
-:   Number of requests per second. If this is inf, then all the requests are sent at time 0. Otherwise, we use Poisson process or gamma distribution to synthesize the request arrival times.
+:   每秒请求数。如果为 inf，则所有请求在时间 0 发送。否则，我们使用泊松过程或伽马分布来合成请求到达时间。
 
-:   Default: `inf`
+:   默认值：`inf`
 
 #### `--burstiness`
 
-:   Burstiness factor of the request generation. Only take effect when request_rate is not inf. Default value is 1, which follows Poisson process. Otherwise, the request intervals follow a gamma distribution. A lower burstiness value (0 < burstiness < 1) results in more bursty requests. A higher burstiness value (burstiness > 1) results in a more uniform arrival of requests.
+:   请求生成的突发性因子。仅在 request_rate 不为 inf 时生效。默认值为 1，遵循泊松过程。否则，请求间隔遵循伽马分布。较低的突发性值（0 < burstiness < 1）会导致更突发的请求。较高的突发性值（burstiness > 1）会导致更均匀的请求到达。
 
-:   Default: `1.0`
+:   默认值：`1.0`
 
 #### `--trust-remote-code`
 
-:   Trust remote code from huggingface
+:   信任来自 huggingface 的远程代码
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--disable-tqdm`
 
-:   Specify to disable tqdm progress bar.
+:   指定以禁用 tqdm 进度条。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--num-warmups`
 
-:   Number of warmup requests.
+:   预热请求数量。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--profile`
 
-:   Use vLLM Profiling. --profiler-config must be provided on the server.
+:   使用 vLLM 性能分析。服务器上必须提供 --profiler-config。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--save-result`
 
-:   Specify to save benchmark results to a json file
+:   指定将基准测试结果保存到 JSON 文件
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--save-detailed`
 
-:   When saving the results, whether to include per request information such as response, error, ttfts, tpots, etc.
+:   保存结果时，是否包含每个请求的详细信息，如响应、错误、ttft、tpot 等。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--append-result`
 
-:   Append the benchmark result to the existing json file.
+:   将基准测试结果追加到现有的 JSON 文件。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--metadata`
 
-:   Key-value pairs (e.g, --metadata version=0.3.3 tp=1) for metadata of this run to be saved in the result JSON file for record keeping purposes.
+:   键值对（例如：--metadata version=0.3.3 tp=1），用于保存本次运行的元数据到结果 JSON 文件中，以便记录。
 
 #### `--result-dir`
 
-:   Specify directory to save benchmark json results.If not specified, results are saved in the current directory.
+:   指定保存基准测试 JSON 结果的目录。如果未指定，结果将保存在当前目录。
 
 #### `--result-filename`
 
-:   Specify the filename to save benchmark json results.If not specified, results will be saved in {label}-{args.request_rate}qps-{base_model_id}-{current_dt}.json format.
+:   指定保存基准测试 JSON 结果的文件名。如果未指定，结果将保存为 {label}-{args.request_rate}qps-{base_model_id}-{current_dt}.json 格式。
 
 #### `--ignore-eos`
 
-:   Set ignore_eos flag when sending the benchmark request.Warning: ignore_eos is not supported in deepspeed_mii and tgi.
+:   发送基准测试请求时设置 ignore_eos 标志。警告：deepspeed_mii 和 tgi 不支持 ignore_eos。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--percentile-metrics`
 
-:   Comma-separated list of selected metrics to report percentiles. This argument specifies the metrics to report percentiles. Allowed metric names are "ttft", "tpot", "itl", "e2el". If not specified, defaults to "ttft,tpot,itl" for generative models and "e2el" for pooling models.
+:   以逗号分隔的选定指标列表，用于报告百分位数。此参数指定要报告百分位数的指标。允许的指标名称为 "ttft"、"tpot"、"itl"、"e2el"。如果未指定，默认为生成式模型的 "ttft,tpot,itl" 和池化模型的 "e2el"。
 
 #### `--metric-percentiles`
 
-:   Comma-separated list of percentiles for selected metrics. To report 25-th, 50-th, and 75-th percentiles, use "25,50,75". Default value is "99".Use "--percentile-metrics" to select metrics.
+:   选定指标的百分位数列表，以逗号分隔。要报告第 25、50 和 75 百分位数，请使用 "25,50,75"。默认值为 "99"。使用 "--percentile-metrics" 选择指标。
 
-:   Default: `99`
+:   默认值：`99`
 
 #### `--goodput`
 
-:   Specify service level objectives for goodput as "KEY:VALUE" pairs, where the key is a metric name, and the value is in milliseconds. Multiple "KEY:VALUE" pairs can be provided, separated by spaces. Allowed request level metric names are "ttft", "tpot", "e2el". For more context on the definition of goodput, refer to DistServe paper: https://arxiv.org/pdf/2401.09670 and the blog: https://hao-ai-lab.github.io/blogs/distserve
+:   指定 goodput 的服务级别目标，格式为 "KEY:VALUE" 键值对，其中 key 是指标名称，value 以毫秒为单位。可以提供多个 "KEY:VALUE" 键值对，用空格分隔。允许的请求级别指标名称为 "ttft"、"tpot"、"e2el"。有关 goodput 定义的更多上下文，请参阅 DistServe 论文：https://arxiv.org/pdf/2401.09670 和博客：https://hao-ai-lab.github.io/blogs/distserve
 
 #### `--request-id-prefix`
 
-:   Specify the prefix of request id.
+:   指定请求 ID 的前缀。
 
-:   Default: `bench-9c1b7dad-`
+:   默认值：`bench-9c1b7dad-`
 
 #### `--served-model-name`
 
-:   The model name used in the API. If not specified, the model name will be the same as the `--model` argument. 
+:   API 中使用的模型名称。如果未指定，模型名称将与 `--model` 参数相同。
 
 #### `--lora-modules`
 
-:   A subset of LoRA module names passed in when launching the server. For each request, the script chooses a LoRA module at random.
+:   启动服务器时传递的 LoRA 模块名称子集。对于每个请求，脚本会随机选择一个 LoRA 模块。
 
 #### `--ramp-up-strategy`
 
-:   Possible choices: `linear`, `exponential`
+:   可选值：`linear`、`exponential`
 
-:   The ramp-up strategy. This would be used to ramp up the request rate from initial RPS to final RPS rate (specified by --ramp-up-start-rps and --ramp-up-end-rps.) over the duration of the benchmark.
+:   请求速率提升策略。这将用于在基准测试期间将请求速率从初始 RPS 提升到最终 RPS（由 --ramp-up-start-rps 和 --ramp-up-end-rps 指定）。
 
 #### `--ramp-up-start-rps`
 
-:   The starting request rate for ramp-up (RPS). Needs to be specified when --ramp-up-strategy is used.
+:   请求速率提升的起始请求速率（RPS）。使用 --ramp-up-strategy 时必须指定。
 
 #### `--ramp-up-end-rps`
 
-:   The ending request rate for ramp-up (RPS). Needs to be specified when --ramp-up-strategy is used.
+:   请求速率提升的结束请求速率（RPS）。使用 --ramp-up-strategy 时必须指定。
 
 #### `--ready-check-timeout-sec`
 
-:   Maximum time to wait for the endpoint to become ready in seconds. Ready check will be skipped by default.
+:   等待端点准备就绪的最大时间（秒）。默认情况下将跳过就绪检查。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--extra-body`
 
-:   A JSON string representing extra body parameters to include in each request.Example: '{"chat_template_kwargs":{"enable_thinking":false}}'
+一个 JSON 字符串，表示要在每个请求中包含的额外 body 参数。  
+示例：'{"chat_template_kwargs":{"enable_thinking":false}}'
 
-
-### custom dataset options
+### 自定义数据集选项
 
 #### `--custom-output-len`
 
-:   Number of output tokens per request. Unless it is set to -1, the value overrides potential output length loaded from the dataset. It is used only for custom dataset.
+:   每个请求的输出 token 数量。除非设置为 -1，否则该值会覆盖从数据集加载的潜在输出长度。仅用于自定义数据集。
 
-:   Default: `256`
+:   默认值：`256`
 
-
-### spec bench dataset options
+### spec bench 数据集选项
 
 #### `--spec-bench-output-len`
 
-:   Num of output tokens per request, used only for spec bench dataset.
+:   每个请求的输出 token 数量，仅用于 spec bench 数据集。
 
-:   Default: `256`
+:   默认值：`256`
 
 #### `--spec-bench-category`
 
-:   Category for spec bench dataset. If None, use all categories.
+:   spec bench 数据集的类别。如果为 None，则使用所有类别。
 
-
-### sonnet dataset options
+### sonnet 数据集选项
 
 #### `--sonnet-input-len`
 
-:   Number of input tokens per request, used only for sonnet dataset.
+:   每个请求的输入 token 数量，仅用于 sonnet 数据集。
 
-:   Default: `550`
+:   默认值：`550`
 
 #### `--sonnet-output-len`
 
-:   Number of output tokens per request, used only for sonnet dataset.
+:   每个请求的输出 token 数量，仅用于 sonnet 数据集。
 
-:   Default: `150`
+:   默认值：`150`
 
 #### `--sonnet-prefix-len`
 
-:   Number of prefix tokens per request, used only for sonnet dataset.
+:   每个请求的前缀 token 数量，仅用于 sonnet 数据集。
 
-:   Default: `200`
+:   默认值：`200`
 
-
-### sharegpt dataset options
+### sharegpt 数据集选项
 
 #### `--sharegpt-output-len`
 
-:   Output length for each request. Overrides the output length from the ShareGPT dataset.
+:   每个请求的输出长度。覆盖 ShareGPT 数据集中的输出长度。
 
-
-### blazedit dataset options
+### blazedit 数据集选项
 
 #### `--blazedit-min-distance`
 
-:   Minimum distance for blazedit dataset. Min: 0, Max: 1.0
+:   blazedit 数据集的最小距离。最小值：0，最大值：1.0
 
-:   Default: `0.0`
+:   默认值：`0.0`
 
 #### `--blazedit-max-distance`
 
-:   Maximum distance for blazedit dataset. Min: 0, Max: 1.0
+:   blazedit 数据集的最大距离。最小值：0，最大值：1.0
 
-:   Default: `1.0`
+:   默认值：`1.0`
 
-
-### random dataset options
+### 随机数据集选项
 
 #### `--random-input-len`
 
-:   Number of input tokens per request, used only for random sampling.
+:   每个请求的输入 token 数量，仅用于随机采样。
 
-:   Default: `1024`
+:   默认值：`1024`
 
 #### `--random-output-len`
 
-:   Number of output tokens per request, used only for random sampling.
+:   每个请求的输出 token 数量，仅用于随机采样。
 
-:   Default: `128`
+:   默认值：`128`
 
 #### `--random-range-ratio`
 
-:   Range ratio for sampling input/output length, used only for random sampling. Must be in the range [0, 1) to define a symmetric sampling range[length * (1 - range_ratio), length * (1 + range_ratio)].
+:   采样输入/输出长度的范围比例，仅用于随机采样。必须在 [0, 1) 范围内，用于定义对称采样范围 [length * (1 - range_ratio), length * (1 + range_ratio)]。
 
-:   Default: `0.0`
+:   默认值：`0.0`
 
 #### `--random-prefix-len`
 
-:   Number of fixed prefix tokens before the random context in a request. The total input length is the sum of `random-prefix-len` and a random context length sampled from [input_len * (1 - range_ratio), input_len * (1 + range_ratio)].
+:   请求中随机上下文之前的固定前缀 token 数量。总输入长度为 `random-prefix-len` 与从 [input_len * (1 - range_ratio), input_len * (1 + range_ratio)] 采样的随机上下文长度之和。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--random-batch-size`
 
-:   Batch size for random sampling. Only used for embeddings benchmark.
+:   随机采样的批处理大小。仅用于嵌入基准测试。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--no-reranker`
 
-:   Whether the model supports reranking natively. Only used for reranker benchmark.
+:   模型是否原生支持重排序。仅用于重排序器基准测试。
 
-:   Default: `False`
+:   默认值：`False`
 
-
-### random multimodal dataset options extended from random dataset
+### 随机多模态数据集选项（继承自随机数据集）
 
 #### `--random-mm-base-items-per-request`
 
-:   Base number of multimodal items per request for random-mm. Actual per-request count is sampled around this base using --random-mm-num-mm-items-range-ratio.
+:   每个请求的多模态项目基础数量（random-mm）。实际每个请求的数量围绕该基础值使用 --random-mm-num-mm-items-range-ratio 进行采样。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--random-mm-num-mm-items-range-ratio`
 
-:   Range ratio r in [0, 1] for sampling items per request. We sample uniformly from the closed integer range [floor(n*(1-r)), ceil(n*(1+r))] where n is the base items per request. r=0 keeps it fixed; r=1 allows 0 items. The maximum is clamped to the sum of per-modality limits from --random-mm-limit-mm-per-prompt. An error is raised if the computed min exceeds the max.
+:   每个请求采样项目的范围比例 r（范围 [0, 1]）。我们从闭整数范围 [floor(n*(1-r)), ceil(n*(1+r))] 中均匀采样，其中 n 是每个请求的基础项目数。r=0 时保持固定；r=1 时允许 0 个项目。最大值被限制为 --random-mm-limit-mm-per-prompt 中各模态限制的总和。如果计算出的最小值超过最大值，则会引发错误。
 
-:   Default: `0.0`
+:   默认值：`0.0`
 
 #### `--random-mm-limit-mm-per-prompt`
 
-:   Per-modality hard caps for items attached per request, e.g. '{"image": 3, "video": 0}'. The sampled per-request item count is clamped to the sum of these limits. When a modality reaches its cap, its buckets are excluded and probabilities are renormalized.OBS.: Only image sampling is supported for now.
+:   每个请求附加项目的每模态硬性上限，例如 '{"image": 3, "video": 0}'。采样的每个请求项目数被限制为这些上限的总和。当某个模态达到上限时，其桶将被排除，概率会重新归一化。  
+注：目前仅支持图像采样。
 
-:   Default: `{'image': 255, 'video': 1}`
+:   默认值：`{'image': 255, 'video': 1}`
 
 #### `--random-mm-bucket-config`
 
-:   The bucket config is a dictionary mapping a multimodal itemsampling configuration to a probability.Currently allows for 2 modalities: images and videos. An bucket key is a tuple of (height, width, num_frames)The value is the probability of sampling that specific item. Example: --random-mm-bucket-config {(256, 256, 1): 0.5, (720, 1280, 1): 0.4, (720, 1280, 16): 0.10} First item: images with resolution 256x256 w.p. 0.5Second item: images with resolution 720x1280 w.p. 0.4 Third item: videos with resolution 720x1280 and 16 frames w.p. 0.1OBS.: If the probabilities do not sum to 1, they are normalized.OBS bis.: Only image sampling is supported for now.
+:   桶配置是一个字典，将多模态项目采样配置映射到概率。  
+目前支持两种模态：图像和视频。  
+桶键是一个元组 (height, width, num_frames)，值是采样该特定项目的概率。  
+示例：--random-mm-bucket-config {(256, 256, 1): 0.5, (720, 1280, 1): 0.4, (720, 1280, 16): 0.10}  
+第一项：分辨率为 256x256 的图像，概率为 0.5  
+第二项：分辨率为 720x1280 的图像，概率为 0.4  
+第三项：分辨率为 720x1280 且 16 帧的视频，概率为 0.1  
+注：如果概率总和不为 1，则会自动归一化。  
+注二：目前仅支持图像采样。
 
-:   Default: `{(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}`
+:   默认值：`{(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}`
 
-
-### hf dataset options
+### HuggingFace 数据集选项
 
 #### `--hf-subset`
 
-:   Subset of the HF dataset.
+:   HuggingFace 数据集的子集。
 
 #### `--hf-split`
 
-:   Split of the HF dataset.
+:   HuggingFace 数据集的分割。
 
 #### `--hf-name`
 
-:   Name of the dataset on HuggingFace (e.g., 'lmarena-ai/VisionArena-Chat'). Specify this if your dataset-path is a local path.
+:   HuggingFace 上的数据集名称（例如 'lmarena-ai/VisionArena-Chat'）。如果 dataset-path 是本地路径，请指定此参数。
 
 #### `--hf-output-len`
 
-:   Output length for each request. Overrides the output lengths from the sampled HF dataset.
+:   每个请求的输出长度。覆盖采样的 HuggingFace 数据集中的输出长度。
 
-
-### prefix repetition dataset options
+### 前缀重复数据集选项
 
 #### `--prefix-repetition-prefix-len`
 
-:   Number of prefix tokens per request, used only for prefix repetition dataset.
+:   每个请求的前缀 token 数量，仅用于前缀重复数据集。
 
-:   Default: `256`
+:   默认值：`256`
 
 #### `--prefix-repetition-suffix-len`
 
-:   Number of suffix tokens per request, used only for prefix repetition dataset. Total input length is prefix_len + suffix_len.
+:   每个请求的后缀 token 数量，仅用于前缀重复数据集。总输入长度为 prefix_len + suffix_len。
 
-:   Default: `256`
+:   默认值：`256`
 
 #### `--prefix-repetition-num-prefixes`
 
-:   Number of prefixes to generate, used only for prefix repetition dataset. Prompts per prefix is num_requests // num_prefixes.
+:   要生成的前缀数量，仅用于前缀重复数据集。每个前缀的提示数为 num_requests // num_prefixes。
 
-:   Default: `10`
+:   默认值：`10`
 
 #### `--prefix-repetition-output-len`
 
-:   Number of output tokens per request, used only for prefix repetition dataset.
+:   每个请求的输出 token 数量，仅用于前缀重复数据集。
 
-:   Default: `128`
+:   默认值：`128`
 
-
-### sampling parameters
+### 采样参数
 
 #### `--top-p`
 
-:   Top-p sampling parameter. Only has effect on openai-compatible backends.
+:   Top-p 采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--top-k`
 
-:   Top-k sampling parameter. Only has effect on openai-compatible backends.
+:   Top-k 采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--min-p`
 
-:   Min-p sampling parameter. Only has effect on openai-compatible backends.
+:   Min-p 采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--temperature`
 
-:   Temperature sampling parameter. Only has effect on openai-compatible backends.
+:   温度采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--frequency-penalty`
 
-:   Frequency penalty sampling parameter. Only has effect on openai-compatible backends.
+:   频率惩罚采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--presence-penalty`
 
-:   Presence penalty sampling parameter. Only has effect on openai-compatible backends.
+:   存在惩罚采样参数。仅对 OpenAI 兼容后端生效。
 
 #### `--repetition-penalty`
 
-:   Repetition penalty sampling parameter. Only has effect on openai-compatible backends.
-
+:   重复惩罚采样参数。仅对 OpenAI 兼容后端生效。

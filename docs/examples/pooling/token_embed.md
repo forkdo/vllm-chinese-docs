@@ -20,3 +20,4 @@ Source <https://github.com/vllm-project/vllm/tree/main/examples/pooling/token_em
 --8<-- "/root/workspaces/docs/vllm-chinese-docs/docsite/examples/pooling/token_embed/multi_vector_retrieval_online.py"
 ``````
 
+---

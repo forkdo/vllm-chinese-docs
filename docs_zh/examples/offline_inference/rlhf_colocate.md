@@ -1,7 +1,7 @@
 ---
 title: "RLHF Colocate"
 linkTitle: "RLHF Colocate"
-description: "vLLM 的 RLHF Colocate 示例。"
+description: "vLLM 的 RLHF Collocate 示例。"
 ---
 
 # RLHF Colocate

@@ -1,60 +1,59 @@
 #### `--serve-cmd`
 
-:   The command used to run the server: `vllm serve ...`
+:   用于运行服务器的命令：`vllm serve ...`
 
 #### `--bench-cmd`
 
-:   The command used to run the benchmark: `vllm bench serve ...`
+:   用于运行基准测试的命令：`vllm bench serve ...`
 
 #### `--after-bench-cmd`
 
-:   After a benchmark run is complete, invoke this command instead of the default `ServerWrapper.clear_cache()`.
+:   基准测试运行完成后，调用此命令，而不是默认的 `ServerWrapper.clear_cache()`。
 
 #### `--show-stdout`
 
-:   If set, logs the standard output of subcommands. Useful for debugging but can be quite spammy.
+:   如果设置，将记录子命令的标准输出。对于调试很有用，但可能会产生大量输出。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--server-ready-timeout`
 
-:   Timeout in seconds to wait for the server to become ready.
+:   等待服务器准备就绪的超时时间（以秒为单位）。
 
-:   Default: `300`
+:   默认值：`300`
 
 #### `--serve-params`
 
-:   Path to JSON file containing parameter combinations for the `vllm serve` command. Can be either a list of dicts or a dict where keys are benchmark names. If both `serve_params` and `bench_params` are given, this script will iterate over their Cartesian product.
+:   包含 `vllm serve` 命令参数组合的 JSON 文件路径。可以是一个字典列表，也可以是一个字典，其中键为基准测试名称。如果同时提供了 `serve_params` 和 `bench_params`，此脚本将遍历它们的笛卡尔积。
 
 #### `--bench-params`
 
-:   Path to JSON file containing parameter combinations for the `vllm bench serve` command. Can be either a list of dicts or a dict where keys are benchmark names. If both `serve_params` and `bench_params` are given, this script will iterate over their Cartesian product.
+:   包含 `vllm bench serve` 命令参数组合的 JSON 文件路径。可以是一个字典列表，也可以是一个字典，其中键为基准测试名称。如果同时提供了 `serve_params` 和 `bench_params`，此脚本将遍历它们的笛卡尔积。
 
 #### `-o`, `--output-dir`
 
-:   The directory to which results are written.
+:   结果写入的目录。
 
-:   Default: `results`
+:   默认值：`results`
 
 #### `--num-runs`
 
-:   Number of runs per parameter combination.
+:   每个参数组合的运行次数。
 
-:   Default: `3`
+:   默认值：`3`
 
 #### `--dry-run`
 
-:   If set, prints the commands to run, then exits without executing them.
+:   如果设置，将打印要运行的命令，然后退出而不执行它们。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--resume`
 
-:   Set this to the name of a directory under `output_dir` (which is a timestamp) to resume a previous execution of this script, i.e., only run parameter combinations for which there are still no output files.
+:   将其设置为 `output_dir` 下的目录名称（这是一个时间戳），以恢复此脚本的先前执行，即仅运行那些仍没有输出文件的参数组合。
 
 #### `--link-vars`
 
-:   Comma-separated list of linked variables between serve and bench, e.g. max_num_seqs=max_concurrency,max_model_len=random_input_len
+:   服务器和基准测试之间链接变量的逗号分隔列表，例如 max_num_seqs=max_concurrency,max_model_len=random_input_len
 
-:   Default: `""`
-
+:   默认值：`""`

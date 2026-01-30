@@ -1,41 +1,40 @@
 # Helm Charts
 
-Source <https://github.com/vllm-project/vllm/tree/main/examples/online_serving/chart-helm>.
+来源 <https://github.com/vllm-project/vllm/tree/main/examples/online_serving/chart-helm>。
 
+此目录包含用于部署 vllm 应用程序的 Helm chart。该 chart 包含部署、自动扩缩容、资源管理等配置。
 
-This directory contains a Helm chart for deploying the vllm application. The chart includes configurations for deployment, autoscaling, resource management, and more.
+## 文件
 
-## Files
+- Chart.yaml：定义 chart 元数据，包括名称、版本和维护者。
+- ct.yaml：chart 测试的配置。
+- lintconf.yaml：YAML 文件的 linting 规则。
+- values.schema.json：用于验证 values.yaml 的 JSON 模式。
+- values.yaml：Helm chart 的默认值。
+- templates/_helpers.tpl：用于定义通用配置的辅助模板。
+- templates/configmap.yaml：创建 ConfigMap 的模板。
+- templates/custom-objects.yaml：自定义 Kubernetes 对象的模板。
+- templates/deployment.yaml：创建 Deployment 的模板。
+- templates/hpa.yaml：Horizontal Pod Autoscaler 的模板。
+- templates/job.yaml：Kubernetes Job 的模板。
+- templates/poddisruptionbudget.yaml：Pod Disruption Budget 的模板。
+- templates/pvc.yaml：Persistent Volume Claim 的模板。
+- templates/secrets.yaml：Kubernetes Secret 的模板。
+- templates/service.yaml：创建 Service 的模板。
 
-- Chart.yaml: Defines the chart metadata including name, version, and maintainers.
-- ct.yaml: Configuration for chart testing.
-- lintconf.yaml: Linting rules for YAML files.
-- values.schema.json: JSON schema for validating values.yaml.
-- values.yaml: Default values for the Helm chart.
-- templates/_helpers.tpl: Helper templates for defining common configurations.
-- templates/configmap.yaml: Template for creating ConfigMaps.
-- templates/custom-objects.yaml: Template for custom Kubernetes objects.
-- templates/deployment.yaml: Template for creating Deployments.
-- templates/hpa.yaml: Template for Horizontal Pod Autoscaler.
-- templates/job.yaml: Template for Kubernetes Jobs.
-- templates/poddisruptionbudget.yaml: Template for Pod Disruption Budget.
-- templates/pvc.yaml: Template for Persistent Volume Claims.
-- templates/secrets.yaml: Template for Kubernetes Secrets.
-- templates/service.yaml: Template for creating Services.
+## 运行测试
 
-## Running Tests
-
-This chart includes unit tests using [helm-unittest](https://github.com/helm-unittest/helm-unittest). Install the plugin and run tests:
+此 chart 包含使用 [helm-unittest](https://github.com/helm-unittest/helm-unittest) 的单元测试。安装插件并运行测试：
 
 ```bash
-# Install plugin
+# 安装插件
 helm plugin install https://github.com/helm-unittest/helm-unittest
 
-# Run tests
+# 运行测试
 helm unittest .
 ```
 
-## Example materials
+## 示例材料
 
 ??? abstract ".helmignore"
     ``````

@@ -1,153 +1,131 @@
 #### `--disable-log-stats`
 
-:   Disable logging statistics.
+:   禁用日志统计。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--aggregate-engine-logging`
 
-:   Log aggregate rather than per-engine statistics when using data parallelism.
+:   在使用数据并行时，记录聚合统计信息而非每个引擎的统计信息。
 
-:   Default: `False`
+:   默认值：`False`
 
 
 ### ModelConfig
 
-Configuration for the model.
+模型的配置。
 
 #### `--model`
 
-:   Name or path of the Hugging Face model to use. It is also used as the
-    content for `model_name` tag in metrics output when `served_model_name` is
-    not specified.
+:   要使用的 Hugging Face 模型的名称或路径。当 `served_model_name` 未指定时，它也用作指标输出中 `model_name` 标签的内容。
 
-:   Default: `Qwen/Qwen3-0.6B`
+:   默认值：`Qwen/Qwen3-0.6B`
 
 #### `--runner`
 
-:   Possible choices: `auto`, `draft`, `generate`, `pooling`
+:   可选值：`auto`、`draft`、`generate`、`pooling`
 
-:   The type of model runner to use. Each vLLM instance only supports one
-    model runner, even if the same model can be used for multiple types.
+:   要使用的模型运行器类型。每个 vLLM 实例仅支持一种模型运行器，即使同一模型可用于多种类型。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--convert`
 
-:   Possible choices: `auto`, `classify`, `embed`, `mm_encoder_only`, `none`, `reward`
+:   可选值：`auto`、`classify`、`embed`、`mm_encoder_only`、`none`、`reward`
 
-:   Convert the model using adapters defined in
-    [vllm.model_executor.models.adapters][]. The most common use case is to
-    adapt a text generation model to be used for pooling tasks.
+:   使用 [vllm.model_executor.models.adapters][] 中定义的适配器转换模型。最常见的用例是将文本生成模型适配用于池化任务。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--tokenizer`
 
-:   Name or path of the Hugging Face tokenizer to use. If unspecified, model
-    name or path will be used.
+:   要使用的 Hugging Face 分词器的名称或路径。如果未指定，将使用模型名称或路径。
 
 #### `--tokenizer-mode`
 
-:   Possible choices: `auto`, `deepseek_v32`, `hf`, `mistral`, `slow`
+:   可选值：`auto`、`deepseek_v32`、`hf`、`mistral`、`slow`
 
-:   Tokenizer mode:
+:   分词器模式：
 
-    - "auto" will use the tokenizer from `mistral_common` for Mistral models
-    if available, otherwise it will use the "hf" tokenizer.
+    - "auto" 将优先为 Mistral 模型使用 `mistral_common` 中的分词器（如果可用），否则使用 "hf" 分词器。
 
-    - "hf" will use the fast tokenizer if available.
+    - "hf" 将使用快速分词器（如果可用）。
 
-    - "slow" will always use the slow tokenizer.
+    - "slow" 将始终使用慢速分词器。
 
-    - "mistral" will always use the tokenizer from `mistral_common`.
+    - "mistral" 将始终使用 `mistral_common` 中的分词器。
 
-    - "deepseek_v32" will always use the tokenizer from `deepseek_v32`.
+    - "deepseek_v32" 将始终使用 `deepseek_v32` 中的分词器。
 
-    - Other custom values can be supported via plugins.
+    - 其他自定义值可通过插件支持。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--trust-remote-code`, `--no-trust-remote-code`
 
-:   Trust remote code (e.g., from HuggingFace) when downloading the model
-    and tokenizer.
+:   下载模型和分词器时信任远程代码（例如来自 HuggingFace 的代码）。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--dtype`
 
-:   Possible choices: `auto`, `bfloat16`, `float`, `float16`, `float32`, `half`
+:   可选值：`auto`、`bfloat16`、`float`、`float16`、`float32`、`half`
 
-:   Data type for model weights and activations:
+:   模型权重和激活值的数据类型：
 
-    - "auto" will use FP16 precision for FP32 and FP16 models, and BF16
-    precision for BF16 models.
+    - "auto" 将为 FP32 和 FP16 模型使用 FP16 精度，为 BF16 模型使用 BF16 精度。
 
-    - "half" for FP16. Recommended for AWQ quantization.
+    - "half" 表示 FP16。推荐用于 AWQ 量化。
 
-    - "float16" is the same as "half".
+    - "float16" 与 "half" 相同。
 
-    - "bfloat16" for a balance between precision and range.
+    - "bfloat16" 在精度和范围之间取得平衡。
 
-    - "float" is shorthand for FP32 precision.
+    - "float" 是 FP32 精度的简写。
 
-    - "float32" for FP32 precision.
+    - "float32" 表示 FP32 精度。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--seed`
 
-:   Random seed for reproducibility.
+:   用于可重现性的随机种子。
 
-    We must set the global seed because otherwise,
-    different tensor parallel workers would sample different tokens,
-    leading to inconsistent results.
+    我们必须设置全局种子，否则不同的张量并行工作进程会采样不同的 token，导致结果不一致。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--hf-config-path`
 
-:   Name or path of the Hugging Face config to use. If unspecified, model
-    name or path will be used.
+:   要使用的 Hugging Face 配置的名称或路径。如果未指定，将使用模型名称或路径。
 
 #### `--allowed-local-media-path`
 
-:   Allowing API requests to read local images or videos from directories
-    specified by the server file system. This is a security risk. Should only
-    be enabled in trusted environments.
+:   允许 API 请求从服务器文件系统指定的目录中读取本地图像或视频。这是一个安全风险。仅应在可信环境中启用。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--allowed-media-domains`
 
-:   If set, only media URLs that belong to this domain can be used for
-    multi-modal inputs.
+:   如果设置，只有属于此域名的媒体 URL 才能用于多模态输入。
 
 #### `--revision`
 
-:   The specific model version to use. It can be a branch name, a tag name,
-    or a commit id. If unspecified, will use the default version.
+:   要使用的特定模型版本。可以是分支名称、标签名称或提交 ID。如果未指定，将使用默认版本。
 
 #### `--code-revision`
 
-:   The specific revision to use for the model code on the Hugging Face Hub.
-    It can be a branch name, a tag name, or a commit id. If unspecified, will
-    use the default version.
+:   要用于 Hugging Face Hub 上模型代码的特定版本。可以是分支名称、标签名称或提交 ID。如果未指定，将使用默认版本。
 
 #### `--tokenizer-revision`
 
-:   The specific revision to use for the tokenizer on the Hugging Face Hub.
-    It can be a branch name, a tag name, or a commit id. If unspecified, will
-    use the default version.
+:   要用于 Hugging Face Hub 上分词器的特定版本。可以是分支名称、标签名称或提交 ID。如果未指定，将使用默认版本。
 
 #### `--max-model-len`
 
-:   Model context length (prompt and output). If unspecified, will be
-    automatically derived from the model config.
+:   模型上下文长度（提示和输出）。如果未指定，将自动从模型配置中推导。
 
-    When passing via `--max-model-len`, supports k/m/g/K/M/G in human-readable
-    format. Examples:
+    通过 `--max-model-len` 传递时，支持以人类可读格式使用 k/m/g/K/M/G。示例：
 
     - 1k -> 1000
 
@@ -155,668 +133,555 @@ Configuration for the model.
 
     - 25.6k -> 25,600
 
-    - -1 or 'auto' -> Automatically choose the maximum model length that fits in
-    GPU memory. This will use the model's maximum context length if it fits,
-    otherwise it will find the largest length that can be accommodated.
+    - -1 或 'auto' -> 自动选择适合 GPU 内存的最大模型长度。如果模型的上下文长度适合，则使用该长度；否则会找到可容纳的最大长度。
 
-    Parse human-readable integers like '1k', '2M', etc.
-    Including decimal values with decimal multipliers.
-    Also accepts -1 or 'auto' as a special value for auto-detection.
+    解析人类可读的整数，如 '1k'、'2M' 等。
+    包括带小数乘数的十进制值。
+    也接受 -1 或 'auto' 作为自动检测的特殊值。
 
-    Examples:
+    示例：
     - '1k' -> 1,000
     - '1K' -> 1,024
     - '25.6k' -> 25,600
-    - '-1' or 'auto' -> -1 (special value for auto-detection)
+    - '-1' 或 'auto' -> -1（自动检测的特殊值）
 
 
 #### `--quantization`, `-q`
 
-:   Method used to quantize the weights. If `None`, we first check the
-    `quantization_config` attribute in the model config file. If that is
-    `None`, we assume the model weights are not quantized and use `dtype` to
-    determine the data type of the weights.
+:   用于量化权重的方法。如果为 `None`，我们首先检查模型配置文件中的 `quantization_config` 属性。如果该属性也为 `None`，我们假设模型权重未量化，并使用 `dtype` 来确定权重的数据类型。
 
 #### `--allow-deprecated-quantization`, `--no-allow-deprecated-quantization`
 
-:   Whether to allow deprecated quantization methods.
+:   是否允许使用已弃用的量化方法。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enforce-eager`, `--no-enforce-eager`
 
-:   Whether to always use eager-mode PyTorch. If True, we will disable CUDA
-    graph and always execute the model in eager mode. If False, we will use
-    CUDA graph and eager execution in hybrid for maximal performance and
-    flexibility.
+:   是否始终使用 eager 模式的 PyTorch。如果为 True，我们将禁用 CUDA 图并始终以 eager 模式执行模型。如果为 False，我们将混合使用 CUDA 图和 eager 执行，以实现最佳性能和灵活性。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-return-routed-experts`, `--no-enable-return-routed-experts`
 
-:   Whether to return routed experts.
+:   是否返回路由专家。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--max-logprobs`
 
-:   Maximum number of log probabilities to return when `logprobs` is
-    specified in `SamplingParams`. The default value comes the default for the
-    OpenAI Chat Completions API. -1 means no cap, i.e. all (output_length *
-    vocab_size) logprobs are allowed to be returned and it may cause OOM.
+:   当 `SamplingParams` 中指定 `logprobs` 时，返回的最大对数概率数量。默认值来自 OpenAI Chat Completions API 的默认设置。-1 表示无限制，即允许返回所有（output_length * vocab_size）个对数概率，这可能导致 OOM。
 
-:   Default: `20`
+:   默认值：`20`
 
 #### `--logprobs-mode`
 
-:   Possible choices: `processed_logits`, `processed_logprobs`, `raw_logits`, `raw_logprobs`
+:   可选值：`processed_logits`、`processed_logprobs`、`raw_logits`、`raw_logprobs`
 
-:   Indicates the content returned in the logprobs and prompt_logprobs.
-    Supported mode:
-    1) raw_logprobs, 2) processed_logprobs, 3) raw_logits, 4) processed_logits.
-    Raw means the values before applying any logit processors, like bad words.
-    Processed means the values after applying all processors, including
-    temperature and top_k/top_p.
+:   指示 logprobs 和 prompt_logprobs 中返回的内容。支持的模式：
+    1) raw_logprobs，2) processed_logprobs，3) raw_logits，4) processed_logits。
+    "Raw" 表示应用任何 logit 处理器（如禁用词）之前的值。
+    "Processed" 表示应用所有处理器（包括温度和 top_k/top_p）之后的值。
 
-:   Default: `raw_logprobs`
+:   默认值：`raw_logprobs`
 
 #### `--disable-sliding-window`, `--no-disable-sliding-window`
 
-:   Whether to disable sliding window. If True, we will disable the sliding
-    window functionality of the model, capping to sliding window size. If the
-    model does not support sliding window, this argument is ignored.
+:   是否禁用滑动窗口。如果为 True，我们将禁用模型的滑动窗口功能，限制为滑动窗口大小。如果模型不支持滑动窗口，此参数将被忽略。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--disable-cascade-attn`, `--no-disable-cascade-attn`
 
-:   Disable cascade attention for V1. While cascade attention does not
-    change the mathematical correctness, disabling it could be useful for
-    preventing potential numerical issues. Note that even if this is set to
-    False, cascade attention will be only used when the heuristic tells that
-    it's beneficial.
+:   为 V1 禁用级联注意力。虽然级联注意力不会改变数学正确性，但禁用它可以防止潜在的数值问题。请注意，即使将此设置为 False，也仅当启发式方法表明有益时才会使用级联注意力。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--skip-tokenizer-init`, `--no-skip-tokenizer-init`
 
-:   Skip initialization of tokenizer and detokenizer. Expects valid
-    `prompt_token_ids` and `None` for prompt from the input. The generated
-    output will contain token ids.
+:   跳过分词器和去分词器的初始化。期望输入中包含有效的 `prompt_token_ids` 和 `None` 作为提示。生成的输出将包含 token ID。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-prompt-embeds`, `--no-enable-prompt-embeds`
 
-:   If `True`, enables passing text embeddings as inputs via the
-    `prompt_embeds` key.
+:   如果为 `True`，则允许通过 `prompt_embeds` 键传递文本嵌入作为输入。
 
-    WARNING: The vLLM engine may crash if incorrect shape of embeddings is passed.
-    Only enable this flag for trusted users!
+    警告：如果传递了错误形状的嵌入，vLLM 引擎可能会崩溃。
+    仅对可信用户启用此标志！
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--served-model-name`
 
-:   The model name(s) used in the API. If multiple names are provided, the
-    server will respond to any of the provided names. The model name in the
-    model field of a response will be the first name in this list. If not
-    specified, the model name will be the same as the `--model` argument. Noted
-    that this name(s) will also be used in `model_name` tag content of
-    prometheus metrics, if multiple names provided, metrics tag will take the
-    first one.
+:   API 中使用的模型名称。如果提供了多个名称，服务器将响应任何提供的名称。响应中 model 字段的模型名称将是此列表中的第一个名称。如果未指定，模型名称将与 `--model` 参数相同。请注意，此名称也将用于 prometheus 指标的 `model_name` 标签内容；如果提供了多个名称，指标标签将采用第一个名称。
 
 #### `--config-format`
 
-:   Possible choices: `auto`, `hf`, `mistral`
+可能的选项：`auto`、`hf`、`mistral`
 
-:   The format of the model config to load:
+:   要加载的模型配置格式：
 
-    - "auto" will try to load the config in hf format if available after trying
-    to load in mistral format.
+    - "auto" 会尝试先以 mistral 格式加载，若失败则尝试以 hf 格式加载配置（如果可用）。
 
-    - "hf" will load the config in hf format.
+    - "hf" 会以 hf 格式加载配置。
 
-    - "mistral" will load the config in mistral format.
+    - "mistral" 会以 mistral 格式加载配置。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--hf-token`
 
-:   The token to use as HTTP bearer authorization for remote files . If
-    `True`, will use the token generated when running `huggingface-cli login`
-    (stored in `~/.huggingface`).
+:   用于远程文件的 HTTP Bearer 授权的令牌。如果设置为 `True`，将使用运行 `huggingface-cli login` 时生成的令牌（存储在 `~/.huggingface` 中）。
 
 #### `--hf-overrides`
 
-:   If a dictionary, contains arguments to be forwarded to the Hugging Face
-    config. If a callable, it is called to update the HuggingFace config.
+:   如果是字典，包含要转发给 Hugging Face 配置的参数。如果是可调用对象，则用于更新 HuggingFace 配置。
 
-:   Default: `{}`
+:   默认值：`{}`
 
 #### `--pooler-config`
 
-:   Pooler config which controls the behaviour of output pooling in pooling
-    models.
+:   池化器配置，用于控制池化模型中输出池化的行为。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递的 JSON 键。
 
 #### `--logits-processor-pattern`
 
-:   Optional regex pattern specifying valid logits processor qualified names
-    that can be passed with the `logits_processors` extra completion argument.
-    Defaults to `None`, which allows no processors.
+:   可选的正则表达式模式，用于指定可通过 `logits_processors` 额外补全参数传递的有效 logits 处理器限定名称。默认为 `None`，表示不允许任何处理器。
 
 #### `--generation-config`
 
-:   The folder path to the generation config. Defaults to `"auto"`, the
-    generation config will be loaded from model path. If set to `"vllm"`, no
-    generation config is loaded, vLLM defaults will be used. If set to a folder
-    path, the generation config will be loaded from the specified folder path.
-    If `max_new_tokens` is specified in generation config, then it sets a
-    server-wide limit on the number of output tokens for all requests.
+:   生成配置所在的文件夹路径。默认为 `"auto"`，表示将从模型路径加载生成配置。如果设置为 `"vllm"`，则不加载生成配置，而使用 vLLM 默认值。如果设置为文件夹路径，则从指定文件夹路径加载生成配置。如果在生成配置中指定了 `max_new_tokens`，则它将为所有请求设置服务器范围的输出 token 数量限制。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--override-generation-config`
 
-:   Overrides or sets generation config. e.g. `{"temperature": 0.5}`. If
-    used with `--generation-config auto`, the override parameters will be
-    merged with the default config from the model. If used with
-    `--generation-config vllm`, only the override parameters are used.
+:   覆盖或设置生成配置。例如：`{"temperature": 0.5}`。如果与 `--generation-config auto` 一起使用，覆盖参数将与模型的默认配置合并。如果与 `--generation-config vllm` 一起使用，则仅使用覆盖参数。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递的 JSON 键。
 
-:   Default: `{}`
+:   默认值：`{}`
 
 #### `--enable-sleep-mode`, `--no-enable-sleep-mode`
 
-:   Enable sleep mode for the engine (only cuda and
-    hip platforms are supported).
+:   为引擎启用睡眠模式（仅支持 cuda 和 hip 平台）。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--model-impl`
 
-:   Possible choices: `auto`, `terratorch`, `transformers`, `vllm`
+:   可能的选项：`auto`、`terratorch`、`transformers`、`vllm`
 
-:   Which implementation of the model to use:
+:   要使用的模型实现：
 
-    - "auto" will try to use the vLLM implementation, if it exists, and fall
-    back to the Transformers implementation if no vLLM implementation is
-    available.
+    - "auto" 会尝试使用 vLLM 实现（如果存在），如果没有可用的 vLLM 实现，则回退到 Transformers 实现。
 
-    - "vllm" will use the vLLM model implementation.
+    - "vllm" 会使用 vLLM 模型实现。
 
-    - "transformers" will use the Transformers model implementation.
+    - "transformers" 会使用 Transformers 模型实现。
 
-    - "terratorch" will use the TerraTorch model implementation.
+    - "terratorch" 会使用 TerraTorch 模型实现。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--override-attention-dtype`
 
-:   Override dtype for attention
+:   覆盖注意力机制的 dtype
 
 #### `--logits-processors`
 
-:   One or more logits processors' fully-qualified class names or class
-    definitions
+:   一个或多个 logits 处理器的完全限定类名或类定义
 
 #### `--io-processor-plugin`
 
-:   IOProcessor plugin name to load at model startup
+:   在模型启动时加载的 IOProcessor 插件名称
 
 
 ### LoadConfig
 
-Configuration for loading the model weights.
+模型权重加载配置。
 
 #### `--load-format`
 
-:   The format of the model weights to load:
+:   要加载的模型权重格式：
 
-    - "auto" will try to load the weights in the safetensors format and fall
-    back to the pytorch bin format if safetensors format is not available.
+    - "auto" 会尝试以 safetensors 格式加载权重，如果 safetensors 格式不可用，则回退到 pytorch bin 格式。
 
-    - "pt" will load the weights in the pytorch bin format.
+    - "pt" 会以 pytorch bin 格式加载权重。
 
-    - "safetensors" will load the weights in the safetensors format.
+    - "safetensors" 会以 safetensors 格式加载权重。
 
-    - "npcache" will load the weights in pytorch format and store a numpy cache
-    to speed up the loading.
+    - "npcache" 会以 pytorch 格式加载权重，并存储一个 numpy 缓存以加速加载。
 
-    - "dummy" will initialize the weights with random values, which is mainly
-    for profiling.
+    - "dummy" 会用随机值初始化权重，主要用于性能分析。
 
-    - "tensorizer" will use CoreWeave's tensorizer library for fast weight
-    loading. See the Tensorize vLLM Model script in the Examples section for
-    more information.
+    - "tensorizer" 会使用 CoreWeave 的 tensorizer 库进行快速权重加载。更多信息请参见“示例”部分中的 Tensorize vLLM 模型脚本。
 
-    - "runai_streamer" will load the Safetensors weights using Run:ai Model
-    Streamer.
+    - "runai_streamer" 会使用 Run:ai Model Streamer 加载 Safetensors 权重。
 
-    - "runai_streamer_sharded" will load weights from pre-sharded checkpoint
-    files using Run:ai Model Streamer.
+    - "runai_streamer_sharded" 会使用 Run:ai Model Streamer 从预分片的检查点文件加载权重。
 
-    - "bitsandbytes" will load the weights using bitsandbytes quantization.
+    - "bitsandbytes" 会使用 bitsandbytes 量化加载权重。
 
-    - "sharded_state" will load weights from pre-sharded checkpoint files,
-    supporting efficient loading of tensor-parallel models.
+    - "sharded_state" 会从预分片的检查点文件加载权重，支持高效加载张量并行模型。
 
-    - "gguf" will load weights from GGUF format files (details specified in
-    https://github.com/ggml-org/ggml/blob/master/docs/gguf.md).
+    - "gguf" 会从 GGUF 格式文件加载权重（详情参见 https://github.com/ggml-org/ggml/blob/master/docs/gguf.md）。
 
-    - "mistral" will load weights from consolidated safetensors files used by
-    Mistral models.
-    - Other custom values can be supported via plugins.
+    - "mistral" 会从 Mistral 模型使用的 consolidated safetensors 文件加载权重。
+    - 其他自定义值可通过插件支持。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--download-dir`
 
-:   Directory to download and load the weights, default to the default
-    cache directory of Hugging Face.
+:   下载和加载权重的目录，默认为 Hugging Face 的默认缓存目录。
 
 #### `--safetensors-load-strategy`
 
-:   Specifies the loading strategy for safetensors weights.
-    - "lazy" (default): Weights are memory-mapped from the file. This enables
-      on-demand loading and is highly efficient for models on local storage.
-    - "eager": The entire file is read into CPU memory upfront before loading.
-      This is recommended for models on network filesystems (e.g., Lustre, NFS)
-      as it avoids inefficient random reads, significantly speeding up model
-      initialization. However, it uses more CPU RAM.
-    - "torchao": Weights are loaded in upfront and then reconstructed
-      into torchao tensor subclasses. This is used when the checkpoint
-      was quantized using torchao and saved using safetensors.
-      Needs torchao >= 0.14.0
+:   指定 safetensors 权重的加载策略。
+    - "lazy"（默认）：权重通过内存映射从文件加载。这支持按需加载，对于本地存储的模型非常高效。
+    - "eager"：整个文件在加载前被读入 CPU 内存。这推荐用于网络文件系统（如 Lustre、NFS）上的模型，因为它避免了低效的随机读取，显著加快了模型初始化速度。但会使用更多 CPU 内存。
+    - "torchao"：权重被提前加载，然后重建为 torchao 张量子类。这用于检查点使用 torchao 量化并保存为 safetensors 的情况。需要 torchao >= 0.14.0
 
-:   Default: `lazy`
+:   默认值：`lazy`
 
 #### `--model-loader-extra-config`
 
-:   Extra config for model loader. This will be passed to the model loader
-    corresponding to the chosen load_format.
+:   模型加载器的额外配置。这将传递给对应于所选 load_format 的模型加载器。
 
-:   Default: `{}`
+:   默认值：`{}`
 
 #### `--ignore-patterns`
 
-:   The list of patterns to ignore when loading the model. Default to
-    "original/**/*" to avoid repeated loading of llama's checkpoints.
+:   加载模型时要忽略的模式列表。默认为 "original/**/*"，以避免重复加载 llama 的检查点。
 
-:   Default: `['original/**/*']`
+:   默认值：`['original/**/*']`
 
 #### `--use-tqdm-on-load`, `--no-use-tqdm-on-load`
 
-:   Whether to enable tqdm for showing progress bar when loading model
-    weights.
+:   是否在加载模型权重时启用 tqdm 以显示进度条。
 
-:   Default: `True`
+:   默认值：`True`
 
 #### `--pt-load-map-location`
 
-:   pt_load_map_location: the map location for loading pytorch checkpoint, to
-    support loading checkpoints can only be loaded on certain devices like
-    "cuda", this is equivalent to {"": "cuda"}. Another supported format is
-    mapping from different devices like from GPU 1 to GPU 0:
-    {"cuda:1": "cuda:0"}. Note that when passed from command line, the strings
-    in dictionary needs to be double quoted for json parsing. For more details,
-    see original doc for `map_location` in https://pytorch.org/docs/stable/generated/torch.load.html
+:   pt_load_map_location：加载 pytorch 检查点的映射位置，以支持只能在特定设备（如 "cuda"）上加载的检查点，这等价于 {"": "cuda"}。另一种支持的格式是从不同设备映射，例如从 GPU 1 到 GPU 0：{"cuda:1": "cuda:0"}。注意，当从命令行传递时，字典中的字符串需要用双引号括起来以进行 JSON 解析。更多详情，请参见 https://pytorch.org/docs/stable/generated/torch.load.html 中 `map_location` 的原始文档。
 
-:   Default: `cpu`
+:   默认值：`cpu`
 
 
 ### AttentionConfig
 
-Configuration for attention mechanisms in vLLM.
+vLLM 中注意力机制的配置。
 
 #### `--attention-backend`
 
-:   Attention backend to use. If None, will be selected automatically.
+:   要使用的注意力后端。如果为 None，将自动选择。
 
 
 ### StructuredOutputsConfig
 
-Dataclass which contains structured outputs config for the engine.
+包含引擎结构化输出配置的数据类。
 
 #### `--reasoning-parser`
 
-:   Select the reasoning parser depending on the model that you're using.
-    This is used to parse the reasoning content into OpenAI API format.
+:   根据您使用的模型选择推理解析器。这用于将推理内容解析为 OpenAI API 格式。
 
-:   Default: `""`
+:   默认值：`""`
 
 #### `--reasoning-parser-plugin`
 
-:   Path to a dynamically reasoning parser plugin that can be dynamically
-    loaded and registered.
+:   可动态加载和注册的动态推理解析器插件的路径。
 
-:   Default: `""`
+:   默认值：`""`
 
 
 ### ParallelConfig
 
-Configuration for the distributed execution.
+分布式执行配置。
 
 #### `--distributed-executor-backend`
 
-:   Possible choices: `external_launcher`, `mp`, `ray`, `uni`
+:   可能的选项：`external_launcher`、`mp`、`ray`、`uni`
 
-:   Backend to use for distributed model workers, either "ray" or "mp"
-    (multiprocessing). If the product of pipeline_parallel_size and tensor_parallel_size
-    is less than or equal to the number of GPUs available, "mp" will be used to
-    keep processing on a single host. Otherwise, an error will be raised. To use "mp"
-    you must also set nnodes, and to use "ray" you must manually set
-    distributed_executor_backend to "ray".
+:   用于分布式模型工作者的后端，可以是 "ray" 或 "mp"（多进程）。如果 pipeline_parallel_size 和 tensor_parallel_size 的乘积小于或等于可用 GPU 的数量，将使用 "mp" 以保持处理在单个主机上进行。否则，将引发错误。要使用 "mp"，您还必须设置 nnodes；要使用 "ray"，您必须手动将 distributed_executor_backend 设置为 "ray"。
 
-    Note that tpu only support Ray for distributed inference.
+    注意：TPU 仅支持 Ray 进行分布式推理。
 
 #### `--pipeline-parallel-size`, `-pp`
 
-:   Number of pipeline parallel groups.
+:   流水线并行组的数量。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--master-addr`
 
-:   distributed master address for multi-node distributed 
-    inference when distributed_executor_backend is mp.
+:   多节点分布式推理时 distributed_executor_backend 为 mp 时的分布式主节点地址。
 
-:   Default: `127.0.0.1`
+:   默认值：`127.0.0.1`
 
 #### `--master-port`
 
-:   distributed master port for multi-node distributed 
-    inference when distributed_executor_backend is mp.
+:   多节点分布式推理时分布式执行器后端的分布式主节点端口（当 distributed_executor_backend 为 mp 时）。
 
-:   Default: `29501`
+:   默认值：`29501`
 
 #### `--nnodes`, `-n`
 
-:   num of nodes for multi-node distributed 
-    inference when distributed_executor_backend is mp.
+:   多节点分布式推理时的节点数量（当 distributed_executor_backend 为 mp 时）。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--node-rank`, `-r`
 
-:   distributed node rank for multi-node distributed 
-    inference when distributed_executor_backend is mp.
+:   多节点分布式推理时的分布式节点排名（当 distributed_executor_backend 为 mp 时）。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--tensor-parallel-size`, `-tp`
 
-:   Number of tensor parallel groups.
+:   张量并行组的数量。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--decode-context-parallel-size`, `-dcp`
 
-:   Number of decode context parallel groups, because the world size does
-    not change by dcp, it simply reuse the GPUs of TP group, and tp_size
-    needs to be divisible by dcp_size.
+:   解码上下文并行组的数量。由于世界大小不会因 dcp 而改变，它只是复用 TP 组的 GPU，因此 tp_size 需要能被 dcp_size 整除。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--dcp-kv-cache-interleave-size`
 
-:   Interleave size of kv_cache storage while using DCP.
-    dcp_kv_cache_interleave_size has been replaced by cp_kv_cache_interleave_size,
-    and will be deprecated when PCP is fully supported.
+:   使用 DCP 时 kv_cache 存储的交错大小。
+    dcp_kv_cache_interleave_size 已被 cp_kv_cache_interleave_size 取代，
+    当 PCP 完全支持后将被弃用。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--cp-kv-cache-interleave-size`
 
-:   Interleave size of kv_cache storage while using DCP or PCP.
-    For `total_cp_rank = pcp_rank * dcp_world_size + dcp_rank`,
-        and `total_cp_world_size = pcp_world_size * dcp_world_size`.
-    store interleave_size tokens on total_cp_rank i,
-    then store next interleave_size tokens on total_cp_rank i+1.
-    Interleave_size=1: token-level alignment, where token `i` is stored on
-        total_cp_rank `i %% total_cp_world_size`.
-    Interleave_size=block_size: block-level alignment, where tokens are
-        first populated to the preceding ranks. Tokens are then stored
-        in (rank i+1, block j) only after (rank i, block j) is fully occupied.
-    Block_size should be greater than or equal to cp_kv_cache_interleave_size.
-    Block_size should be divisible by cp_kv_cache_interleave_size.
+:   使用 DCP 或 PCP 时 kv_cache 存储的交错大小。
+    对于 `total_cp_rank = pcp_rank * dcp_world_size + dcp_rank`，
+    以及 `total_cp_world_size = pcp_world_size * dcp_world_size`。
+    在 total_cp_rank i 上存储 interleave_size 个 token，
+    然后在 total_cp_rank i+1 上存储接下来的 interleave_size 个 token。
+    Interleave_size=1：token 级对齐，其中 token `i` 存储在
+        total_cp_rank `i %% total_cp_world_size` 上。
+    Interleave_size=block_size：块级对齐，其中 token 首先填充到前面的 rank。
+        只有在 (rank i, block j) 完全占用后，token 才会存储在 (rank i+1, block j) 中。
+    Block_size 应大于或等于 cp_kv_cache_interleave_size。
+    Block_size 应能被 cp_kv_cache_interleave_size 整除。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--prefill-context-parallel-size`, `-pcp`
 
-:   Number of prefill context parallel groups.
+:   预填充上下文并行组的数量。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--data-parallel-size`, `-dp`
 
-:   Number of data parallel groups. MoE layers will be sharded according to
-    the product of the tensor parallel size and data parallel size.
+:   数据并行组的数量。MoE 层将根据张量并行大小和数据并行大小的乘积进行分片。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--data-parallel-rank`, `-dpn`
 
-:   Data parallel rank of this instance. When set, enables external load balancer mode.
+:   此实例的数据并行排名。设置后，将启用外部负载均衡器模式。
 
 #### `--data-parallel-start-rank`, `-dpr`
 
-:   Starting data parallel rank for secondary nodes.
+:   辅助节点的起始数据并行排名。
 
 #### `--data-parallel-size-local`, `-dpl`
 
-:   Number of data parallel replicas to run on this node.
+:   在此节点上运行的数据并行副本数量。
 
 #### `--data-parallel-address`, `-dpa`
 
-:   Address of data parallel cluster head-node.
+:   数据并行集群头节点的地址。
 
 #### `--data-parallel-rpc-port`, `-dpp`
 
-:   Port for data parallel RPC communication.
+:   数据并行 RPC 通信的端口。
 
 #### `--data-parallel-backend`, `-dpb`
 
-:   Backend for data parallel, either "mp" or "ray".
+:   数据并行后端，可选 "mp" 或 "ray"。
 
-:   Default: `mp`
+:   默认值：`mp`
 
 #### `--data-parallel-hybrid-lb`, `--no-data-parallel-hybrid-lb`, `-dph`
 
-:   Whether to use "hybrid" DP LB mode. Applies only to online serving
-    and when data_parallel_size > 0. Enables running an AsyncLLM
-    and API server on a "per-node" basis where vLLM load balances
-    between local data parallel ranks, but an external LB balances
-    between vLLM nodes/replicas. Set explicitly in conjunction with
-    --data-parallel-start-rank.
+:   是否使用 "hybrid" DP LB 模式。仅适用于在线服务且 data_parallel_size > 0 时。
+    支持在每个节点上运行 AsyncLLM 和 API 服务器，其中 vLLM 在本地数据并行 rank 之间进行负载均衡，
+    但外部 LB 在 vLLM 节点/副本之间进行负载均衡。需与 --data-parallel-start-rank 显式配合使用。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--data-parallel-external-lb`, `--no-data-parallel-external-lb`, `-dpe`
 
-:   Whether to use "external" DP LB mode. Applies only to online serving
-    and when data_parallel_size > 0. This is useful for a "one-pod-per-rank"
-    wide-EP setup in Kubernetes. Set implicitly when --data-parallel-rank
-    is provided explicitly to vllm serve.
+:   是否使用 "external" DP LB 模式。仅适用于在线服务且 data_parallel_size > 0 时。
+    这对于 Kubernetes 中的 "one-pod-per-rank" 宽 EP 设置很有用。
+    当 --data-parallel-rank 显式提供给 vllm serve 时，将隐式设置。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-expert-parallel`, `--no-enable-expert-parallel`, `-ep`
 
-:   Use expert parallelism instead of tensor parallelism for MoE layers.
+:   对 MoE 层使用专家并行而非张量并行。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--all2all-backend`
 
-:   Possible choices: `allgather_reducescatter`, `deepep_high_throughput`, `deepep_low_latency`, `flashinfer_all2allv`, `mori`, `naive`, `pplx`
+:   可选值：`allgather_reducescatter`, `deepep_high_throughput`, `deepep_low_latency`, `flashinfer_all2allv`, `mori`, `naive`, `pplx`
 
-:   All2All backend for MoE expert parallel communication. Available options:
+:   MoE 专家并行通信的 All2All 后端。可用选项：
 
-    - "naive": Naive all2all implementation using broadcasts
+    - "naive"：使用广播的简单 all2all 实现
 
-    - "allgather_reducescatter": All2all based on allgather and reducescatter
+    - "allgather_reducescatter"：基于 allgather 和 reducescatter 的 all2all
 
-    - "pplx": Use pplx kernels
+    - "pplx"：使用 pplx 内核
 
-    - "deepep_high_throughput": Use deepep high-throughput kernels
+    - "deepep_high_throughput"：使用 deepep 高吞吐量内核
 
-    - "deepep_low_latency": Use deepep low-latency kernels
+    - "deepep_low_latency"：使用 deepep 低延迟内核
 
-    - "mori": Use mori kernels
+    - "mori"：使用 mori 内核
 
-    - "flashinfer_all2allv": Use flashinfer alltoallv kernels for mnnvl
+    - "flashinfer_all2allv"：为 mnnvl 使用 flashinfer alltoallv 内核
 
-:   Default: `allgather_reducescatter`
+:   默认值：`allgather_reducescatter`
 
 #### `--enable-dbo`, `--no-enable-dbo`
 
-:   Enable dual batch overlap for the model executor.
+:   为模型执行器启用双批次重叠。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--ubatch-size`
 
-:   Number of ubatch size.
+:   ubatch 大小的数量。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--dbo-decode-token-threshold`
 
-:   The threshold for dual batch overlap for batches only containing decodes.
-    If the number of tokens in the request is greater than this threshold,
-    microbatching will be used. Otherwise, the request will be processed in a
-    single batch.
+:   仅包含解码的批次的双批次重叠阈值。
+    如果请求中的 token 数量大于此阈值，将使用微批处理。
+    否则，请求将在单个批次中处理。
 
-:   Default: `32`
+:   默认值：`32`
 
 #### `--dbo-prefill-token-threshold`
 
-:   The threshold for dual batch overlap for batches that contain one or more
-    prefills. If the number of tokens in the request is greater than this
-    threshold, microbatching will be used. Otherwise, the request will be
-    processed in a single batch.
+:   包含一个或多个预填充的批次的双批次重叠阈值。
+    如果请求中的 token 数量大于此阈值，将使用微批处理。
+    否则，请求将在单个批次中处理。
 
-:   Default: `512`
+:   默认值：`512`
 
 #### `--disable-nccl-for-dp-synchronization`, `--no-disable-nccl-for-dp-synchronization`
 
-:   Forces the dp synchronization logic in vllm/v1/worker/dp_utils.py 
-    to use Gloo instead of NCCL for its all reduce.
+:   强制 vllm/v1/worker/dp_utils.py 中的 dp 同步逻辑
+    使用 Gloo 而非 NCCL 进行 all reduce。
 
-    Defaults to True when async scheduling is enabled, False otherwise.
+    启用异步调度时默认为 True，否则为 False。
 
 #### `--enable-eplb`, `--no-enable-eplb`
 
-:   Enable expert parallelism load balancing for MoE layers.
+:   为 MoE 层启用专家并行负载均衡。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--eplb-config`
 
-:   Expert parallelism configuration.
+:   专家并行配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串或单独传递的 JSON 键。
 
-:   Default: `EPLBConfig(window_size=1000, step_interval=3000, num_redundant_experts=0, log_balancedness=False, log_balancedness_interval=1, use_async=False, policy='default')`
+:   默认值：`EPLBConfig(window_size=1000, step_interval=3000, num_redundant_experts=0, log_balancedness=False, log_balancedness_interval=1, use_async=False, policy='default')`
 
 #### `--expert-placement-strategy`
 
-:   Possible choices: `linear`, `round_robin`
+:   可选值：`linear`, `round_robin`
 
-:   The expert placement strategy for MoE layers:
+:   MoE 层的专家放置策略：
 
-    - "linear": Experts are placed in a contiguous manner. For example, with 4
-      experts and 2 ranks, rank 0 will have experts [0, 1] and rank 1 will have
-      experts [2, 3].
+    - "linear"：专家以连续方式放置。例如，有 4 个专家和 2 个 rank 时，
+      rank 0 将有专家 [0, 1]，rank 1 将有专家 [2, 3]。
 
-    - "round_robin": Experts are placed in a round-robin manner. For example,
-      with 4 experts and 2 ranks, rank 0 will have experts [0, 2] and rank 1
-      will have experts [1, 3]. This strategy can help improve load balancing
-      for grouped expert models with no redundant experts.
+    - "round_robin"：专家以轮询方式放置。例如，
+      有 4 个专家和 2 个 rank 时，rank 0 将有专家 [0, 2]，rank 1 将有专家 [1, 3]。
+      此策略有助于改善无冗余专家的分组专家模型的负载均衡。
 
-:   Default: `linear`
+:   默认值：`linear`
 
 #### `--max-parallel-loading-workers`
 
-:   Maximum number of parallel loading workers when loading model
-    sequentially in multiple batches. To avoid RAM OOM when using tensor
-    parallel and large models.
+:   分批顺序加载模型时的最大并行加载工作线程数。
+    用于避免在使用张量并行和大模型时出现内存溢出。
 
 #### `--ray-workers-use-nsight`, `--no-ray-workers-use-nsight`
 
-:   Whether to profile Ray workers with nsight, see https://docs.ray.io/en/latest/ray-observability/user-guides/profiling.html#profiling-nsight-profiler.
+:   是否使用 nsight 分析 Ray 工作线程，参见 https://docs.ray.io/en/latest/ray-observability/user-guides/profiling.html#profiling-nsight-profiler。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--disable-custom-all-reduce`, `--no-disable-custom-all-reduce`
 
-:   Disable the custom all-reduce kernel and fall back to NCCL.
+:   禁用自定义 all-reduce 内核并回退到 NCCL。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--worker-cls`
 
-:   The full name of the worker class to use. If "auto", the worker class
-    will be determined based on the platform.
+:   要使用的工作线程类的完整名称。如果为 "auto"，
+    将根据平台确定工作线程类。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--worker-extension-cls`
 
-:   The full name of the worker extension class to use. The worker extension
-    class is dynamically inherited by the worker class. This is used to inject
-    new attributes and methods to the worker class for use in collective_rpc
-    calls.
+:   要使用的工作线程扩展类的完整名称。工作线程扩展类
+    由工作线程类动态继承。这用于向工作线程类注入新属性和方法，
+    以便在 collective_rpc 调用中使用。
 
-:   Default: `""`
+:   默认值：`""`
 
 
 ### CacheConfig
 
-Configuration for the KV cache.
+KV 缓存的配置。
 
 #### `--block-size`
 
-:   Possible choices: `1`, `8`, `16`, `32`, `64`, `128`, `256`
+:   可选值：`1`, `8`, `16`, `32`, `64`, `128`, `256`
 
-:   Size of a contiguous cache block in number of tokens. On CUDA devices,
-    only block sizes up to 32 are supported.
+:   连续缓存块的大小（以 token 数量计）。在 CUDA 设备上，
+    仅支持最大为 32 的块大小。
 
-    This config has no static default. If left unspecified by the user, it will
-    be set in `Platform.check_and_update_config()` based on the current
-    platform.
+此配置没有静态默认值。如果用户未指定，它将根据当前平台在 `Platform.check_and_update_config()` 中设置。
 
 #### `--gpu-memory-utilization`
 
-:   The fraction of GPU memory to be used for the model executor, which can
-    range from 0 to 1. For example, a value of 0.5 would imply 50%% GPU memory
-    utilization. If unspecified, will use the default value of 0.9. This is a
-    per-instance limit, and only applies to the current vLLM instance. It does
-    not matter if you have another vLLM instance running on the same GPU. For
-    example, if you have two vLLM instances running on the same GPU, you can
-    set the GPU memory utilization to 0.5 for each instance.
+:   模型执行器要使用的 GPU 内存比例，范围为 0 到 1。例如，值 0.5 表示 50%% 的 GPU 内存利用率。如果未指定，将使用默认值 0.9。这是一个每个实例的限制，仅适用于当前的 vLLM 实例。如果您在同一 GPU 上运行另一个 vLLM 实例，这无关紧要。例如，如果您在同一 GPU 上运行两个 vLLM 实例，则可以将每个实例的 GPU 内存利用率设置为 0.5。
 
-:   Default: `0.9`
+:   默认值：`0.9`
 
 #### `--kv-cache-memory-bytes`
 
-:   Size of KV Cache per GPU in bytes. By default, this is set to None
-    and vllm can automatically infer the kv cache size based on
-    gpu_memory_utilization. However, users may want to manually specify
-    the kv cache memory size. kv_cache_memory_bytes allows more fine-grain
-    control of how much memory gets used when compared with using
-    gpu_memory_utilization. Note that kv_cache_memory_bytes
-    (when not-None) ignores gpu_memory_utilization
+:   每个 GPU 的 KV 缓存大小（以字节为单位）。默认情况下，此值设置为 None，vLLM 可以根据 gpu_memory_utilization 自动推断 KV 缓存大小。但是，用户可能希望手动指定 KV 缓存内存大小。与使用 gpu_memory_utilization 相比，kv_cache_memory_bytes 允许更精细地控制要使用的内存量。请注意，kv_cache_memory_bytes（当不为 None 时）会忽略 gpu_memory_utilization
 
-    Parse human-readable integers like '1k', '2M', etc.
-    Including decimal values with decimal multipliers.
+    解析人类可读的整数，如 '1k'、'2M' 等。
+    包括带小数乘数的十进制值。
 
-    Examples:
+    示例：
     - '1k' -> 1,000
     - '1K' -> 1,024
     - '25.6k' -> 25,600
@@ -824,454 +689,304 @@ Configuration for the KV cache.
 
 #### `--swap-space`
 
-:   Size of the CPU swap space per GPU (in GiB).
+:   每个 GPU 的 CPU 交换空间大小（以 GiB 为单位）。
 
-:   Default: `4`
+:   默认值：`4`
 
 #### `--kv-cache-dtype`
 
-:   Possible choices: `auto`, `bfloat16`, `fp8`, `fp8_ds_mla`, `fp8_e4m3`, `fp8_e5m2`, `fp8_inc`
+:   可能的选项：`auto`、`bfloat16`、`fp8`、`fp8_ds_mla`、`fp8_e4m3`、`fp8_e5m2`、`fp8_inc`
 
-:   Data type for kv cache storage. If "auto", will use model data type.
-    CUDA 11.8+ supports fp8 (=fp8_e4m3) and fp8_e5m2. ROCm (AMD GPU) supports
-    fp8 (=fp8_e4m3). Intel Gaudi (HPU) supports fp8 (using fp8_inc).
-    Some models (namely DeepSeekV3.2) default to fp8, set to bfloat16 to use
-    bfloat16 instead, this is an invalid option for models that do not default
-    to fp8.
+:   KV 缓存存储的数据类型。如果为 "auto"，将使用模型数据类型。
+    CUDA 11.8+ 支持 fp8 (=fp8_e4m3) 和 fp8_e5m2。ROCM (AMD GPU) 支持
+    fp8 (=fp8_e4m3)。Intel Gaudi (HPU) 支持 fp8 (使用 fp8_inc)。
+    某些模型（即 DeepSeekV3.2）默认为 fp8，设置为 bfloat16 以使用
+    bfloat16 代替，这对于不默认为 fp8 的模型是无效选项。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--num-gpu-blocks-override`
 
-:   Number of GPU blocks to use. This overrides the profiled `num_gpu_blocks`
-    if specified. Does nothing if `None`. Used for testing preemption.
+:   要使用的 GPU 块数。如果指定，这将覆盖分析得到的 `num_gpu_blocks`。
+    如果为 `None`，则不执行任何操作。用于测试抢占。
 
 #### `--enable-prefix-caching`, `--no-enable-prefix-caching`
 
-:   Whether to enable prefix caching.
+:   是否启用前缀缓存。
 
 #### `--prefix-caching-hash-algo`
 
-:   Possible choices: `sha256`, `sha256_cbor`, `xxhash`, `xxhash_cbor`
+:   可能的选项：`sha256`、`sha256_cbor`、`xxhash`、`xxhash_cbor`
 
-:   Set the hash algorithm for prefix caching:
+:   设置前缀缓存的哈希算法：
 
-    - "sha256" uses Pickle for object serialization before hashing. This is the
-    current default, as SHA256 is the most secure choice to avoid potential
-    hash collisions.
+    - "sha256" 在哈希之前使用 Pickle 进行对象序列化。这是
+    当前默认值，因为 SHA256 是避免潜在哈希冲突的最安全选择。
 
-    - "sha256_cbor" provides a reproducible, cross-language compatible hash. It
-    serializes objects using canonical CBOR and hashes them with SHA-256.
+    - "sha256_cbor" 提供可重现的、跨语言兼容的哈希。它
+    使用规范 CBOR 序列化对象，并使用 SHA-256 对它们进行哈希。
 
-    - "xxhash" uses Pickle serialization with xxHash (128-bit) for faster,
-    non-cryptographic hashing. Requires the optional ``xxhash`` package.
-    IMPORTANT: Use of a hashing algorithm that is not considered 
-    cryptographically secure theoretically increases the risk of hash collisions,
-    which can cause undefined behavior or even leak private information in
-    multi-tenant environments. Even if collisions are still very unlikely, it is
-    important to consider your security risk tolerance against the performance
-    benefits before turning this on.
+    - "xxhash" 使用 Pickle 序列化与 xxHash (128 位) 进行更快的、非加密哈希。
+    需要可选的 ``xxhash`` 包。
+    重要提示：使用不被视为加密安全的哈希算法理论上会增加哈希冲突的风险，
+    这可能导致未定义行为，甚至在多租户环境中泄露私人信息。即使冲突仍然非常不可能，
+    在启用此功能之前，也必须考虑您的安全风险承受能力与性能优势。
 
-    - "xxhash_cbor" combines canonical CBOR serialization with xxHash for
-    reproducible hashing. Requires the optional ``xxhash`` package.
+    - "xxhash_cbor" 将规范 CBOR 序列化与 xxHash 结合使用，以实现可重现的哈希。
+    需要可选的 ``xxhash`` 包。
 
-:   Default: `sha256`
+:   默认值：`sha256`
 
 #### `--cpu-offload-gb`
 
-:   The space in GiB to offload to CPU, per GPU. Default is 0, which means
-    no offloading. Intuitively, this argument can be seen as a virtual way to
-    increase the GPU memory size. For example, if you have one 24 GB GPU and
-    set this to 10, virtually you can think of it as a 34 GB GPU. Then you can
-    load a 13B model with BF16 weight, which requires at least 26GB GPU memory.
-    Note that this requires fast CPU-GPU interconnect, as part of the model is
-    loaded from CPU memory to GPU memory on the fly in each model forward pass.
+:   要卸载到 CPU 的空间（以 GiB 为单位），每个 GPU。默认值为 0，表示
+    不卸载。直观地说，此参数可以被视为虚拟增加 GPU 内存大小的一种方式。
+    例如，如果您有一个 24 GB GPU 并将其设置为 10，则可以虚拟地将其视为 34 GB GPU。
+    然后，您可以加载一个 13B 模型（BF16 权重），这至少需要 26GB GPU 内存。
+    请注意，这需要快速的 CPU-GPU 互连，因为模型的一部分会在每次模型前向传递时
+    从 CPU 内存动态加载到 GPU 内存。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--calculate-kv-scales`, `--no-calculate-kv-scales`
 
-:   This enables dynamic calculation of `k_scale` and `v_scale` when
-    kv_cache_dtype is fp8. If `False`, the scales will be loaded from the model
-    checkpoint if available. Otherwise, the scales will default to 1.0.
+:   当 kv_cache_dtype 为 fp8 时，这启用 `k_scale` 和 `v_scale` 的动态计算。
+    如果为 `False`，将从模型检查点加载比例（如果可用）。否则，比例将默认为 1.0。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--kv-sharing-fast-prefill`, `--no-kv-sharing-fast-prefill`
 
-:   This feature is work in progress and no prefill optimization takes place
-    with this flag enabled currently.
+:   此功能正在进行中，目前启用此标志不会进行任何预填充优化。
 
-    In some KV sharing setups, e.g. YOCO (https://arxiv.org/abs/2405.05254),
-    some layers can skip tokens corresponding to prefill. This flag enables
-    attention metadata for eligible layers to be overridden with metadata
-    necessary for implementing this optimization in some models (e.g. Gemma3n)
+    在某些 KV 共享设置中，例如 YOCO (https://arxiv.org/abs/2405.05254)，
+    某些层可以跳过对应于预填充的标记。此标志允许为符合条件的层覆盖注意力元数据，
+    以使用实现某些模型（例如 Gemma3n）中此优化所需的元数据。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--mamba-cache-dtype`
 
-:   Possible choices: `auto`, `float16`, `float32`
+:   可能的选项：`auto`、`float16`、`float32`
 
-:   The data type to use for the Mamba cache (both the conv as well as the
-    ssm state). If set to 'auto', the data type will be inferred from the model
-    config.
+:   用于 Mamba 缓存的数据类型（包括 conv 以及 ssm 状态）。如果设置为 'auto'，
+    数据类型将从模型配置中推断。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--mamba-ssm-cache-dtype`
 
-:   Possible choices: `auto`, `float16`, `float32`
+:   可能的选项：`auto`、`float16`、`float32`
 
-:   The data type to use for the Mamba cache (ssm state only, conv state will
-    still be controlled by mamba_cache_dtype). If set to 'auto', the data type
-    for the ssm state will be determined by mamba_cache_dtype.
+:   用于 Mamba 缓存的数据类型（仅 ssm 状态，conv 状态仍由 mamba_cache_dtype 控制）。
+    如果设置为 'auto'，ssm 状态的数据类型将由 mamba_cache_dtype 确定。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--mamba-block-size`
 
-:   Size of a contiguous cache block in number of tokens for mamba cache.
-    Can be set only when prefix caching is enabled.
-    Value must be a multiple of 8 to align with causal_conv1d kernel.
+:   Mamba 缓存中连续缓存块的大小（以标记数表示）。
+    仅在启用前缀缓存时才能设置。
+    值必须是 8 的倍数，以与 causal_conv1d 内核对齐。
 
 #### `--mamba-cache-mode`
 
-:   Possible choices: `align`, `all`, `none`
+:   可能的选项：`align`、`all`、`none`
 
-:   The cache strategy for Mamba layers.
-    - "none": set when prefix caching is disabled.
-    - "all": cache the mamba state of all tokens at position i * block_size. This is 
-           the default behavior (for models that support it) when prefix caching is
-           enabled.
-    - "align": only cache the mamba state of the last token of each scheduler step and
-           when the token is at position i * block_size.
+:   Mamba 层的缓存策略。
+    - "none"：当前缀缓存禁用时设置。
+    - "all"：缓存位置 i * block_size 处所有标记的 mamba 状态。这是
+           当前缀缓存启用时的默认行为（对于支持它的模型）。
+    - "align"：仅缓存每个调度程序步骤的最后一个标记的 mamba 状态，
+           并且当标记位于位置 i * block_size 时。
 
-:   Default: `none`
+:   默认值：`none`
 
 #### `--kv-offloading-size`
 
-:   Size of the KV cache offloading buffer in GiB. When TP > 1, this is
-    the total buffer size summed across all TP ranks. By default, this is set
-    to None, which means no KV offloading is enabled. When set, vLLM will
-    enable KV cache offloading to CPU using the kv_offloading_backend.
+:   KV 缓存卸载缓冲区的大小（以 GiB 为单位）。当 TP > 1 时，这是
+    所有 TP 等级的总缓冲区大小。默认情况下，此值设置为 None，
+    这意味着不启用 KV 卸载。设置后，vLLM 将
+    使用 kv_offloading_backend 将 KV 缓存卸载到 CPU。
 
 #### `--kv-offloading-backend`
 
-:   Possible choices: `lmcache`, `native`
+:   可能的选项：`lmcache`、`native`
 
-:   The backend to use for KV cache offloading. Supported backends include
-    'native' (vLLM native CPU offloading), 'lmcache'.
-    KV offloading is only activated when kv_offloading_size is set.
+:   用于 KV 缓存卸载的后端。支持的后端包括
+    'native' (vLLM 原生 CPU 卸载)、'lmcache'。
+    仅在设置了 kv_offloading_size 时才会激活 KV 卸载。
 
-:   Default: `native`
+:   默认值：`native`
 
 
 ### MultiModalConfig
 
-Controls the behavior of multimodal models.
+控制多模态模型的行为。
 
 #### `--limit-mm-per-prompt`
 
-:   The maximum number of input items and options allowed per 
-        prompt for each modality.
-    Defaults to 999 for each modality.
+:   每个模态允许的每个提示的最大输入项数和选项数。
+    每个模态默认为 999。
 
-    Legacy format (count only):
+    传统格式（仅计数）：
         {"image": 16, "video": 2}
 
-    Configurable format (with options):
+    可配置格式（带选项）：
         {"video": {"count": 1, "num_frames": 32, "width": 512, "height": 512}, 
         "image": {"count": 5, "width": 512, "height": 512}}
 
-    Mixed format (combining both):
+    混合格式（结合两者）：
         {"image": 16, "video": {"count": 1, "num_frames": 32, "width": 512, 
         "height": 512}}
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串或单独传递的 JSON 键。
 
-:   Default: `{}`
+:   默认值：`{}`
 
 #### `--enable-mm-embeds`, `--no-enable-mm-embeds`
 
-:   If `True`, enables passing multimodal embeddings:
-    for `LLM` class, this refers to tensor inputs under `multi_modal_data`;
-    for the OpenAI-compatible server, this refers to chat messages with content
-    `"type": "*_embeds"`.
+:   如果为 `True`，则启用传递多模态嵌入：
+    对于 `LLM` 类，这指的是 `multi_modal_data` 下的张量输入；
+    对于 OpenAI 兼容服务器，这指的是内容为
+    `"type": "*_embeds"` 的聊天消息。
 
-    WARNING: The vLLM engine may crash if incorrect shape of embeddings is passed.
-    Only enable this flag for trusted users!
+    警告：如果传递了不正确形状的嵌入，vLLM 引擎可能会崩溃。
+    仅对受信任的用户启用此标志！
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--media-io-kwargs`
 
-:   Additional args passed to process media inputs, keyed by modalities.
-    For example, to set num_frames for video, set
-    `--media-io-kwargs '{"video": {"num_frames": 40} }'`
-
-    Should either be a valid JSON string or JSON keys passed individually.
-
-:   Default: `{}`
-
-#### `--mm-processor-kwargs`
-
-:   Arguments to be forwarded to the model's processor for multi-modal data,
-    e.g., image processor. Overrides for the multi-modal processor obtained
-    from `transformers.AutoProcessor.from_pretrained`.
-
-    The available overrides depend on the model that is being run.
-
-    For example, for Phi-3-Vision:
-    `{"num_crops": 4}`.
-
-    Should either be a valid JSON string or JSON keys passed individually.
-
-#### `--mm-processor-cache-gb`
-
-:   The size (in GiB) of the multi-modal processor cache, which is used to
-    avoid re-processing past multi-modal inputs.
-
-    This cache is duplicated for each API process and engine core process,
-    resulting in a total memory usage of
-    `mm_processor_cache_gb * (api_server_count + data_parallel_size)`.
-
-    Set to `0` to disable this cache completely (not recommended).
-
-:   Default: `4`
-
-#### `--mm-processor-cache-type`
-
-:   Possible choices: `lru`, `shm`
-
-:   Type of cache to use for the multi-modal preprocessor/mapper. If `shm`,
-    use shared memory FIFO cache. If `lru`, use mirrored LRU cache.
-
-:   Default: `lru`
-
-#### `--mm-shm-cache-max-object-size-mb`
-
-:   Size limit (in MiB) for each object stored in the multi-modal processor
-    shared memory cache. Only effective when `mm_processor_cache_type` is
-    `"shm"`.
-
-:   Default: `128`
-
-#### `--mm-encoder-only`, `--no-mm-encoder-only`
-
-:   When enabled, skips the language component of the model.
-
-    This is usually only valid in disaggregated Encoder process.
-
-:   Default: `False`
-
-#### `--mm-encoder-tp-mode`
-
-:   Possible choices: `data`, `weights`
-
-:   Indicates how to optimize multi-modal encoder inference using tensor
-    parallelism (TP).
-
-    - `"weights"`: Within the same vLLM engine, split the weights of
-        each layer across TP ranks. (default TP behavior)
-
-    - `"data"`: Within the same vLLM engine, split the batched input data
-        across TP ranks to process the data in parallel, while hosting
-        the full weights on each TP rank.
-        This batch-level DP is not to be confused with API request-level
-        DP (which is controlled by `--data-parallel-size`).
-        This is only supported on a per-model basis and falls back to
-        `"weights"` if the encoder does not support DP.
-
-:   Default: `weights`
-
-#### `--mm-encoder-attn-backend`
-
-:   Optional override for the multi-modal encoder attention backend when
-    using vision transformers. Accepts any value from
-    `vllm.v1.attention.backends.registry.AttentionBackendEnum` (e.g. `FLASH_ATTN`).
-
-#### `--interleave-mm-strings`, `--no-interleave-mm-strings`
-
-:   Enable fully interleaved support for multimodal prompts, while using
-    --chat-template-content-format=string.
-
-:   Default: `False`
-
-#### `--skip-mm-profiling`, `--no-skip-mm-profiling`
-
-:   When enabled, skips multimodal memory profiling and only profiles with
-    language backbone model during engine initialization.
-
-    This reduces engine startup time but shifts the responsibility to users for
-    estimating the peak memory usage of the activation of multimodal encoder and
-    embedding cache.
-
-:   Default: `False`
-
-#### `--video-pruning-rate`
-
-:   Sets pruning rate for video pruning via Efficient Video Sampling.
-    Value sits in range [0;1) and determines fraction of media tokens
-    from each video to be pruned.
-
-
 ### LoRAConfig
 
-Configuration for LoRA.
+LoRA 配置。
 
 #### `--enable-lora`, `--no-enable-lora`
 
-:   If True, enable handling of LoRA adapters.
+:   如果为 True，则启用 LoRA 适配器处理。
 
 #### `--max-loras`
 
-:   Max number of LoRAs in a single batch.
+:   单个批次中 LoRA 的最大数量。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--max-lora-rank`
 
-:   Possible choices: `1`, `8`, `16`, `32`, `64`, `128`, `256`, `320`, `512`
+:   可能的选择：`1`, `8`, `16`, `32`, `64`, `128`, `256`, `320`, `512`
 
-:   Max LoRA rank.
+:   LoRA 的最大秩。
 
-:   Default: `16`
+:   默认值：`16`
 
 #### `--lora-dtype`
 
-:   Possible choices: `auto`, `bfloat16`, `float16`
+:   可能的选择：`auto`, `bfloat16`, `float16`
 
-:   Data type for LoRA. If auto, will default to base model dtype.
+:   LoRA 的数据类型。如果为 auto，则默认为基础模型的数据类型。
 
-:   Default: `auto`
+:   默认值：`auto`
 
 #### `--enable-tower-connector-lora`, `--no-enable-tower-connector-lora`
 
-:   If `True`, LoRA support for the tower (vision encoder) and connector 
-    of multimodal models will be enabled. This is an experimental feature and 
-    currently only supports some MM models such as the Qwen VL series. The default 
-    is False.
+:   如果为 `True`，将启用多模态模型的塔（视觉编码器）和连接器的 LoRA 支持。这是一项实验性功能，目前仅支持某些多模态模型，例如 Qwen VL 系列。默认为 False。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--max-cpu-loras`
 
-:   Maximum number of LoRAs to store in CPU memory. Must be >= than
-    `max_loras`.
+:   存储在 CPU 内存中的 LoRA 的最大数量。必须大于等于 `max_loras`。
 
 #### `--fully-sharded-loras`, `--no-fully-sharded-loras`
 
-:   By default, only half of the LoRA computation is sharded with tensor
-    parallelism. Enabling this will use the fully sharded layers. At high
-    sequence length, max rank or tensor parallel size, this is likely faster.
+:   默认情况下，只有一半的 LoRA 计算会使用张量并行进行分片。启用此选项将使用完全分片的层。在高序列长度、最大秩或张量并行大小的情况下，这可能会更快。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--default-mm-loras`
 
-:   Dictionary mapping specific modalities to LoRA model paths; this field
-    is only applicable to multimodal models and should be leveraged when a
-    model always expects a LoRA to be active when a given modality is present.
-    Note that currently, if a request provides multiple additional
-    modalities, each of which have their own LoRA, we do NOT apply
-    default_mm_loras because we currently only support one lora adapter
-    per prompt. When run in offline mode, the lora IDs for n modalities
-    will be automatically assigned to 1-n with the names of the modalities
-    in alphabetic order.
+:   将特定模态映射到 LoRA 模型路径的字典；此字段仅适用于多模态模型，当模型在给定模态存在时始终期望激活 LoRA 时，应利用此字段。请注意，目前，如果请求提供多个附加模态，每个模态都有自己的 LoRA，我们不会应用 default_mm_loras，因为我们目前每个提示仅支持一个 LoRA 适配器。在离线模式下运行时，n 个模态的 LoRA ID 将自动分配给 1-n，模态名称按字母顺序排列。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串或单独传递的 JSON 键。
 
 
 ### ObservabilityConfig
 
-Configuration for observability - metrics and tracing.
+可观测性配置 - 指标和跟踪。
 
 #### `--show-hidden-metrics-for-version`
 
-:   Enable deprecated Prometheus metrics that have been hidden since the
-    specified version. For example, if a previously deprecated metric has been
-    hidden since the v0.7.0 release, you use
-    `--show-hidden-metrics-for-version=0.7` as a temporary escape hatch while
-    you migrate to new metrics. The metric is likely to be removed completely
-    in an upcoming release.
+:   启用自指定版本以来已被隐藏的已弃用 Prometheus 指标。例如，如果某个先前已弃用的指标自 v0.7.0 版本以来已被隐藏，您可以使用 `--show-hidden-metrics-for-version=0.7` 作为临时解决方案，同时您迁移到新的指标。该指标很可能在即将发布的版本中完全删除。
 
 #### `--otlp-traces-endpoint`
 
-:   Target URL to which OpenTelemetry traces will be sent.
+:   OpenTelemetry 跟踪发送到的目标 URL。
 
 #### `--collect-detailed-traces`
 
-:   Possible choices: `all`, `model`, `worker`, `None`, `model,worker`, `model,all`, `worker,model`, `worker,all`, `all,model`, `all,worker`
+:   可能的选择：`all`, `model`, `worker`, `None`, `model,worker`, `model,all`, `worker,model`, `worker,all`, `all,model`, `all,worker`
 
-:   It makes sense to set this only if `--otlp-traces-endpoint` is set. If
-    set, it will collect detailed traces for the specified modules. This
-    involves use of possibly costly and or blocking operations and hence might
-    have a performance impact.
+:   仅在设置了 `--otlp-traces-endpoint` 时设置此选项才有意义。如果设置，它将为指定的模块收集详细的跟踪。这涉及使用可能代价高昂和/或阻塞的操作，因此可能会对性能产生影响。
 
-    Note that collecting detailed timing information for each request can be
-    expensive.
+    请注意，为每个请求收集详细的时间信息可能会很昂贵。
 
 #### `--kv-cache-metrics`, `--no-kv-cache-metrics`
 
-:   Enable KV cache residency metrics (lifetime, idle time, reuse gaps).
-    Uses sampling to minimize overhead.
-    Requires log stats to be enabled (i.e., --disable-log-stats not set).
+:   启用 KV 缓存驻留指标（生命周期、空闲时间、重用间隔）。使用采样以最小化开销。
+    需要启用日志统计（即，未设置 --disable-log-stats）。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--kv-cache-metrics-sample`
 
-:   Sampling rate for KV cache metrics (0.0, 1.0]. Default 0.01 = 1%% of blocks.
+:   KV 缓存指标的采样率 (0.0, 1.0]。默认值 0.01 = 1%% 的块。
 
-:   Default: `0.01`
+:   默认值：`0.01`
 
 #### `--cudagraph-metrics`, `--no-cudagraph-metrics`
 
-:   Enable CUDA graph metrics (number of padded/unpadded tokens, runtime cudagraph
-    dispatch modes, and their observed frequencies at every logging interval).
+:   启用 CUDA 图指标（填充/未填充 token 的数量、运行时 CUDA 图调度模式及其在每次日志记录间隔时的观察频率）。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-layerwise-nvtx-tracing`, `--no-enable-layerwise-nvtx-tracing`
 
-:   Enable layerwise NVTX tracing. This traces the execution of each layer or
-    module in the model and attach informations such as input/output shapes to
-    nvtx range markers. Noted that this doesn't work with CUDA graphs enabled.
+:   启用逐层 NVTX 跟踪。这将跟踪模型中每一层或模块的执行，并将输入/输出形状等信息附加到 nvtx 范围标记。请注意，这与启用 CUDA 图时不兼容。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-mfu-metrics`, `--no-enable-mfu-metrics`
 
-:   Enable Model FLOPs Utilization (MFU) metrics.
+:   启用模型 FLOPs 利用率 (MFU) 指标。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--enable-logging-iteration-details`, `--no-enable-logging-iteration-details`
 
-:   Enable detailed logging of iteration details.
-    If set, vllm EngineCore will log iteration details
-    This includes number of context/generation requests and tokens
-    and the elapsed cpu time for the iteration.
+:   启用迭代详细信息的详细日志记录。
+    如果设置，vllm EngineCore 将记录迭代详细信息
+    这包括上下文/生成请求和 token 的数量
+    以及迭代的 CPU 时间。
 
-:   Default: `False`
+:   默认值：`False`
 
 
 ### SchedulerConfig
 
-Scheduler configuration.
+调度器配置。
 
 #### `--max-num-batched-tokens`
 
-:   Maximum number of tokens to be processed in a single iteration.
+:   单次迭代中要处理的最大 token 数量。
 
-    The default value here is mainly for convenience when testing.
-    In real usage, this should be set in `EngineArgs.create_engine_config`.
+    此处的默认值主要用于测试时的便利性。
+    实际使用中，应在 `EngineArgs.create_engine_config` 中设置此值。
 
-    Parse human-readable integers like '1k', '2M', etc.
-    Including decimal values with decimal multipliers.
+    支持解析人类可读的整数字符串，如 '1k'、'2M' 等。
+    包括带小数点的数值及其乘数。
 
-    Examples:
+    示例：
     - '1k' -> 1,000
     - '1K' -> 1,024
     - '25.6k' -> 25,600
@@ -1279,107 +994,88 @@ Scheduler configuration.
 
 #### `--max-num-seqs`
 
-:   Maximum number of sequences to be processed in a single iteration.
+:   单次迭代中要处理的最大序列数量。
 
-    The default value here is mainly for convenience when testing.
-    In real usage, this should be set in `EngineArgs.create_engine_config`.
+    此处的默认值主要用于测试时的便利性。
+    实际使用中，应在 `EngineArgs.create_engine_config` 中设置此值。
 
 #### `--max-num-partial-prefills`
 
-:   For chunked prefill, the maximum number of sequences that can be
-    partially prefilled concurrently.
+:   对于分块预填充（chunked prefill），可同时进行部分预填充的最大序列数量。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--max-long-partial-prefills`
 
-:   For chunked prefill, the maximum number of prompts longer than
-    long_prefill_token_threshold that will be prefilled concurrently. Setting
-    this less than max_num_partial_prefills will allow shorter prompts to jump
-    the queue in front of longer prompts in some cases, improving latency.
+:   对于分块预填充，可同时预填充的、长度超过 long_prefill_token_threshold 的提示的最大数量。将此值设置为小于 max_num_partial_prefills 可在某些情况下让较短的提示优先于较长的提示，从而降低延迟。
 
-:   Default: `1`
+:   默认值：`1`
 
 #### `--long-prefill-token-threshold`
 
-:   For chunked prefill, a request is considered long if the prompt is
-    longer than this number of tokens.
+:   对于分块预填充，如果提示的 token 数量超过此数值，则该请求被视为长请求。
 
-:   Default: `0`
+:   默认值：`0`
 
 #### `--scheduling-policy`
 
-:   Possible choices: `fcfs`, `priority`
+:   可选值：`fcfs`、`priority`
 
-:   The scheduling policy to use:
+:   要使用的调度策略：
 
-    - "fcfs" means first come first served, i.e. requests are handled in order
-    of arrival.
+    - "fcfs" 表示先到先服务，即按请求到达顺序处理。
 
-    - "priority" means requests are handled based on given priority (lower
-    value means earlier handling) and time of arrival deciding any ties).
+    - "priority" 表示根据给定优先级（数值越小优先级越高）处理请求，到达时间用于打破平局。
 
-:   Default: `fcfs`
+:   默认值：`fcfs`
 
 #### `--enable-chunked-prefill`, `--no-enable-chunked-prefill`
 
-:   If True, prefill requests can be chunked based
-    on the remaining `max_num_batched_tokens`.
+:   如果为 True，则可以根据剩余的 `max_num_batched_tokens` 将预填充请求分块。
 
-    The default value here is mainly for convenience when testing.
-    In real usage, this should be set in `EngineArgs.create_engine_config`.
+    此处的默认值主要用于测试时的便利性。
+    实际使用中，应在 `EngineArgs.create_engine_config` 中设置此值。
 
 #### `--disable-chunked-mm-input`, `--no-disable-chunked-mm-input`
 
-:   If set to true and chunked prefill is enabled, we do not want to
-    partially schedule a multimodal item. Only used in V1
-    This ensures that if a request has a mixed prompt
-    (like text tokens TTTT followed by image tokens IIIIIIIIII) where only
-    some image tokens can be scheduled (like TTTTIIIII, leaving IIIII),
-    it will be scheduled as TTTT in one step and IIIIIIIIII in the next.
+:   如果设置为 true 且启用了分块预填充，我们不希望部分调度多模态项。仅在 V1 中使用。
+    这可确保如果某个请求包含混合提示（例如文本 token TTTT 后跟图像 token IIIIIIIIII），且只能调度部分图像 token（例如 TTTTIIIII，剩下 IIIII），
+    则会分两步调度：第一步调度 TTTT，下一步调度 IIIIIIIIII。
 
-:   Default: `False`
+:   默认值：`False`
 
 #### `--scheduler-cls`
 
-:   The scheduler class to use. "vllm.v1.core.sched.scheduler.Scheduler" is
-    the default scheduler. Can be a class directly or the path to a class of
-    form "mod.custom_class".
+:   要使用的调度器类。"vllm.v1.core.sched.scheduler.Scheduler" 是默认调度器。可以直接指定类，也可以指定形式为 "mod.custom_class" 的类路径。
 
 #### `--disable-hybrid-kv-cache-manager`, `--no-disable-hybrid-kv-cache-manager`
 
-:   If set to True, KV cache manager will allocate the same size of KV cache
-    for all attention layers even if there are multiple type of attention layers
-    like full attention and sliding window attention.
-    If set to None, the default value will be determined based on the environment
-    and starting configuration.
+:   如果设置为 True，KV 缓存管理器将为所有注意力层分配相同大小的 KV 缓存，即使存在多种类型的注意力层（例如全注意力和滑动窗口注意力）。
+    如果设置为 None，则默认值将根据环境和启动配置确定。
 
 #### `--async-scheduling`, `--no-async-scheduling`
 
-:   If set to False, disable async scheduling. Async scheduling helps to
-    avoid gaps in GPU utilization, leading to better latency and throughput.
+:   如果设置为 False，则禁用异步调度。异步调度有助于避免 GPU 利用率出现间隙，从而降低延迟并提高吞吐量。
 
 #### `--stream-interval`
 
-:   The interval (or buffer size) for streaming in terms of token length.
-    A smaller value (1) makes streaming smoother by sending each token immediately,
-    while a larger value (e.g., 10) reduces host overhead and may increase throughput
-    by batching multiple tokens before sending.
+:   流式传输的间隔（或缓冲区大小），以 token 长度计。
+    较小的值（1）通过立即发送每个 token 使流式传输更平滑，
+    而较大的值（例如 10）通过批处理多个 token 再发送来减少主机开销，可能提高吞吐量。
 
-:   Default: `1`
+:   默认值：`1`
 
 
 ### CompilationConfig
 
-Configuration for compilation.
+编译配置。
 
-You must pass CompilationConfig to VLLMConfig constructor.
-VLLMConfig's post_init does further initialization. If used outside of the
-VLLMConfig, some fields will be left in an improper state.
+必须将 CompilationConfig 传递给 VLLMConfig 构造函数。
+VLLMConfig 的 post_init 会进行进一步初始化。如果在 VLLMConfig 外部使用，某些字段可能处于不正确的状态。
 
-It has three parts:
+它包含三个部分：
 
-- Top-level Compilation control:
+- 顶级编译控制：
     - [`mode`][vllm.config.CompilationConfig.mode]
     - [`debug_dump_path`][vllm.config.CompilationConfig.debug_dump_path]
     - [`cache_dir`][vllm.config.CompilationConfig.cache_dir]
@@ -1387,7 +1083,7 @@ It has three parts:
     - [`custom_ops`][vllm.config.CompilationConfig.custom_ops]
     - [`splitting_ops`][vllm.config.CompilationConfig.splitting_ops]
     - [`compile_mm_encoder`][vllm.config.CompilationConfig.compile_mm_encoder]
-- CudaGraph capture:
+- CudaGraph 捕获：
     - [`cudagraph_mode`][vllm.config.CompilationConfig.cudagraph_mode]
     - [`cudagraph_capture_sizes`]
     [vllm.config.CompilationConfig.cudagraph_capture_sizes]
@@ -1397,130 +1093,113 @@ It has three parts:
     [vllm.config.CompilationConfig.cudagraph_num_of_warmups]
     - [`cudagraph_copy_inputs`]
     [vllm.config.CompilationConfig.cudagraph_copy_inputs]
-- Inductor compilation:
+- Inductor 编译：
     - [`compile_sizes`][vllm.config.CompilationConfig.compile_sizes]
     - [`compile_ranges_split_points`]
         [vllm.config.CompilationConfig.compile_ranges_split_points]
     - [`inductor_compile_config`]
     [vllm.config.CompilationConfig.inductor_compile_config]
     - [`inductor_passes`][vllm.config.CompilationConfig.inductor_passes]
-    - custom inductor passes
+    - 自定义 inductor 传递
 
-Why we have different sizes for cudagraph and inductor:
-- cudagraph: a cudagraph captured for a specific size can only be used
-    for the same size. We need to capture all the sizes we want to use.
-- inductor: a graph compiled by inductor for a general shape can be used
-    for different sizes. Inductor can also compile for specific sizes,
-    where it can have more information to optimize the graph with fully
-    static shapes. However, we find the general shape compilation is
-    sufficient for most cases. It might be beneficial to compile for
-    certain small batchsizes, where inductor is good at optimizing.
+为什么 cudagraph 和 inductor 需要不同的大小：
+- cudagraph：针对特定大小捕获的 cudagraph 只能用于相同大小。我们需要捕获所有要使用的大小。
+- inductor：inductor 为通用形状编译的图可用于不同大小。Inductor 也可以为特定大小编译，
+    此时它可以拥有更多信息，通过完全静态形状来优化图。然而，我们发现通用形状编译在大多数情况下已足够。
+    为某些较小的批处理大小编译可能是有益的，inductor 擅长优化这些情况。
 
 #### `--cudagraph-capture-sizes`
 
-:   Sizes to capture cudagraph.
-    - None (default): capture sizes are inferred from vllm config.
-    - list[int]: capture sizes are specified as given.
+:   要捕获 cudagraph 的大小。
+    - None（默认）：从 vllm 配置推断捕获大小。
+    - list[int]：按给定值指定捕获大小。
 
 #### `--max-cudagraph-capture-size`
 
-:   The maximum cudagraph capture size.
+:   最大 cudagraph 捕获大小。
 
-    If cudagraph_capture_sizes is specified, this will be set to the largest
-    size in that list (or checked for consistency if specified). If
-    cudagraph_capture_sizes is not specified, the list of sizes is generated
-    automatically following the pattern:
+    如果指定了 cudagraph_capture_sizes，则此值将设置为该列表中的最大值（如果已指定则检查一致性）。
+    如果未指定 cudagraph_capture_sizes，则大小列表将按以下模式自动生成：
 
         [1, 2, 4] + list(range(8, 256, 8)) + list(
         range(256, max_cudagraph_capture_size + 1, 16))
 
-    If not specified, max_cudagraph_capture_size is set to min(max_num_seqs*2,
-    512) by default. This voids OOM in tight memory scenarios with small
-    max_num_seqs, and prevents capture of many large graphs (>512) that would
-    greatly increase startup time with limited performance benefit.
+    如果未指定，max_cudagraph_capture_size 默认设置为 min(max_num_seqs*2, 512)。
+    这可以避免在 max_num_seqs 较小且内存紧张的情况下出现 OOM，
+    并防止捕获许多大型图（>512），因为这会大大增加启动时间，但性能收益有限。
 
 
 ### VllmConfig
 
-Dataclass which contains all vllm-related configuration. This
-simplifies passing around the distinct configurations in the codebase.
+包含所有 vllm 相关配置的数据类。这简化了在代码库中传递不同配置的过程。
 
 #### `--speculative-config`
 
-:   Speculative decoding configuration.
+:   推测解码配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递 JSON 键。
 
 #### `--kv-transfer-config`
 
-:   The configurations for distributed KV cache transfer.
+:   分布式 KV 缓存传输的配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递 JSON 键。
 
 #### `--kv-events-config`
 
-:   The configurations for event publishing.
+:   事件发布的配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递 JSON 键。
 
 #### `--ec-transfer-config`
 
-:   The configurations for distributed EC cache transfer.
+:   分布式 EC 缓存传输的配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递 JSON 键。
 
 #### `--compilation-config`, `-cc`
 
-:   `torch.compile` and cudagraph capture configuration for the model.
+:   模型的 `torch.compile` 和 cudagraph 捕获配置。
 
-    As a shorthand, one can append compilation arguments via
-    -cc.parameter=argument such as `-cc.mode=3` (same as `-cc='{"mode":3}'`).
+    作为简写，可以通过 -cc.parameter=argument 附加编译参数，例如 `-cc.mode=3`（等同于 `-cc='{"mode":3}'`）。
 
-    You can specify the full compilation config like so:
+    可以按以下方式指定完整的编译配置：
     `{"mode": 3, "cudagraph_capture_sizes": [1, 2, 4, 8]}`
 
-    Should either be a valid JSON string or JSON keys passed individually.
-
-:   Default: `{'level': None, 'mode': None, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': [], 'splitting_ops': None, 'compile_mm_encoder': False, 'compile_sizes': None, 'compile_ranges_split_points': None, 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': None, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': None, 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': None, 'pass_config': {}, 'max_cudagraph_capture_size': None, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'static_all_moe_layers': []}`
+    应为有效的 JSON 字符串，或单独传递 JSON 键。
 
 #### `--attention-config`, `-ac`
 
-:   Attention configuration.
+:   注意力机制配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递的 JSON 键。
 
-:   Default: `AttentionConfig(backend=None, flash_attn_version=None, use_prefill_decode_attention=False, flash_attn_max_num_splits_for_cuda_graph=32, use_cudnn_prefill=False, use_trtllm_ragged_deepseek_prefill=True, use_trtllm_attention=None, disable_flashinfer_prefill=False, disable_flashinfer_q_quantization=False)`
+:   默认值：`AttentionConfig(backend=None, flash_attn_version=None, use_prefill_decode_attention=False, flash_attn_max_num_splits_for_cuda_graph=32, use_cudnn_prefill=False, use_trtllm_ragged_deepseek_prefill=True, use_trtllm_attention=None, disable_flashinfer_prefill=False, disable_flashinfer_q_quantization=False)`
 
 #### `--additional-config`
 
-:   Additional config for specified platform. Different platforms may
-    support different configs. Make sure the configs are valid for the platform
-    you are using. Contents must be hashable.
+:   指定平台的额外配置。不同平台可能支持不同的配置。请确保所用配置对当前平台有效。配置内容必须是可哈希的。
 
-:   Default: `{}`
+:   默认值：`{}`
 
 #### `--structured-outputs-config`
 
-:   Structured outputs configuration.
+:   结构化输出配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递的 JSON 键。
 
-:   Default: `StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False)`
+:   默认值：`StructuredOutputsConfig(backend='auto', disable_fallback=False, disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False)`
 
 #### `--profiler-config`
 
-:   Profiling configuration.
+:   性能分析配置。
 
-    Should either be a valid JSON string or JSON keys passed individually.
+    应为有效的 JSON 字符串，或单独传递的 JSON 键。
 
-:   Default: `ProfilerConfig(profiler=None, torch_profiler_dir='', torch_profiler_with_stack=True, torch_profiler_with_flops=False, torch_profiler_use_gzip=True, torch_profiler_dump_cuda_time_total=True, torch_profiler_record_shapes=False, torch_profiler_with_memory=False, ignore_frontend=False, delay_iterations=0, max_iterations=0)`
+:   默认值：`ProfilerConfig(profiler=None, torch_profiler_dir='', torch_profiler_with_stack=True, torch_profiler_with_flops=False, torch_profiler_use_gzip=True, torch_profiler_dump_cuda_time_total=True, torch_profiler_record_shapes=False, torch_profiler_with_memory=False, ignore_frontend=False, delay_iterations=0, max_iterations=0)`
 
 #### `--optimization-level`
 
-:   The optimization level. These levels trade startup time cost for
-    performance, with -O0 having the best startup time and -O3 having the best
-    performance. -02 is used by defult. See  OptimizationLevel for full
-    description.
+:   优化级别。这些级别在启动时间成本和性能之间进行权衡，其中 -O0 启动时间最短，-O3 性能最佳。默认使用 -O2。详见 OptimizationLevel 的完整说明。
 
-:   Default: `2`
-
+:   默认值：`2`
