@@ -93,46 +93,15 @@ Reason: ['compute capability not supported']
 
 ### 标准 Attention（MHA、MQA、GQA）
 
-**Blackwell（SM 10.x）：**
+优先级表由构建脚本自动生成：
 
-| 优先级 | Backend |
-|--------|---------|
-| 1 | `FLASHINFER` |
-| 2 | `FLASH_ATTN` |
-| 3 | `TRITON_ATTN` |
-| 4 | `FLEX_ATTENTION` |
-
-**Ampere/Hopper（SM 8.x-9.x）：**
-
-| 优先级 | Backend |
-|--------|---------|
-| 1 | `FLASH_ATTN` |
-| 2 | `FLASHINFER` |
-| 3 | `TRITON_ATTN` |
-| 4 | `FLEX_ATTENTION` |
+--8<-- "gen:priority-standard"
 
 ### MLA Attention（DeepSeek 风格）
 
-**Blackwell（SM 10.x）：**
+优先级表由构建脚本自动生成：
 
-| 优先级 | Backend |
-|--------|---------|
-| 1 | `FLASHINFER_MLA` |
-| 2 | `CUTLASS_MLA` |
-| 3 | `FLASH_ATTN_MLA` |
-| 4 | `FLASHMLA` |
-| 5 | `TRITON_MLA` |
-| 6 | `FLASHMLA_SPARSE` |
-
-**Ampere/Hopper（SM 8.x-9.x）：**
-
-| 优先级 | Backend |
-|--------|---------|
-| 1 | `FLASH_ATTN_MLA` |
-| 2 | `FLASHMLA` |
-| 3 | `FLASHINFER_MLA` |
-| 4 | `TRITON_MLA` |
-| 5 | `FLASHMLA_SPARSE` |
+--8<-- "gen:priority-mla"
 
 > **注意：** ROCm 和 CPU 平台有各自的选择逻辑。有关详细信息，请参阅特定平台的文档。
 
@@ -154,20 +123,9 @@ Reason: ['compute capability not supported']
 
 ## 标准 Attention（MHA、MQA、GQA）Backend
 
-| Backend | 版本 | Dtypes | KV Dtypes | Block Sizes | Head Sizes | Sink | MM Prefix | Attention Types | Compute Cap. |
-|---------|------|--------|-----------|-------------|------------|------|-----------|-----------------|--------------|
-| `CPU_ATTN` |  | fp16, bf16, fp32 | `auto` | Any | 32, 64, 80, 96, 112, 128, 160, 192, 224, 256 | ❌ | ❌ | All | N/A |
-| `FLASHINFER` | Native† | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3`, `fp8_e5m2` | 16, 32, 64 | 64, 128, 256 | ❌ | ❌ | Decoder | 7.x-9.x |
-| `FLASHINFER` | TRTLLM† | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3`, `fp8_e5m2` | 16, 32, 64 | 64, 128, 256 | ✅ | ❌ | Decoder | 10.x |
-| `FLASH_ATTN` | FA2* | fp16, bf16 | `auto`, `bfloat16` | %16 | Any | ❌ | ❌ | All | ≥8.0 |
-| `FLASH_ATTN` | FA3* | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3`, `fp8_e5m2` | %16 | Any | ✅ | ❌ | All | 9.x |
-| `FLASH_ATTN_DIFFKV` |  | fp16, bf16 | `auto` | Any | Any | ❌ | ❌ | Decoder | Any |
-| `FLEX_ATTENTION` |  | fp16, bf16, fp32 | `auto`, `bfloat16` | Any | Any | ❌ | ✅ | Decoder, Encoder Only | Any |
-| `ROCM_AITER_FA` |  | fp16, bf16 | `auto` | %16 | 64, 128, 256 | ❌ | ❌ | Decoder | N/A |
-| `ROCM_AITER_UNIFIED_ATTN` |  | fp16, bf16 | `auto` | Any | Any | ❌ | ❌ | Decoder | N/A |
-| `ROCM_ATTN` |  | fp16, bf16, fp32 | `auto` | 16, 32, 544 | 32, 64, 96, 128, 160, 192, 224, 256 | ❌ | ❌ | Decoder | N/A |
-| `TREE_ATTN` |  | fp16, bf16 | `auto` | %16 | 32, 64, 96, 128, 160, 192, 224, 256 | ❌ | ❌ | Decoder | Any |
-| `TRITON_ATTN` |  | fp16, bf16, fp32 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3`, `fp8_e5m2` | %16 | Any | ✅ | ✅ | All | Any |
+--8<-- "gen:table-standard"
+
+--8<-- "gen:table-minimax"
 
 > **†** FlashInfer 在 Blackwell（SM100）上使用 TRTLLM attention，支持 sinks。通过 `--attention-config.use_trtllm_attention=0` 禁用。
 >
@@ -181,26 +139,10 @@ MLA 对 prefill 和 decode 阶段使用不同的 backend。
 
 Prefill backend 在运行时根据硬件和配置选择。
 
-| Backend | 描述 | Compute Cap. | 启用 | 禁用 | 备注 |
-|---------|------|--------------|------|------|------|
-| TRT-LLM Ragged‡ | TensorRT-LLM ragged attention | 10.x | SM100 上默认 | `-ac.use_trtllm_ragged_deepseek_prefill=0` | 仅 DeepSeek R1 dims |
-| FlashInfer | FlashInfer CUTLASS backend | 10.x | `-ac.disable_flashinfer_prefill=0` | `-ac.disable_flashinfer_prefill=1` | 仅 DeepSeek R1 dims |
-| cuDNN | 基于 cuDNN 的 attention | 10.x | `-ac.use_cudnn_prefill=1` | `-ac.use_cudnn_prefill=0` |  |
-| FlashAttention | FlashAttention varlen（FA2/FA3） | Any | 默认 fallback | 使用其他 backend | SM90 上为 FA3，其他情况为 FA2 |
-
-> **‡** TRT-LLM Ragged 是 Blackwell（SM100）上的默认 backend。
-> 在其他 GPU 上，FlashAttention 作为默认 backend 使用。
+--8<-- "gen:table-mla-prefill"
 
 ### Decode Backend
 
-| 后端 | 数据类型 | KV 数据类型 | 块大小 | 头大小 | 汇流 | 稀疏 | MM 前缀 | 注意力类型 | 计算能力 |
-|---------|--------|-----------|-------------|------------|------|--------|-----------|-----------------|--------------|
-| `CUTLASS_MLA` | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3` | 128 | 任意 | ❌ | ❌ | ❌ | 解码器 | 10.x |
-| `FLASHINFER_MLA` | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3` | 32, 64 | 任意 | ❌ | ❌ | ❌ | 解码器 | 10.x |
-| `FLASHMLA` | fp16, bf16 | `auto`, `bfloat16`, `fp8`, `fp8_e4m3` | 64 | 任意 | ❌ | ❌ | ❌ | 解码器 | 9.x-10.x |
-| `FLASHMLA_SPARSE` | bf16 | `auto`, `bfloat16`, `fp8_ds_mla` | 64 | 576 | ❌ | ✅ | ❌ | 解码器 | 9.x-10.x |
-| `FLASH_ATTN_MLA` | fp16, bf16 | `auto`, `bfloat16` | %16 | 任意 | ❌ | ❌ | ❌ | 解码器 | 9.x |
-| `ROCM_AITER_MLA` | fp16, bf16 | `auto` | 1 | 任意 | ❌ | ❌ | ❌ | 解码器 | N/A |
-| `ROCM_AITER_MLA_SPARSE` | fp16, bf16 | `auto` | 任意 | 576 | ❌ | ❌ | ❌ | 解码器 | N/A |
-| `ROCM_AITER_TRITON_MLA` | fp16, bf16 | `auto` | 任意 | 任意 | ❌ | ❌ | ❌ | 解码器 | N/A |
-| `TRITON_MLA` | fp16, bf16 | `auto`, `bfloat16` | 任意 | 任意 | ❌ | ❌ | ❌ | 解码器 | 任意 |
+--8<-- "gen:table-mla-decode"
+
+--8<-- "gen:table-mla-v4-decode"

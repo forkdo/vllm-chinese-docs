@@ -33,15 +33,19 @@ vllm serve unsloth/Llama-3.2-1B-Instruct
 
 ## 通用指标
 
---8<-- "docs/generated/metrics/general.inc.md"
+--8<-- "gen:metrics-general"
 
 ## 推测解码指标
 
---8<-- "docs/generated/metrics/spec_decode.inc.md"
+--8<-- "gen:metrics-spec-decode"
 
 ## NIXL KV 连接器指标
 
---8<-- "docs/generated/metrics/nixl_connector.inc.md"
+--8<-- "gen:metrics-nixl"
+
+## 模型 FLOPs 利用率（MFU）指标
+
+--8<-- "gen:metrics-mfu"
 
 ## 废弃策略
 
