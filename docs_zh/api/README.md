@@ -1,6 +1,3 @@
-<!-- FILE: api/README.md -->
-
-```markdown
 # 摘要
 
 ## 配置

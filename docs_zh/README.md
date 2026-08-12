@@ -1,6 +1,3 @@
-<!-- FILE: README.md -->
-
-```markdown
 # 欢迎来到 vLLM
 
 <figure markdown="span">
