@@ -16,7 +16,7 @@ vLLM 支持数据并行部署，其中模型权重被复制到独立的实例/GP
 
 在任何情况下，在 DP rank 之间进行请求负载均衡都是有益的。对于在线部署，可以通过考虑每个 DP 引擎的状态来优化这种均衡，特别是其当前已调度和等待（排队）的请求以及 KV 缓存状态。每个 DP 引擎都有独立的 KV 缓存，通过智能地引导提示，可以最大化前缀缓存的效益。
 
-本文档重点介绍在线部署（使用 API 服务器）。DP + EP 也支持离线使用（通过 LLM 类），示例请参阅 [examples/offline_inference/data_parallel.py](../../examples/offline_inference/data_parallel.py)。
+本文档重点介绍在线部署（使用 API 服务器）。DP + EP 也支持离线使用（通过 LLM 类），示例请参阅 [examples/features/data_parallel/data_parallel_offline.py](../../examples/features/data_parallel/data_parallel_offline.py)。
 
 在线部署支持两种不同的模式：自带内部负载均衡的独立模式，或外部逐 rank 进程部署和负载均衡模式。
 
@@ -98,7 +98,7 @@ vllm serve $MODEL --data-parallel-size 4 --data-parallel-size-local 2 \
 
 在这种情况下，将每个 DP rank 视为一个独立的 vLLM 部署会更加方便，每个 rank 都有自己的端点，并由外部路由器在它们之间平衡 HTTP 请求，利用来自每个服务器的适当实时遥测数据进行路由决策。
 
-对于非 MoE 模型，这已经可以简单地实现，因为每个部署的服务器都是完全独立的。为此不需要使用任何数据并行命令行选项。
+对于非 MoE 模型，这已经可以简单地实现，因为每个部署的服务器都是完全独立的。在这种情况下，启动独立的 vLLM 实例而无需任何 `--data-parallel-*` 参数；外部 DP CLI 选项仅支持 MoE 部署。
 
 我们支持 MoE DP+EP 的等效拓扑结构，可以通过以下命令行参数进行配置。
 

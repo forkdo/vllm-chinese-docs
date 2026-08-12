@@ -28,10 +28,8 @@ jobs:
       TZ: Asia/Shanghai
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v5
-        with:
-          python-version: 3.x     
+      - uses: actions/checkout@v7
+
       - name: Fetch Source
         run: |
           git clone https://github.com/vllm-project/vllm.git docsite
@@ -45,10 +43,9 @@ jobs:
       - name: Build Site
         working-directory: ./docsite
         run: mkdocs build --clean
-      - name: Copy CNAME
-        run: cp CNAME docsite/site/
+
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: docs-site
           path: docsite/site
@@ -63,7 +60,7 @@ jobs:
     steps:
       # - uses: actions/configure-pages@v5
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: docs-site
           path: ./site
@@ -72,6 +69,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site
+          cname: ${{ vars.PAGES_DOMAIN }}
       # - uses: actions/upload-pages-artifact@v4
       #   with:
       #     path: docsite/site
@@ -81,9 +79,15 @@ jobs:
   deploy-ssh-server:
     needs: build
     runs-on: ubuntu-latest
+    # 是否启用 SSH 服务器部署，默认不启用。
+    # 在仓库 Settings → Secrets and variables → Actions → Variables 中
+    # 添加变量 ENABLE_SSH_DEPLOY=true 即可开启。
+    env:
+      ENABLE_SSH_DEPLOY: ${{ vars.ENABLE_SSH_DEPLOY || 'false' }}
+    if: ${{ vars.ENABLE_SSH_DEPLOY == 'true' }}
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: docs-site
           path: ./site

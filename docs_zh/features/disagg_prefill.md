@@ -17,24 +17,22 @@
 
 ## 使用示例
 
-请参考 [examples/online_serving/disaggregated_prefill.sh](../../examples/online_serving/disaggregated_prefill.sh) 了解分离式预填充的示例用法。
+现在支持 9 种类型的连接器：
 
-目前支持 5 种类型的连接器：
+- **ExampleConnector**：参考 [examples/disaggregated/example_connector/run.sh](../../examples/disaggregated/example_connector/run.sh) 了解 ExampleConnector 分离式预填充的示例用法。
+- **LMCacheConnectorV1**：参考 [examples/disaggregated/lmcache/disagg_prefill_lmcache_v1/disagg_example_nixl.sh](../../examples/disaggregated/lmcache/disagg_prefill_lmcache_v1/disagg_example_nixl.sh) 了解 LMCacheConnectorV1 分离式预填充的示例用法，该连接器使用 NIXL 作为底层 KV 传输。LMCache 还通过 `LMCacheMPConnector` 提供多进程 (MP) 模式，其中独立的 `lmcache server` 由一个或多个 vLLM 实例共享 KV 缓存；参见 [LMCache 示例](../../examples/disaggregated/lmcache/README.md) 和 [LMCache 文档](https://docs.lmcache.ai) 了解设置方法。
+- **NixlConnector**：参考 [tests/v1/kv_connector/nixl_integration/run_accuracy_test.sh](../../tests/v1/kv_connector/nixl_integration/run_accuracy_test.sh) 了解 NixlConnector 分离式预填充的示例用法，该连接器支持完全异步的发送/接收。详细用法请参阅 [NixlConnector 使用指南](nixl_connector_usage.md)。有关功能兼容性详情，参见 [NixlConnector 兼容性矩阵](nixl_connector_compatibility.md)。您可以指定一个或多个 NIXL 传输后端，例如：
 
-- **ExampleConnector**：参考 [examples/offline_inference/disaggregated-prefill-v1/run.sh](../../examples/offline_inference/disaggregated-prefill-v1/run.sh) 了解 ExampleConnector 分离式预填充的示例用法。
-- **LMCacheConnectorV1**：参考 [examples/others/lmcache/disagg_prefill_lmcache_v1/disagg_example_nixl.sh](../../examples/others/lmcache/disagg_prefill_lmcache_v1/disagg_example_nixl.sh) 了解 LMCacheConnectorV1 分离式预填充的示例用法，该连接器使用 NIXL 作为底层 KV 传输。
-- **NixlConnector**：参考 [tests/v1/kv_connector/nixl_integration/run_accuracy_test.sh](../../tests/v1/kv_connector/nixl_integration/run_accuracy_test.sh) 了解 NixlConnector 分离式预填充的示例用法，该连接器支持完全异步的发送/接收。详细用法请参阅 [NixlConnector 使用指南](nixl_connector_usage.md)。
-- **P2pNcclConnector**：参考 [examples/online_serving/disaggregated_serving_p2p_nccl_xpyd/disagg_example_p2p_nccl_xpyd.sh](../../examples/online_serving/disaggregated_serving_p2p_nccl_xpyd/disagg_example_p2p_nccl_xpyd.sh) 了解 P2pNcclConnector 分离式预填充的示例用法。
+  ```bash
+  --kv-transfer-config '{"kv_connector":"NixlConnector","kv_role":"kv_both", "kv_buffer_device":"cuda", "kv_connector_extra_config":{"backends":["UCX", "GDS"]}}'
+  ```
+
+- **MooncakeConnector**：参考 [examples/disaggregated/mooncake_connector/run_mooncake_connector.sh](../../examples/disaggregated/mooncake_connector/run_mooncake_connector.sh) 了解 MooncakeConnector 分离式预填充的示例用法。详细用法请参阅 [MooncakeConnector 使用指南](mooncake_connector_usage.md)。
+- **MoRIIOConnector**（仅限 ROCm）：参见 [MoRI-IO 使用指南](moriio_connector_usage.md) 了解示例用法和详细文档。
 - **MultiConnector**：利用 KVTransferConfig 中已存在的 kv_connector_extra_config: dict[str, Any]，将我们想要的所有连接器存储在有序的 kwargs 列表中。例如：
 
   ```bash
   --kv-transfer-config '{"kv_connector":"MultiConnector","kv_role":"kv_both","kv_connector_extra_config":{"connectors":[{"kv_connector":"NixlConnector","kv_role":"kv_both"},{"kv_connector":"ExampleConnector","kv_role":"kv_both","kv_connector_extra_config":{"shared_storage_path":"local_storage"}}]}}'
-  ```
-
-对于 NixlConnector，您还可以指定一个或多个 NIXL_Backend。例如：
-
-  ```bash
-  --kv-transfer-config '{"kv_connector":"NixlConnector","kv_role":"kv_both", "kv_buffer_device":"cuda", "kv_connector_extra_config":{"backends":["UCX", "GDS"]}}'
   ```
 
 - **OffloadingConnector**：启用将 KV 数据卸载到 CPU 内存，自定义 CPU 块大小（以 tokens 为单位）和分配的总 CPU 内存字节数：
@@ -43,9 +41,41 @@
   --kv-transfer-config '{"kv_connector":"OffloadingConnector","kv_role":"kv_both","kv_connector_extra_config":{"block_size": 64, "cpu_bytes_to_use": 1000000000}}'
   ```
 
-## 性能测试
+  对于多级卸载（例如，CPU + 文件系统层）和完整的配置参考，参见 [KV 卸载使用指南](kv_offloading_usage.md)。
 
-请参考 [benchmarks/disagg_benchmarks](../../benchmarks/disagg_benchmarks) 了解分离式预填充的性能测试。
+- **FlexKVConnectorV1**：参考 [examples/disaggregated/flexkv_connector/prefix_caching_flexkv.py](../../examples/disaggregated/flexkv_connector/prefix_caching_flexkv.py) 了解 FlexKVConnectorV1 的示例用法。FlexKV 是一个用于超大规模 LLM 推理的分布式 KV 存储和多层缓存管理系统。
+
+  ```bash
+  --kv-transfer-config '{"kv_connector":"FlexKVConnectorV1","kv_role":"kv_both"}'
+  ```
+
+## 在解码时重用预填充 token IDs
+
+!!! note
+    这适用于在 `/v1/chat/completions` 端点上运行的分离式预填充和解码服务，使用如上使用示例中配置的 KV 连接器。这是实验性的，可能会发生变化。
+
+在分离式服务中，预填充和解码阶段都会从 `messages` 渲染聊天提示并对其进行分词。由于预填充阶段已经生成了 token IDs，解码阶段可以重用它们并跳过自己的模板化和分词。输出与其他正常的聊天补全相同：它会被解码为文本，工具调用和推理解析、流式和结构化输出约束仍然适用。
+
+token IDs 通过 `kv_transfer_params` 传递给解码阶段，该字典已附加到解码请求以协调传输：
+
+1. 使用启用的 `return_token_ids` 发送预填充请求，并从响应中读取 `prompt_token_ids`。
+2. 在解码请求上将 `kv_transfer_params["prompt_token_ids"]` 设置为这些 IDs。`messages` 仍然是必需的，但当 IDs 存在时不会对其内容进行分词。
+
+```python
+prefill = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    extra_body={"return_token_ids": True, "kv_transfer_params": {"do_remote_decode": True}},
+)
+ids = prefill.prompt_token_ids
+
+decode = client.chat.completions.create(
+    model=model,
+    messages=messages,
+    stream=True,
+    extra_body={"kv_transfer_params": {"do_remote_prefill": True, "prompt_token_ids": ids}},
+)
+```
 
 ## 开发
 

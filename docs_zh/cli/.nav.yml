@@ -1,0 +1,12 @@
+<!-- FILE: cli/.nav.yml -->
+
+```yaml
+nav:
+  - "*.md"
+  - bench:
+    - bench/*.md
+    - sweep:
+      - bench/sweep/*.md
+  - launch:
+    - launch/*.md
+```

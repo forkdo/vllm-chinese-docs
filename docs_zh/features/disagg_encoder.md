@@ -36,10 +36,10 @@
 以下可直接运行的脚本展示了工作流程：
 
 1 个编码器实例 + 1 个 PD 实例：  
-`examples/online_serving/disaggregated_encoder/disagg_1e1pd_example.sh`
+`examples/disaggregated/disaggregated_encoder/disagg_1e1pd_example.sh`
 
 1 个编码器实例 + 1 个预填充实例 + 1 个解码实例：  
-`examples/online_serving/disaggregated_encoder/disagg_1e1p1d_example.sh`
+`examples/disaggregated/disaggregated_encoder/disagg_1e1p1d_example.sh`
 
 ---
 
@@ -72,4 +72,4 @@
 
 `docs/features/disagg_prefill.md` 简要介绍了分离式预填充 (v0) 的概念。
 
-我们使用来自 `vllm/distributed/kv_transfer/kv_connector/v1/nixl_connector.py` 的 **NixlConnector** 创建示例设置，并参考 `tests/v1/kv_connector/nixl_integration/toy_proxy_server.py` 来实现 P 和 D 之间的 KV 传输。
+我们使用来自 `vllm/distributed/kv_transfer/kv_connector/v1/nixl/` 的 **NixlConnector** 创建示例设置，并参考 `tests/v1/kv_connector/nixl_integration/toy_proxy_server.py` 来实现 P 和 D 之间的 KV 传输。

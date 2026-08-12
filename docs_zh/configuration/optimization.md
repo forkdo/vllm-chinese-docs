@@ -1,10 +1,3 @@
-# 优化与调优
-
-本指南介绍了 vLLM V1 的优化策略和性能调优方法。
-
-!!! tip
-    内存不足？请参考[本指南](./conserving_memory.md)了解如何节省内存。
-
 ## 抢占机制
 
 由于 Transformer 架构的自回归特性，有时 KV 缓存空间不足以处理所有批处理请求。  
@@ -35,14 +28,14 @@ WARNING 05-09 00:49:33 scheduler.py:1057 Sequence group 0 is preempted by Preemp
 
 此策略有两个优势：
 
-- 通过优先处理解码请求，改善了 ITL 和生成解码性能。
+- 通过优先处理解码请求，改善了 token 间延迟（ITL）和生成解码性能。
 - 通过将计算密集型（预填充）和内存密集型（解码）请求放入同一批次，有助于实现更好的 GPU 利用率。
 
 ### 使用分块预填充进行性能调优
 
 您可以通过调整 `max_num_batched_tokens` 来调优性能：
 
-- 较小的值（例如 2048）可实现更好的 token 间延迟（ITL），因为减慢了预填充的解码请求更少。
+- 较小的值（例如 2048）可实现更好的 ITL，因为减慢了预填充的解码请求更少。
 - 较大的值可实现更好的首 token 时间（TTFT），因为可以在一个批次中处理更多预填充 token。
 - 为获得最佳吞吐量，建议设置 `max_num_batched_tokens > 8192`，尤其是在大型 GPU 上运行较小模型时。
 - 如果 `max_num_batched_tokens` 与 `max_model_len` 相同，则几乎等同于 V0 的默认调度策略（但仍会优先处理解码）。
@@ -183,6 +176,49 @@ llm = LLM(
 - MiniCPM-V-2.5 或更高版本 (<https://github.com/vllm-project/vllm/pull/23327>, <https://github.com/vllm-project/vllm/pull/23948>)
 - Qwen2-VL 或更高版本 (<https://github.com/vllm-project/vllm/pull/22742>, <https://github.com/vllm-project/vllm/pull/24955>, <https://github.com/vllm-project/vllm/pull/25445>)
 - Step3 (<https://github.com/vllm-project/vllm/pull/22697>)
+
+
+
+### 多插槽 GPU 节点的 NUMA 绑定
+
+在多插槽 GPU 服务器上，如果 GPU 工作进程的 CPU 执行和内存分配偏离离 GPU 最近的 NUMA 节点，性能可能会下降。vLLM 可以在 Python 子进程启动之前使用 `numactl` 固定每个工作进程，以便解释器、导入和早期分配器状态从一开始就以期望的 NUMA 策略创建。
+
+使用 `--numa-bind` 启用此功能。默认情况下，vLLM 自动检测 GPU 到 NUMA 的映射，并为每个工作进程使用 `--cpunodebind=<node> --membind=<node>`。当您需要自定义 CPU 策略时，添加 `--numa-bind-cpus`，vLLM 将切换到 `--physcpubind=<cpu-list> --membind=<node>`。
+
+这些 `--numa-bind*` 选项仅适用于 GPU 执行进程。它们不配置 CPU 后端的单独线程亲和性控制。自动 GPU 到 NUMA 的检测目前已针对基于 CUDA/NVML 和 ROCM 的平台实现；其他 GPU 后端如果使用这些选项必须提供明确的绑定列表。
+
+`--numa-bind-nodes` 为每个可见 GPU 接受一个非负 NUMA 节点索引，顺序与 GPU 索引相同。
+`--numa-bind-cpus` 为每个可见 GPU 接受一个 `numactl` CPU 列表，顺序与 GPU 索引相同。每个 CPU 列表必须使用 `numactl --physcpubind` 语法，如 `0-3`、`0,2,4-7` 或 `16-31,48-63`。
+
+```bash
+# 自动检测可见 GPU 的 NUMA 节点
+vllm serve meta-llama/Llama-3.1-8B-Instruct \
+  --tensor-parallel-size 4 \
+  --numa-bind
+
+# 显式 NUMA 节点映射
+vllm serve meta-llama/Llama-3.1-8B-Instruct \
+  --tensor-parallel-size 4 \
+  --numa-bind \
+  --numa-bind-nodes 0 0 1 1
+
+# 显式 CPU 固定，适用于 PCT 或其他高频核心布局
+vllm serve meta-llama/Llama-3.1-8B-Instruct \
+  --tensor-parallel-size 4 \
+  --numa-bind \
+  --numa-bind-nodes 0 0 1 1 \
+  --numa-bind-cpus 0-3 4-7 48-51 52-55
+```
+
+注意：
+
+- CLI 使用会强制 multiprocessing 自动使用 `spawn` 方法。如果通过 Python API 启用 NUMA 绑定，还要设置 `VLLM_WORKER_MULTIPROC_METHOD=spawn`。
+- 自动检测依赖于主机的 NVML 和 NUMA 支持。如果无法可靠地确定映射，请显式传递 `--numa-bind-nodes`。
+- 显式的 `--numa-bind-nodes` 和 `--numa-bind-cpus` 值必须是有效的 `numactl` 输入。vLLM 会进行少量验证，但有效的绑定语义仍由 `numactl` 决定。
+- 当前实现绑定 GPU 执行进程，如 `EngineCore` 和 multiprocessing 工作进程。它不适用于前端 API 服务器进程或 DP 协调器。
+- 在容器化环境中，NUMA 策略系统调用可能需要额外权限，例如通过 `docker run` 运行时添加 `--cap-add SYS_NICE`。
+
+### CPU 后端线程亲和性
 
 ## 输入处理
 

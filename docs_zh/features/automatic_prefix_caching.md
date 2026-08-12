@@ -11,7 +11,7 @@
 
 在 vLLM 引擎中设置 `enable_prefix_caching=True` 以启用 APC。示例如下：
 
-[examples/offline_inference/automatic_prefix_caching.py](../../examples/offline_inference/automatic_prefix_caching.py)
+[examples/features/automatic_prefix_caching/automatic_prefix_caching_offline.py](../../examples/features/automatic_prefix_caching/automatic_prefix_caching_offline.py)
 
 ## 示例工作负载
 

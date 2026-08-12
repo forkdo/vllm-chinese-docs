@@ -17,10 +17,7 @@
 
 ## 硬件要求
 
-批次不变性目前需要计算能力为 9.0 或更高的 NVIDIA GPU：
-
-- **H 系列**：H100、H200
-- **B 系列**：B100、B200
+批次不变性需要计算能力为 8.0 或更高的 NVIDIA GPU。
 
 ## 启用批次不变性
 
@@ -104,10 +101,13 @@ for output in outputs:
 批次不变性已在以下模型上测试并验证：
 
 - **DeepSeek 系列**：`deepseek-ai/DeepSeek-V3`、`deepseek-ai/DeepSeek-V3-0324`、`deepseek-ai/DeepSeek-R1`、`deepseek-ai/DeepSeek-V3.1`
-- **Qwen3 (Dense)**：`Qwen/Qwen3-1.7B`、`Qwen/Qwen3-8B`
-- **Qwen3 (MoE)**：`Qwen/Qwen3-30B-A3B`、`Qwen/Qwen3-Next-80B-A3B-Instruct`
+- **Qwen3 (Dense)**：`Qwen/Qwen3-1.7B`、`Qwen/Qwen3-8B`、`Qwen/Qwen3-4B-AWQ`、`Qwen/Qwen3-8B-AWQ`
+- **Qwen3 (MoE)**：`Qwen/Qwen3-30B-A3B`、`Qwen/Qwen3-Next-80B-A3B-Instruct`、`Qwen/Qwen3-30B-A3B-Thinking-2507-FP8`
 - **Qwen2.5**：`Qwen/Qwen2.5-0.5B-Instruct`、`Qwen/Qwen2.5-1.5B-Instruct`、`Qwen/Qwen2.5-3B-Instruct`、`Qwen/Qwen2.5-7B-Instruct`、`Qwen/Qwen2.5-14B-Instruct`、`Qwen/Qwen2.5-32B-Instruct`
-- **Llama 3**：`meta-llama/Llama-3.1-8B-Instruct`、`meta-llama/Llama-3.2-1B-Instruct`
+- **Llama 3**：Llama3.1 和 3.2 系列，例如 `meta-llama/Llama-3.2-3B-Instruct`
+- **GPT-OSS**：`openai/gpt-oss-20b`、`openai/gpt-oss-120b`
+- **Mistral**：`mistralai/Mistral-7B-v0.3`
+- **Phi 系列**：`microsoft/Phi-3.5-mini-instruct`
 
 其他模型可能也适用，但以上模型已经过明确验证。如果您在特定模型上遇到问题，请在 [GitHub 问题跟踪器](https://github.com/vllm-project/vllm/issues/new/choose) 上报告。
 

@@ -1,3 +1,6 @@
+<!-- FILE: README.md -->
+
+```markdown
 # 欢迎来到 vLLM
 
 <figure markdown="span">
@@ -19,7 +22,7 @@
 
 vLLM 是一个快速且易于使用的 LLM 推理和服务库。
 
-最初由加州大学伯克利分校 [Sky Computing Lab](https://sky.cs.berkeley.edu) 开发，vLLM 已发展成为由社区驱动的项目，接受了来自学术界和工业界的贡献。
+最初由加州大学伯克利分校 [Sky Computing Lab](https://sky.cs.berkeley.edu) 开发，vLLM 已发展成为最活跃的开源 AI 项目之一，由来自 2000 多位贡献者的众多学术机构和公司共同构建和维护。
 
 如何开始使用 vLLM 取决于用户类型。如果您希望：
 
@@ -27,36 +30,40 @@ vLLM 是一个快速且易于使用的 LLM 推理和服务库。
 - 使用 vLLM 构建应用程序，我们建议从 [用户指南](./usage/README.md) 开始
 - 构建 vLLM，我们建议从 [开发者指南](./contributing/README.md) 开始
 
-有关 vLLM 开发的信息，请参阅：
+vLLM 速度快的原因包括：
 
-- [路线图](https://roadmap.vllm.ai)
-- [发布版本](https://github.com/vllm-project/vllm/releases)
+- 最先进的推理吞吐量
+- 通过 [**PagedAttention**](https://blog.vllm.ai/2023/06/20/vllm.html) 高效管理注意力键值内存
+- 对传入请求的连续批处理、分块预填充、前缀缓存
+- 通过分段和完整 CUDA/HIP 图进行快速灵活的模型执行
+- 量化：FP8、MXFP8/MXFP4、NVFP4、INT8、INT4、GPTQ/AWQ、GGUF、compressed-tensors、ModelOpt、TorchAO 以及[更多](https://docs.vllm.ai/en/latest/features/quantization/index.html)
+- 优化的注意力内核，包括 FlashAttention、FlashInfer、TRTLLM-GEN、FlashMLA 和 Triton
+- 使用 CUTLASS、TRTLLM-GEN、CuTeDSL 针对各种精度的优化 GEMM/MoE 内核
+- 投机解码，包括 n-gram、后缀、EAGLE、DFlash
+- 使用 torch.compile 的自动内核生成和图级变换
+- 分离的预填充、解码和编码
 
-vLLM 的优势体现在：
+vLLM 灵活且易于使用的原因包括：
 
-- 具备最先进的服务吞吐量
-- 使用 [**PagedAttention**](https://blog.vllm.ai/2023/06/20/vllm.html) 高效管理注意力键和值内存
-- 对传入请求进行连续批处理
-- 使用 CUDA/HIP 图实现快速模型执行
-- 量化支持：[GPTQ](https://arxiv.org/abs/2210.17323)、[AWQ](https://arxiv.org/abs/2306.00978)、INT4、INT8 和 FP8
-- 优化的 CUDA 内核，包括与 FlashAttention 和 FlashInfer 的集成
-- 规范化解码
-- 分块预填充
-
-vLLM 具有灵活性且易于使用，体现在：
-
-- 与流行的 HuggingFace 模型无缝集成
-- 支持多种解码算法的高吞吐量服务，包括*并行采样*、*束搜索*等
-- 支持张量并行、管道并行、数据并行和专家并行，用于分布式推理
+- 与流行的 Hugging Face 模型无缝集成
+- 通过多种解码算法（包括*并行采样*、*束搜索*等）实现高吞吐量服务
+- 支持张量、流水线、数据、专家和平行上下文分布式推理
 - 流式输出
-- 兼容 OpenAI 的 API 服务器
-- 支持 NVIDIA GPU、AMD CPU 和 GPU、Intel CPU 和 GPU、PowerPC CPU、Arm CPU 和 TPU。此外，还支持 Intel Gaudi、IBM Spyre 和华为 Ascend 等多样化的硬件插件
-- 前缀缓存支持
-- 多 LoRA 支持
+- 使用 xgrammar 或 guidance 生成结构化输出
+- 工具调用和推理解析器
+- OpenAI 兼容 API 服务器，以及 Anthropic Messages API 和 gRPC 支持
+- 针对密集层和 MoE 层的高效多 LoRA 支持
+- 支持 NVIDIA GPU、AMD GPU 以及 x86/ARM/PowerPC CPU。此外还有多样化的硬件插件，如 Google TPU、Intel Gaudi、IBM Spyre、华为 Ascend、Rebellion NPU、Apple Silicon、MetaX GPU 等。
 
-欲了解更多信息，请参阅以下内容：
+vLLM 无缝支持 HuggingFace 上的 200+ 模型架构，包括：
 
-- [vLLM 宣布博客文章](https://blog.vllm.ai/2023/06/20/vllm.html)（介绍 PagedAttention）
-- [vLLM 论文](https://arxiv.org/abs/2309.06180)（SOSP 2023）
-- [Cade Daniel 等人撰写：连续批处理如何在 LLM 推理中实现 23 倍吞吐量提升并降低 p50 延迟](https://www.anyscale.com/blog/continuous-batching-llm-inference)
-- [vLLM 线下交流活动](community/meetups.md)
+- 仅解码器 LLM（如 Llama、Qwen、Gemma）
+- 混合专家 LLM（如 Mixtral、DeepSeek-V3、Qwen-MoE、GPT-OSS）
+- 混合注意力与状态空间模型（如 Mamba、Qwen3.5）
+- 多模态模型（如 LLaVA、Qwen-VL、Pixtral）
+- 嵌入和检索模型（如 E5-Mistral、GTE、ColBERT）
+- 奖励和分类模型（如 Qwen-Math）
+
+查找支持的完整模型列表 [这里](./models/supported_models.md)。
+
+更多信息，请查看以下内容：

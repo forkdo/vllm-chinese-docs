@@ -15,7 +15,7 @@ llm = LLM(model="ibm-granite/granite-3.1-8b-instruct", tensor_parallel_size=2)
 ```
 
 !!! warning
-    为确保 vLLM 正确初始化 CUDA，您应避免在初始化 vLLM 之前调用相关函数（例如 [torch.cuda.set_device][]）。
+    为确保 vLLM 正确初始化 CUDA，您应避免在初始化 vLLM 之前调用相关函数（例如 [torch.accelerator.set_device_index][]）。
     否则，您可能会遇到类似 `RuntimeError: Cannot re-initialize CUDA in forked subprocess` 的错误。
 
     要控制使用哪些设备，请改用设置 `CUDA_VISIBLE_DEVICES` 环境变量。
@@ -23,7 +23,7 @@ llm = LLM(model="ibm-granite/granite-3.1-8b-instruct", tensor_parallel_size=2)
 !!! note
     启用张量并行后，每个进程都会读取完整模型并将其分割为块，这会进一步延长磁盘读取时间（与张量并行大小成正比）。
 
-    您可以使用 [examples/offline_inference/save_sharded_state.py](../../examples/offline_inference/save_sharded_state.py) 将模型检查点转换为分片检查点。转换过程可能需要一些时间，但之后您可以更快地加载分片检查点。无论张量并行大小如何，模型加载时间应保持不变。
+    您可以使用 [examples/features/sharded_state/load_sharded_state_offline.py](../../examples/features/sharded_state/load_sharded_state_offline.py) 将模型检查点转换为分片检查点。转换过程可能需要一些时间，但之后您可以更快地加载分片检查点。无论张量并行大小如何，模型加载时间应保持不变。
 
 ## 量化
 
@@ -40,7 +40,7 @@ llm = LLM(model="ibm-granite/granite-3.1-8b-instruct", tensor_parallel_size=2)
 ```python
 from vllm import LLM
 
-llm = LLM(model="adept/fuyu-8b", max_model_len=2048, max_num_seqs=2)
+llm = LLM(model="Qwen/Qwen2.5-VL-3B-Instruct", max_model_len=2048, max_num_seqs=2)
 ```
 
 ## 减少 CUDA Graphs

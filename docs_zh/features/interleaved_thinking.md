@@ -20,9 +20,9 @@
 vLLM 目前支持以下交错思考模型：
 
 | 模型系列 | 推理解析器名称 |
-|--------------|-----------------------|
-| moonshotai/Kimi-K2-Thinking    |  kimi_k2  |
-| MiniMaxAI/MiniMax-M2           |  minimax_m2  |
+| ------------ | --------------------- |
+| moonshotai/Kimi-K2-Thinking | kimi_k2 |
+| MiniMaxAI/MiniMax-M2 | minimax_m2 |
 
 ## 使用示例
 

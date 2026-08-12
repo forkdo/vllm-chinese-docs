@@ -44,7 +44,7 @@ llm = LLM(model="meta-llama/Llama-3.2-3B-Instruct", enable_lora=True)
     )
     ```
 
-请查看 [examples/offline_inference/multilora_inference.py](../../examples/offline_inference/multilora_inference.py)，了解如何使用异步引擎使用 LoRA 适配器，以及如何配置更高级的选项。
+请查看 [examples/features/lora/multilora_offline.py](../../examples/features/lora/multilora_offline.py)，了解如何使用异步引擎使用 LoRA 适配器，以及如何配置更高级的选项。
 
 ## 提供 LoRA 适配器服务
 
